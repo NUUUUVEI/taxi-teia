@@ -12,7 +12,7 @@ import { getSupabase } from '@/lib/supabase'
 import { PlaceInput } from './PlaceInput'
 import { RouteMap } from './RouteMap'
 import { dateLocales } from '@/lib/dateLocale'
-import type { Booking } from '@/lib/types'
+import type { Booking, DriverLocation } from '@/lib/types'
 
 const BUFFER_MINUTES = 10
 
@@ -249,12 +249,14 @@ export function BookingPage() {
 
       const supabase2 = getSupabase()
       if (supabase2) {
-        const { data: locData } = await supabase2
+        const { data } = await supabase2
           .from('driver_location')
           .select('lat, lng, updated_at')
           .order('updated_at', { ascending: false })
           .limit(1)
-          .single()
+          .maybeSingle()
+
+        const locData = data as Pick<DriverLocation, 'lat' | 'lng' | 'updated_at'> | null
 
         if (locData) {
           const locationAge = (Date.now() - new Date(locData.updated_at).getTime()) / 60000

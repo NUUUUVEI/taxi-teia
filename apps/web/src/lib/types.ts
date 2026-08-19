@@ -43,17 +43,24 @@ export interface Database {
         Row: Booking
         Insert: Omit<Booking, 'id' | 'created_at'>
         Update: Partial<Omit<Booking, 'id' | 'created_at'>>
+        Relationships: []
       }
       service_types: {
         Row: ServiceType
         Insert: Omit<ServiceType, 'id'>
         Update: Partial<Omit<ServiceType, 'id'>>
+        Relationships: []
       }
       driver_location: {
         Row: DriverLocation
         Insert: DriverLocation
         Update: Partial<Omit<DriverLocation, 'user_id'>>
+        Relationships: []
       }
     }
+    Views: Record<string, never>
+    Functions: Record<string, never>
+    Enums: Record<string, never>
+    CompositeTypes: Record<string, never>
   }
 }
