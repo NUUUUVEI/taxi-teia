@@ -29,6 +29,13 @@ export interface Booking {
   status: BookingStatus
 }
 
+export interface DriverLocation {
+  user_id: string
+  lat: number
+  lng: number
+  updated_at: string
+}
+
 export interface Database {
   public: {
     Tables: {
@@ -41,6 +48,11 @@ export interface Database {
         Row: ServiceType
         Insert: Omit<ServiceType, 'id'>
         Update: Partial<Omit<ServiceType, 'id'>>
+      }
+      driver_location: {
+        Row: DriverLocation
+        Insert: DriverLocation
+        Update: Partial<Omit<DriverLocation, 'user_id'>>
       }
     }
   }
