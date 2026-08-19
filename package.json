@@ -1,0 +1,20 @@
+{
+  "name": "taxi-teia",
+  "private": true,
+  "version": "0.0.1",
+  "scripts": {
+    "dev": "turbo dev",
+    "build": "turbo build",
+    "lint": "turbo lint",
+    "format": "prettier --write \"**/*.{ts,tsx,md}\""
+  },
+  "devDependencies": {
+    "prettier": "^3.2.5",
+    "turbo": "^2.0.6",
+    "typescript": "^5.4.5"
+  },
+  "packageManager": "pnpm@9.1.4",
+  "engines": {
+    "node": ">=20"
+  }
+}

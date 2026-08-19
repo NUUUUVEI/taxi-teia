@@ -1,0 +1,126 @@
+{
+  "nav": {
+    "home": "Home",
+    "services": "Services",
+    "car": "The Car",
+    "book": "Book",
+    "language": "Language"
+  },
+  "hero": {
+    "badge": "Professional Service · Teià, Maresme",
+    "title": "Your trusted taxi",
+    "subtitle": "Punctuality, comfort, and a personal touch. We take you wherever you need to go, from Teià to any destination.",
+    "cta": "Book your ride",
+    "ctaSecondary": "The car",
+    "phone": "670 254 729",
+    "callUs": "Call us now"
+  },
+  "services": {
+    "title": "Our services",
+    "subtitle": "We tailor every service to your needs. Available 24/7, 7 days a week.",
+    "items": {
+      "airports": {
+        "title": "Ports & Airports",
+        "description": "We take you to the airport or cruise port so you don't have to worry about parking. When you return, we'll be waiting to take you home."
+      },
+      "trains": {
+        "title": "Train & Bus Stations",
+        "description": "Whether you're catching a commuter train, high-speed rail, or a long-distance bus, we'll get you there on time."
+      },
+      "local": {
+        "title": "Local Services",
+        "description": "Errands, shopping, pharmacy, bank, town hall... We accompany you on your daily tasks, comfortably and on time."
+      },
+      "longDistance": {
+        "title": "Long Distance",
+        "description": "Travel without rushing. We pick you up at your door and take you to your destination while you relax and enjoy the journey."
+      },
+      "medical": {
+        "title": "Medical & Hospitals",
+        "description": "For medical or hospital visits, we wait at the door to take you back home whenever you're ready."
+      },
+      "packages": {
+        "title": "Packages & Documents",
+        "description": "Urgent or relaxed delivery of documents and packages. We handle your items with the utmost care and professionalism."
+      }
+    }
+  },
+  "car": {
+    "title": "The Car",
+    "subtitle": "Toyota Corolla Hybrid 2026 — Comfort, safety and style for every journey.",
+    "scrollHint": "Scroll to explore the car",
+    "sections": {
+      "overview": {
+        "title": "Elegant Design",
+        "description": "The new Toyota Corolla blends a modern, aerodynamic design with the brand's legendary reliability. Perfect for any journey, short or long."
+      },
+      "trunk": {
+        "title": "Generous Boot",
+        "description": "361-litre boot. Two large suitcases and your carry-on fit with ease. Travel comfortably without worrying about space."
+      },
+      "doors": {
+        "title": "Comfortable Interior",
+        "description": "Spacious interior with ergonomic seats, dual-zone climate control, Bluetooth connectivity and USB charging. Every ride is a pleasure."
+      },
+      "hood": {
+        "title": "Hybrid Engine",
+        "description": "2.0 HEV Hybrid engine, 196 HP. Efficient, quiet and eco-friendly. Lower emissions, more miles, and a quieter ride for all passengers."
+      }
+    }
+  },
+  "booking": {
+    "title": "Book your ride",
+    "subtitle": "Tell us where you're going first. We'll estimate the trip, then you pick any time that fits.",
+    "form": {
+      "trip": "Your trip",
+      "name": "Full name",
+      "namePlaceholder": "Your name",
+      "phone": "Phone",
+      "phonePlaceholder": "+34 6XX XXX XXX",
+      "pickup": "Pick-up address",
+      "pickupPlaceholder": "Where should we pick you up?",
+      "dropoff": "Drop-off address",
+      "dropoffPlaceholder": "Where are you going?",
+      "date": "Date",
+      "time": "Time",
+      "timeHint": "Type any time you need — there are no fixed slots.",
+      "schedule": "Date & time",
+      "details": "Your details",
+      "review": "Review",
+      "back": "Back",
+      "estimatedTime": "Estimated time",
+      "estimatedMinutes": "approx. {minutes} min",
+      "estimating": "Calculating trip time...",
+      "submit": "Confirm booking",
+      "submitting": "Sending...",
+      "notes": "Notes (optional)",
+      "notesPlaceholder": "Any additional details..."
+    },
+    "feasibility": {
+      "checking": "Checking if this time works with other trips...",
+      "ok": "This time works with the current schedule.",
+      "overlap": "This overlaps another trip from {start} to {end}. Please choose another time.",
+      "transfer": "Not enough time after the {time} trip. About {minutes} min are needed to reach the next pickup."
+    },
+    "success": {
+      "title": "Booking confirmed!",
+      "message": "We've received your booking. Marc will contact you to confirm it. Thank you!",
+      "close": "Close"
+    },
+    "errors": {
+      "required": "This field is required",
+      "invalidPhone": "Invalid phone number",
+      "generic": "Something went wrong. Please try again."
+    }
+  },
+  "footer": {
+    "tagline": "Professional taxi service in Teià and the Maresme",
+    "contact": "Contact",
+    "phone": "670 254 729",
+    "email": "marctaxiteia@gmail.com",
+    "whatsapp": "WhatsApp",
+    "location": "Teià, Maresme",
+    "rights": "© {year} Taxi Teià. All rights reserved.",
+    "license": "Taxi licence: VT-XXXXX"
+  }
+}

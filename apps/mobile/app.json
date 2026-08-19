@@ -1,0 +1,42 @@
+{
+  "expo": {
+    "name": "Taxi Teià Driver",
+    "slug": "taxi-teia-driver",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/icon.png",
+    "userInterfaceStyle": "dark",
+    "splash": {
+      "image": "./assets/splash.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#0A0A0A"
+    },
+    "ios": {
+      "supportsTablet": false,
+      "bundleIdentifier": "com.taxiteia.driver"
+    },
+    "android": {
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/adaptive-icon.png",
+        "backgroundColor": "#0A0A0A"
+      },
+      "package": "com.taxiteia.driver"
+    },
+    "plugins": [
+      "expo-router",
+      "expo-secure-store"
+    ],
+    "scheme": "taxiteia",
+    "extra": {
+      "eas": {
+        "projectId": "1c91409a-c8d6-4b41-bd7c-d31328453416"
+      },
+      "supabaseUrl": "https://ipzpzdlqfgssbbsqdphf.supabase.co",
+      "supabaseAnonKey": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlwenB6ZGxxZmdzc2Jic3FkcGhmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODcwNTgyMjYsImV4cCI6MjEwMjYzNDIyNn0.j8V6R7Qw1Z_WM6YHi_jU5JXaq_VYHso35UHtCDYOa-o",
+      "router": {
+        "origin": false
+      }
+    },
+    "owner": "nuuuvei"
+  }
+}

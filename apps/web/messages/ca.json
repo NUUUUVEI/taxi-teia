@@ -1,0 +1,126 @@
+{
+  "nav": {
+    "home": "Inici",
+    "services": "Serveis",
+    "car": "El Vehicle",
+    "book": "Reserva",
+    "language": "Idioma"
+  },
+  "hero": {
+    "badge": "Servei Professional · Teià, Maresme",
+    "title": "El teu taxi de confiança",
+    "subtitle": "Puntualitat, comoditat i tracte proper. Et portem allà on necessitis, des de Teià a qualsevol destinació.",
+    "cta": "Reserva el teu trajecte",
+    "ctaSecondary": "El vehicle",
+    "phone": "670 254 729",
+    "callUs": "Truca'ns ara"
+  },
+  "services": {
+    "title": "Els nostres serveis",
+    "subtitle": "Adaptem cada servei a les teves necessitats. Disponibles les 24h, els 7 dies de la setmana.",
+    "items": {
+      "airports": {
+        "title": "Ports i Aeroports",
+        "description": "Et portem a l'aeroport o al port de creuers sense preocupar-te per l'aparcament. Quan tornis, t'esperem per portar-te a casa."
+      },
+      "trains": {
+        "title": "Estacions de Tren i Bus",
+        "description": "Tant si agafes un tren de rodalies com un d'alta velocitat o un autobús de llarga distància, hi som per portar-te fins allà."
+      },
+      "local": {
+        "title": "Serveis Locals",
+        "description": "Encàrrecs, compres, farmàcia, banc, ajuntament... T'acompanyem als teus tràmits diaris amb comoditat."
+      },
+      "longDistance": {
+        "title": "Llarg Recorregut",
+        "description": "Viatja sense presses. Et recollim a la porta de casa i et portem al teu destí mentre tu et relaxes i gaudeixes del viatge."
+      },
+      "medical": {
+        "title": "Metges i Hospitals",
+        "description": "Per a visites mèdiques o hospitalàries, t'esperem a la porta per tornar-te a casa quan siguis llest."
+      },
+      "packages": {
+        "title": "Paqueteria i Documents",
+        "description": "Enviament urgent o sense presses de documents i paquets. Tractem el teu encàrrec amb la màxima cura i serietat."
+      }
+    }
+  },
+  "car": {
+    "title": "El Vehicle",
+    "subtitle": "Toyota Corolla Hybrid 2026 — Confort, seguretat i estil per als teus trajectes.",
+    "scrollHint": "Fes scroll per descobrir el vehicle",
+    "sections": {
+      "overview": {
+        "title": "Disseny Elegant",
+        "description": "El nou Toyota Corolla combina un disseny modern i aerodinàmic amb la fiabilitat llegendària de la marca. Perfecte per a qualsevol trajecte."
+      },
+      "trunk": {
+        "title": "Ampli Maleter",
+        "description": "Maleter de 361 litres. Caben perfectament dues maletes grans i el teu equipatge de mà. Viatge còmode sense preocupacions."
+      },
+      "doors": {
+        "title": "Interior Confortable",
+        "description": "Interior espaciós amb seients ergonòmics, climatitzador automàtic, connexió Bluetooth i carregador USB. Cada trajecte és un plaer."
+      },
+      "hood": {
+        "title": "Motor Híbrid",
+        "description": "Motor híbrid 2.0 HEV de 196 CV. Eficient, silenciós i ecològic. Menys emissions, més quilòmetres, menys soroll per als passatgers."
+      }
+    }
+  },
+  "booking": {
+    "title": "Reserva el teu trajecte",
+    "subtitle": "Primer indica d'on a on. Calculem el temps del viatge i després tries l'hora que et vagi bé.",
+    "form": {
+      "trip": "El teu trajecte",
+      "name": "Nom complet",
+      "namePlaceholder": "El teu nom",
+      "phone": "Telèfon",
+      "phonePlaceholder": "+34 6XX XXX XXX",
+      "pickup": "Adreça de recollida",
+      "pickupPlaceholder": "D'on t'hem de recollir?",
+      "dropoff": "Adreça de destí",
+      "dropoffPlaceholder": "On vols anar?",
+      "date": "Data",
+      "time": "Hora",
+      "timeHint": "Posa l'hora que necessitis — no hi ha franges fixes.",
+      "schedule": "Data i hora",
+      "details": "Les teves dades",
+      "review": "Revisa",
+      "back": "Enrere",
+      "estimatedTime": "Temps estimat",
+      "estimatedMinutes": "{minutes} minuts aprox.",
+      "estimating": "Calculant el temps del trajecte...",
+      "submit": "Confirma la reserva",
+      "submitting": "Enviant...",
+      "notes": "Notes (opcional)",
+      "notesPlaceholder": "Algun detall addicional..."
+    },
+    "feasibility": {
+      "checking": "Comprovant si aquesta hora encaixa amb altres viatges...",
+      "ok": "Aquesta hora encaixa amb l'agenda actual.",
+      "overlap": "Es solapa amb un altre viatge de {start} a {end}. Tria una altra hora.",
+      "transfer": "No hi ha prou temps després del viatge de les {time}. Calen uns {minutes} min per arribar a la recollida."
+    },
+    "success": {
+      "title": "Reserva confirmada!",
+      "message": "Hem rebut la teva reserva. El Marc es posarà en contacte amb tu per confirmar-la. Gràcies!",
+      "close": "Tancar"
+    },
+    "errors": {
+      "required": "Aquest camp és obligatori",
+      "invalidPhone": "Número de telèfon no vàlid",
+      "generic": "Hi ha hagut un error. Intenta-ho de nou."
+    }
+  },
+  "footer": {
+    "tagline": "Servei de taxi professional a Teià i el Maresme",
+    "contact": "Contacte",
+    "phone": "670 254 729",
+    "email": "marctaxiteia@gmail.com",
+    "whatsapp": "WhatsApp",
+    "location": "Teià, Maresme",
+    "rights": "© {year} Taxi Teià. Tots els drets reservats.",
+    "license": "Llicència de taxi: VT-XXXXX"
+  }
+}

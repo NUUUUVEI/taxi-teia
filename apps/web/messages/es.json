@@ -1,0 +1,126 @@
+{
+  "nav": {
+    "home": "Inicio",
+    "services": "Servicios",
+    "car": "El Vehículo",
+    "book": "Reserva",
+    "language": "Idioma"
+  },
+  "hero": {
+    "badge": "Servicio Profesional · Teià, Maresme",
+    "title": "Tu taxi de confianza",
+    "subtitle": "Puntualidad, comodidad y trato cercano. Te llevamos adonde necesites, desde Teià a cualquier destino.",
+    "cta": "Reserva tu trayecto",
+    "ctaSecondary": "El vehículo",
+    "phone": "670 254 729",
+    "callUs": "Llámanos ahora"
+  },
+  "services": {
+    "title": "Nuestros servicios",
+    "subtitle": "Adaptamos cada servicio a tus necesidades. Disponibles las 24h, los 7 días de la semana.",
+    "items": {
+      "airports": {
+        "title": "Puertos y Aeropuertos",
+        "description": "Te llevamos al aeropuerto o al puerto de cruceros sin preocuparte por el aparcamiento. Cuando regreses, te esperamos para llevarte a casa."
+      },
+      "trains": {
+        "title": "Estaciones de Tren y Bus",
+        "description": "Tanto si coges un tren de cercanías como uno de alta velocidad o un autobús de larga distancia, estamos ahí para llevarte hasta allí."
+      },
+      "local": {
+        "title": "Servicios Locales",
+        "description": "Recados, compras, farmacia, banco, ayuntamiento... Te acompañamos en tus trámites diarios con comodidad."
+      },
+      "longDistance": {
+        "title": "Larga Distancia",
+        "description": "Viaja sin prisas. Te recogemos en la puerta de casa y te llevamos a tu destino mientras tú te relajas y disfrutas del viaje."
+      },
+      "medical": {
+        "title": "Médicos y Hospitales",
+        "description": "Para visitas médicas u hospitalarias, te esperamos en la puerta para llevarte a casa cuando estés listo."
+      },
+      "packages": {
+        "title": "Paquetería y Documentos",
+        "description": "Envío urgente o sin prisas de documentos y paquetes. Tratamos tu encargo con el máximo cuidado y seriedad."
+      }
+    }
+  },
+  "car": {
+    "title": "El Vehículo",
+    "subtitle": "Toyota Corolla Hybrid 2026 — Confort, seguridad y estilo para tus trayectos.",
+    "scrollHint": "Desplázate para descubrir el vehículo",
+    "sections": {
+      "overview": {
+        "title": "Diseño Elegante",
+        "description": "El nuevo Toyota Corolla combina un diseño moderno y aerodinámico con la legendaria fiabilidad de la marca. Perfecto para cualquier trayecto."
+      },
+      "trunk": {
+        "title": "Maletero Amplio",
+        "description": "Maletero de 361 litros. Caben perfectamente dos maletas grandes y tu equipaje de mano. Viaje cómodo sin preocupaciones."
+      },
+      "doors": {
+        "title": "Interior Confortable",
+        "description": "Interior espacioso con asientos ergonómicos, climatizador automático, conexión Bluetooth y cargador USB. Cada trayecto es un placer."
+      },
+      "hood": {
+        "title": "Motor Híbrido",
+        "description": "Motor híbrido 2.0 HEV de 196 CV. Eficiente, silencioso y ecológico. Menos emisiones, más kilómetros, menos ruido para los pasajeros."
+      }
+    }
+  },
+  "booking": {
+    "title": "Reserva tu trayecto",
+    "subtitle": "Primero indica de dónde a dónde. Calculamos el tiempo del viaje y luego eliges la hora que te convenga.",
+    "form": {
+      "trip": "Tu trayecto",
+      "name": "Nombre completo",
+      "namePlaceholder": "Tu nombre",
+      "phone": "Teléfono",
+      "phonePlaceholder": "+34 6XX XXX XXX",
+      "pickup": "Dirección de recogida",
+      "pickupPlaceholder": "¿Dónde te recogemos?",
+      "dropoff": "Dirección de destino",
+      "dropoffPlaceholder": "¿A dónde quieres ir?",
+      "date": "Fecha",
+      "time": "Hora",
+      "timeHint": "Pon la hora que necesites — no hay franjas fijas.",
+      "schedule": "Fecha y hora",
+      "details": "Tus datos",
+      "review": "Revisar",
+      "back": "Atrás",
+      "estimatedTime": "Tiempo estimado",
+      "estimatedMinutes": "{minutes} minutos aprox.",
+      "estimating": "Calculando el tiempo del trayecto...",
+      "submit": "Confirmar reserva",
+      "submitting": "Enviando...",
+      "notes": "Notas (opcional)",
+      "notesPlaceholder": "Algún detalle adicional..."
+    },
+    "feasibility": {
+      "checking": "Comprobando si esta hora encaja con otros viajes...",
+      "ok": "Esta hora encaja con la agenda actual.",
+      "overlap": "Se solapa con otro viaje de {start} a {end}. Elige otra hora.",
+      "transfer": "No hay tiempo suficiente después del viaje de las {time}. Hacen falta unos {minutes} min para llegar a la recogida."
+    },
+    "success": {
+      "title": "¡Reserva confirmada!",
+      "message": "Hemos recibido tu reserva. Marc se pondrá en contacto contigo para confirmarla. ¡Gracias!",
+      "close": "Cerrar"
+    },
+    "errors": {
+      "required": "Este campo es obligatorio",
+      "invalidPhone": "Número de teléfono no válido",
+      "generic": "Ha habido un error. Inténtalo de nuevo."
+    }
+  },
+  "footer": {
+    "tagline": "Servicio de taxi profesional en Teià y el Maresme",
+    "contact": "Contacto",
+    "phone": "670 254 729",
+    "email": "marctaxiteia@gmail.com",
+    "whatsapp": "WhatsApp",
+    "location": "Teià, Maresme",
+    "rights": "© {year} Taxi Teià. Todos los derechos reservados.",
+    "license": "Licencia de taxi: VT-XXXXX"
+  }
+}
