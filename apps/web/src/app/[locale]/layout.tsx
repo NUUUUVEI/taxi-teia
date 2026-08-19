@@ -1,8 +1,9 @@
 import type { Metadata } from 'next'
+import { notFound } from 'next/navigation'
 import { Cormorant_Garamond, Inter } from 'next/font/google'
 import { NextIntlClientProvider } from 'next-intl'
-import { getMessages } from 'next-intl/server'
-import { locales } from '@/i18n'
+import { getMessages, setRequestLocale } from 'next-intl/server'
+import { locales, type Locale } from '@/i18n'
 import { ensureCarImages } from '@/lib/ensureCarImages'
 import '../globals.css'
 
@@ -45,6 +46,10 @@ export default async function LocaleLayout({
   children: React.ReactNode
   params: { locale: string }
 }) {
+  if (!locales.includes(locale as Locale)) notFound()
+
+  setRequestLocale(locale)
+
   const messages = await getMessages()
 
   return (

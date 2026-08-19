@@ -1,8 +1,11 @@
+import { setRequestLocale } from 'next-intl/server'
 import { Nav } from '@/components/Nav'
 import { BookingPage } from '@/components/BookingPage'
 import { Footer } from '@/components/Footer'
 
-export default function BookPage() {
+export default function BookPage({ params: { locale } }: { params: { locale: string } }) {
+  setRequestLocale(locale)
+
   return (
     <>
       <Nav />
