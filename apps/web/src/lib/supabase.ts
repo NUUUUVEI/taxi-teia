@@ -1,5 +1,5 @@
 import { createClient, type SupabaseClient } from '@supabase/supabase-js'
-import type { Database } from '@taxi-teia/db'
+import type { Database } from './types'
 
 function readEnv(key: string): string {
   const value = process.env[key]?.trim() ?? ''

@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 
 export async function POST(req: NextRequest) {
-  const { origin, destination } = await req.json()
+  const { origin, destination, departure_time } = await req.json()
   const key = process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY
 
   if (!origin || !destination) {
@@ -12,12 +12,15 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: 'Google Maps API key missing' }, { status: 500 })
   }
 
+  const depTime = departure_time ?? Math.floor(Date.now() / 1000) + 3600
+
   const url = new URL('https://maps.googleapis.com/maps/api/directions/json')
   url.searchParams.set('origin', origin)
   url.searchParams.set('destination', destination)
   url.searchParams.set('mode', 'driving')
   url.searchParams.set('key', key)
-  url.searchParams.set('departure_time', String(Math.floor(Date.now() / 1000) + 3600))
+  url.searchParams.set('departure_time', String(depTime))
+  url.searchParams.set('traffic_model', 'best_guess')
 
   const res = await fetch(url.toString())
   const data = await res.json()
@@ -33,6 +36,7 @@ export async function POST(req: NextRequest) {
   const durationSeconds = leg.duration_in_traffic?.value ?? leg.duration?.value ?? 0
   const duration_minutes = Math.max(1, Math.ceil(durationSeconds / 60))
   const distance_km = +((leg.distance?.value ?? 0) / 1000).toFixed(1)
+  const polyline = data.routes[0].overview_polyline?.points ?? null
 
-  return NextResponse.json({ duration_minutes, distance_km })
+  return NextResponse.json({ duration_minutes, distance_km, polyline })
 }

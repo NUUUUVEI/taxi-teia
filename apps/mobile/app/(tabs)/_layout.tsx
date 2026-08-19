@@ -5,6 +5,7 @@ import { colors } from '../../src/lib/theme'
 export default function TabsLayout() {
   return (
     <Tabs
+      initialRouteName="calendar"
       screenOptions={{
         tabBarStyle: {
           backgroundColor: colors.surface,
@@ -20,41 +21,62 @@ export default function TabsLayout() {
       }}
     >
       <Tabs.Screen
-        name="today"
+        name="calendar"
         options={{
-          title: "Today",
+          title: 'Calendari',
           tabBarIcon: ({ color, size }) => (
             <Ionicons name="calendar-outline" size={size} color={color} />
           ),
         }}
       />
       <Tabs.Screen
-        name="history"
+        name="pending"
         options={{
-          title: "History",
+          title: 'Pendents',
           tabBarIcon: ({ color, size }) => (
             <Ionicons name="time-outline" size={size} color={color} />
+          ),
+          tabBarBadge: undefined,
+        }}
+      />
+      <Tabs.Screen
+        name="history"
+        options={{
+          title: 'Historial',
+          tabBarIcon: ({ color, size }) => (
+            <Ionicons name="archive-outline" size={size} color={color} />
           ),
         }}
       />
       <Tabs.Screen
         name="earnings"
         options={{
-          title: "Earnings",
+          title: 'Ingressos',
           tabBarIcon: ({ color, size }) => (
             <Ionicons name="wallet-outline" size={size} color={color} />
           ),
         }}
       />
       <Tabs.Screen
+        name="expenses"
+        options={{
+          title: 'Despeses',
+          tabBarIcon: ({ color, size }) => (
+            <Ionicons name="receipt-outline" size={size} color={color} />
+          ),
+        }}
+      />
+      <Tabs.Screen
         name="settings"
         options={{
-          title: "Settings",
+          title: 'Ajustos',
           tabBarIcon: ({ color, size }) => (
             <Ionicons name="settings-outline" size={size} color={color} />
           ),
         }}
       />
+      {/* Hide today tab — replaced by pending */}
+      <Tabs.Screen name="today" options={{ href: null }} />
     </Tabs>
   )
 }

@@ -13,8 +13,6 @@
     "@react-three/drei": "^9.105.6",
     "@react-three/fiber": "^8.16.8",
     "@supabase/supabase-js": "^2.43.0",
-    "@taxi-teia/db": "workspace:*",
-    "@taxi-teia/ui": "workspace:*",
     "framer-motion": "^11.2.10",
     "gsap": "^3.12.5",
     "lucide-react": "^0.395.0",

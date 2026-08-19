@@ -12,7 +12,19 @@ export async function POST(req: NextRequest) {
   const supabase = createClient(url, key)
 
   const body = await req.json()
-  const { client_name, client_phone, pickup_address, dropoff_address, start_time, estimated_minutes, notes } = body
+  const {
+    client_name,
+    client_phone,
+    client_email,
+    pickup_address,
+    dropoff_address,
+    start_time,
+    requested_time,
+    time_mode,
+    locale,
+    estimated_minutes,
+    notes,
+  } = body
 
   if (!client_name || !client_phone || !pickup_address || !dropoff_address || !start_time) {
     return NextResponse.json({ error: 'Missing required fields' }, { status: 400 })
@@ -21,10 +33,14 @@ export async function POST(req: NextRequest) {
   const { error: insertError } = await supabase.from('bookings').insert({
     client_name,
     client_phone,
+    client_email: client_email || null,
     pickup_address,
     dropoff_address,
     service_type: 'local',
     start_time,
+    requested_time: requested_time || start_time,
+    time_mode: time_mode === 'arrival' ? 'arrival' : 'pickup',
+    locale: ['ca', 'es', 'en'].includes(locale) ? locale : 'ca',
     estimated_minutes: estimated_minutes ?? 30,
     notes: notes || null,
     status: 'pending',

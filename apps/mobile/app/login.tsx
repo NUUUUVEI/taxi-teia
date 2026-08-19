@@ -87,6 +87,12 @@ export default function LoginScreen() {
               <Text style={styles.buttonText}>SIGN IN</Text>
             )}
           </TouchableOpacity>
+
+          <TouchableOpacity style={styles.signupLink} onPress={() => router.replace('/signup')}>
+            <Text style={styles.signupLinkText}>
+              No tens compte? <Text style={{ color: colors.gold }}>Crea'n un</Text>
+            </Text>
+          </TouchableOpacity>
         </View>
       </View>
     </KeyboardAvoidingView>
@@ -173,4 +179,6 @@ const styles = StyleSheet.create({
     fontWeight: '700',
     letterSpacing: 3,
   },
+  signupLink: { alignItems: 'center', marginTop: 20 },
+  signupLinkText: { color: colors.textMuted, fontSize: 13 },
 })

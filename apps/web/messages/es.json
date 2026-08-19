@@ -1,10 +1,12 @@
 {
   "nav": {
     "home": "Inicio",
+    "about": "Quién soy",
     "services": "Servicios",
     "car": "El Vehículo",
     "book": "Reserva",
-    "language": "Idioma"
+    "language": "Idioma",
+    "navigation": "Navegación"
   },
   "hero": {
     "badge": "Servicio Profesional · Teià, Maresme",
@@ -70,7 +72,7 @@
   },
   "booking": {
     "title": "Reserva tu trayecto",
-    "subtitle": "Primero indica de dónde a dónde. Calculamos el tiempo del viaje y luego eliges la hora que te convenga.",
+    "subtitle": "Primero elige la fecha y la hora. Después indicas el trayecto y calculamos la llegada con tráfico real.",
     "form": {
       "trip": "Tu trayecto",
       "name": "Nombre completo",
@@ -93,14 +95,25 @@
       "estimating": "Calculando el tiempo del trayecto...",
       "submit": "Confirmar reserva",
       "submitting": "Enviando...",
+      "email": "Correo electrónico (opcional)",
+      "emailPlaceholder": "para recibir confirmación",
       "notes": "Notas (opcional)",
+      "timeModePickup": "Hora de recogida",
+      "timeModeArrival": "Hora de llegada",
+      "pickupAt": "Te recogeré a las {time}",
+      "arrivalAt": "Llegarás a las {time}",
+      "distance": "Distancia",
+      "distanceKm": "{km} km",
+      "continueTrip": "Continuar",
       "notesPlaceholder": "Algún detalle adicional..."
     },
     "feasibility": {
       "checking": "Comprobando si esta hora encaja con otros viajes...",
       "ok": "Esta hora encaja con la agenda actual.",
+      "past": "Esta hora ya ha pasado. Elige una hora futura.",
       "overlap": "Se solapa con otro viaje de {start} a {end}. Elige otra hora.",
-      "transfer": "No hay tiempo suficiente después del viaje de las {time}. Hacen falta unos {minutes} min para llegar a la recogida."
+      "transfer": "No hay tiempo suficiente después del viaje de las {time}. Hacen falta unos {minutes} min para llegar a la recogida.",
+      "driverTooFar": "El taxista necesita unos {minutes} min para llegar, pero no hay tiempo suficiente. Elige una hora más tarde."
     },
     "success": {
       "title": "¡Reserva confirmada!",
@@ -111,6 +124,25 @@
       "required": "Este campo es obligatorio",
       "invalidPhone": "Número de teléfono no válido",
       "generic": "Ha habido un error. Inténtalo de nuevo."
+    }
+  },
+  "about": {
+    "badge": "Por qué elegirme",
+    "title": "El taxi de confianza del Maresme",
+    "p1": "Soy Marc, taxista profesional con base en Teià. Más de 10 años llevando vecinos del Maresme al aeropuerto, al hospital, a la estación y a donde necesiten, siempre con puntualidad y trato cercano.",
+    "p2": "No soy una app anónima. Cuando reservas conmigo, sabes quién vendrá a recogerte: alguien de confianza, que conoce las calles, que llega a la hora y que te ayuda con las maletas.",
+    "stats": {
+      "years":  { "value": "10+", "label": "Años de experiencia" },
+      "trips":  { "value": "5k+", "label": "Trayectos realizados" },
+      "rating": { "value": "5★",  "label": "Valoración media" }
+    },
+    "reasons": {
+      "punctuality": { "title": "Puntualidad garantizada", "desc": "Llego a la hora acordada. Siempre. Si hay tráfico, lo gestiono yo." },
+      "trust":       { "title": "Seriedad y confianza",    "desc": "Licencia de taxi en regla, vehículo asegurado y conductor profesional." },
+      "local":       { "title": "Conocimiento local",      "desc": "Conozco cada calle del Maresme. Uso la mejor ruta, no la que dice el GPS." },
+      "quality":     { "title": "Vehículo cómodo",         "desc": "Toyota Corolla Hybrid 2026, limpio, silencioso y climatizado para tu confort." },
+      "personal":    { "title": "Trato personal",          "desc": "No eres un número. Te recuerdo, adapto el servicio y me preocupo por tu comodidad." },
+      "available":   { "title": "Disponible 24/7",         "desc": "¿Quieres un taxi a las 4 de la mañana para coger un vuelo? Aquí estoy. Llama o reserva online." }
     }
   },
   "footer": {

@@ -1,27 +1,40 @@
 'use client'
 
-import { useState, useEffect, useCallback } from 'react'
+import { useState, useEffect, useCallback, useMemo } from 'react'
 import { DayPicker } from 'react-day-picker'
-import { format, startOfDay, addMinutes, parseISO } from 'date-fns'
-import { useTranslations } from 'next-intl'
+import { format, startOfDay, addMinutes, subMinutes, parseISO } from 'date-fns'
+import { useTranslations, useLocale } from 'next-intl'
 import { motion, AnimatePresence } from 'framer-motion'
-import { Clock, User, Phone, ChevronRight, CheckCircle2, Loader2, AlertTriangle } from 'lucide-react'
+import {
+  Clock, User, Phone, ChevronRight, CheckCircle2, Loader2, AlertTriangle, MapPin,
+} from 'lucide-react'
 import { getSupabase } from '@/lib/supabase'
 import { PlaceInput } from './PlaceInput'
-import type { Booking } from '@taxi-teia/db'
+import { RouteMap } from './RouteMap'
+import { dateLocales } from '@/lib/dateLocale'
+import type { Booking } from '@/lib/types'
 
 const BUFFER_MINUTES = 10
 
 type FormData = {
   name: string
   phone: string
+  email: string
   pickup: string
   dropoff: string
   notes: string
 }
 
-type StepId = 'trip' | 'schedule' | 'details' | 'confirm'
-const STEPS: StepId[] = ['trip', 'schedule', 'details', 'confirm']
+type StepId = 'schedule' | 'trip' | 'details' | 'confirm'
+const STEPS: StepId[] = ['schedule', 'trip', 'details', 'confirm']
+
+type TimeMode = 'pickup' | 'arrival'
+
+type RouteInfo = {
+  duration_minutes: number
+  distance_km: number
+  polyline: string | null
+}
 
 type Feasibility =
   | { status: 'idle' }
@@ -36,13 +49,69 @@ function toStart(date: Date, time: string) {
   return d
 }
 
+async function fetchRoute(
+  origin: string,
+  destination: string,
+  departureTime?: number
+): Promise<RouteInfo | null> {
+  const res = await fetch('/api/duration', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      origin,
+      destination,
+      departure_time: departureTime,
+    }),
+  })
+  if (!res.ok) return null
+  const data = await res.json()
+  if (!data.duration_minutes) return null
+  return {
+    duration_minutes: data.duration_minutes,
+    distance_km: data.distance_km ?? 0,
+    polyline: data.polyline ?? null,
+  }
+}
+
+async function solvePickupFromArrival(
+  pickup: string,
+  dropoff: string,
+  arrival: Date
+): Promise<{ pickupTime: Date; route: RouteInfo }> {
+  let minutes = 30
+  let pickupTime = subMinutes(arrival, minutes)
+
+  for (let i = 0; i < 5; i++) {
+    const dep = Math.floor(pickupTime.getTime() / 1000)
+    const route = await fetchRoute(pickup, dropoff, dep)
+    if (!route) break
+    minutes = route.duration_minutes
+    const nextPickup = subMinutes(arrival, minutes)
+    if (Math.abs(nextPickup.getTime() - pickupTime.getTime()) < 60_000) {
+      return { pickupTime: nextPickup, route }
+    }
+    pickupTime = nextPickup
+  }
+
+  const fallback = await fetchRoute(pickup, dropoff, Math.floor(pickupTime.getTime() / 1000))
+  return {
+    pickupTime,
+    route: fallback ?? { duration_minutes: minutes, distance_km: 0, polyline: null },
+  }
+}
+
 export function BookingPage() {
   const t = useTranslations('booking')
+  const locale = useLocale()
+  const dfLocale = dateLocales[locale] ?? dateLocales.ca
 
-  const [step, setStep] = useState<StepId>('trip')
+  const [step, setStep] = useState<StepId>('schedule')
+  const [timeMode, setTimeMode] = useState<TimeMode>('pickup')
   const [selectedDate, setSelectedDate] = useState<Date | undefined>()
   const [selectedTime, setSelectedTime] = useState('')
-  const [estimatedMinutes, setEstimatedMinutes] = useState<number | null>(null)
+  const [routeInfo, setRouteInfo] = useState<RouteInfo | null>(null)
+  const [pickupTime, setPickupTime] = useState<Date | null>(null)
+  const [arrivalTime, setArrivalTime] = useState<Date | null>(null)
   const [estimating, setEstimating] = useState(false)
   const [feasibility, setFeasibility] = useState<Feasibility>({ status: 'idle' })
   const [submitting, setSubmitting] = useState(false)
@@ -52,49 +121,82 @@ export function BookingPage() {
   const [form, setForm] = useState<FormData>({
     name: '',
     phone: '',
+    email: '',
     pickup: '',
     dropoff: '',
     notes: '',
   })
 
-  const estimateDuration = useCallback(async (pickup: string, dropoff: string) => {
-    if (!pickup.trim() || !dropoff.trim()) return
-    setEstimating(true)
-    try {
-      const res = await fetch('/api/duration', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ origin: pickup, destination: dropoff }),
-      })
-      const data = await res.json()
-      if (data?.duration_minutes) setEstimatedMinutes(data.duration_minutes)
-    } catch {
-      // estimation is best-effort
-    } finally {
-      setEstimating(false)
-    }
-  }, [])
+  const requestedTime = useMemo(() => {
+    if (!selectedDate || !selectedTime) return null
+    return toStart(selectedDate, selectedTime)
+  }, [selectedDate, selectedTime])
 
+  const fmtTime = useCallback(
+    (d: Date) => format(d, 'HH:mm', { locale: dfLocale }),
+    [dfLocale]
+  )
+
+  const fmtDate = useCallback(
+    (d: Date) => format(d, 'EEEE, d MMMM yyyy', { locale: dfLocale }),
+    [dfLocale]
+  )
+
+  // Recalculate route + pickup/arrival when trip addresses or schedule change
   useEffect(() => {
-    const timer = setTimeout(() => {
-      if (form.pickup && form.dropoff) estimateDuration(form.pickup, form.dropoff)
-      else setEstimatedMinutes(null)
+    if (!form.pickup.trim() || !form.dropoff.trim() || !requestedTime) {
+      setRouteInfo(null)
+      setPickupTime(null)
+      setArrivalTime(null)
+      return
+    }
+
+    const timer = setTimeout(async () => {
+      setEstimating(true)
+      try {
+        if (timeMode === 'pickup') {
+          const dep = Math.floor(requestedTime.getTime() / 1000)
+          const route = await fetchRoute(form.pickup, form.dropoff, dep)
+          if (route) {
+            setRouteInfo(route)
+            setPickupTime(requestedTime)
+            setArrivalTime(addMinutes(requestedTime, route.duration_minutes))
+          }
+        } else {
+          const { pickupTime: pt, route } = await solvePickupFromArrival(
+            form.pickup,
+            form.dropoff,
+            requestedTime
+          )
+          setRouteInfo(route)
+          setPickupTime(pt)
+          setArrivalTime(requestedTime)
+        }
+      } finally {
+        setEstimating(false)
+      }
     }, 600)
+
     return () => clearTimeout(timer)
-  }, [form.pickup, form.dropoff, estimateDuration])
+  }, [form.pickup, form.dropoff, requestedTime, timeMode])
 
   const checkFeasibility = useCallback(async () => {
-    if (!selectedDate || !selectedTime || !estimatedMinutes) {
+    if (!pickupTime || !routeInfo || !form.pickup || !form.dropoff) {
       setFeasibility({ status: 'idle' })
       return
     }
 
+    if (pickupTime <= new Date()) {
+      setFeasibility({ status: 'blocked', reason: t('feasibility.past') })
+      return
+    }
+
     setFeasibility({ status: 'checking' })
-    const newStart = toStart(selectedDate, selectedTime)
-    const newEnd = addMinutes(newStart, estimatedMinutes)
+    const newStart = pickupTime
+    const newEnd = addMinutes(newStart, routeInfo.duration_minutes)
 
     try {
-      const day = format(selectedDate, 'yyyy-MM-dd')
+      const day = format(newStart, 'yyyy-MM-dd')
       let existing: Pick<Booking, 'start_time' | 'estimated_minutes' | 'pickup_address' | 'dropoff_address'>[] = []
 
       const supabase = getSupabase()
@@ -112,8 +214,7 @@ export function BookingPage() {
         const tripStart = parseISO(trip.start_time)
         const tripEnd = addMinutes(tripStart, trip.estimated_minutes)
 
-        const overlaps = newStart < tripEnd && tripStart < newEnd
-        if (overlaps) {
+        if (newStart < tripEnd && tripStart < newEnd) {
           setFeasibility({
             status: 'blocked',
             reason: t('feasibility.overlap', {
@@ -130,13 +231,8 @@ export function BookingPage() {
         const gapStart = earlierIsExisting ? tripEnd : newEnd
         const gapEnd = earlierIsExisting ? newStart : tripStart
 
-        const res = await fetch('/api/duration', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ origin, destination: dest }),
-        })
-        const data = await res.json()
-        const transferMin = (data.duration_minutes ?? 20) + BUFFER_MINUTES
+        const transferRoute = await fetchRoute(origin, dest, Math.floor(gapStart.getTime() / 1000))
+        const transferMin = (transferRoute?.duration_minutes ?? 20) + BUFFER_MINUTES
         const needed = addMinutes(gapStart, transferMin)
 
         if (needed > gapEnd) {
@@ -151,26 +247,55 @@ export function BookingPage() {
         }
       }
 
+      const supabase2 = getSupabase()
+      if (supabase2) {
+        const { data: locData } = await supabase2
+          .from('driver_location')
+          .select('lat, lng, updated_at')
+          .order('updated_at', { ascending: false })
+          .limit(1)
+          .single()
+
+        if (locData) {
+          const locationAge = (Date.now() - new Date(locData.updated_at).getTime()) / 60000
+          if (locationAge < 60) {
+            const driverCoord = `${locData.lat},${locData.lng}`
+            const minutesUntilTrip = (newStart.getTime() - Date.now()) / 60000
+            const driveRoute = await fetchRoute(
+              driverCoord,
+              form.pickup,
+              Math.floor(newStart.getTime() / 1000)
+            )
+            const driveMin = driveRoute?.duration_minutes ?? 0
+            if (driveMin > minutesUntilTrip) {
+              setFeasibility({
+                status: 'blocked',
+                reason: t('feasibility.driverTooFar', { minutes: Math.ceil(driveMin) }),
+              })
+              return
+            }
+          }
+        }
+      }
+
       setFeasibility({ status: 'ok' })
     } catch {
       setFeasibility({ status: 'ok' })
     }
-  }, [selectedDate, selectedTime, estimatedMinutes, form.pickup, form.dropoff, t])
+  }, [pickupTime, routeInfo, form.pickup, form.dropoff, t])
 
   useEffect(() => {
-    const timer = setTimeout(() => {
-      void checkFeasibility()
-    }, 400)
+    const timer = setTimeout(() => void checkFeasibility(), 400)
     return () => clearTimeout(timer)
   }, [checkFeasibility])
 
   const handleSubmit = async () => {
-    if (!selectedDate || !selectedTime) return
+    if (!pickupTime || !requestedTime) return
     if (feasibility.status === 'blocked') return
     setSubmitting(true)
     setError('')
 
-    const startTime = `${format(selectedDate, 'yyyy-MM-dd')}T${selectedTime}:00`
+    const startTime = pickupTime.toISOString()
 
     try {
       const res = await fetch('/api/book', {
@@ -179,10 +304,14 @@ export function BookingPage() {
         body: JSON.stringify({
           client_name: form.name,
           client_phone: form.phone,
+          client_email: form.email || null,
           pickup_address: form.pickup,
           dropoff_address: form.dropoff,
           start_time: startTime,
-          estimated_minutes: estimatedMinutes ?? 30,
+          requested_time: requestedTime.toISOString(),
+          time_mode: timeMode,
+          locale,
+          estimated_minutes: routeInfo?.duration_minutes ?? 30,
           notes: form.notes || null,
         }),
       })
@@ -190,14 +319,12 @@ export function BookingPage() {
       const data = await res.json()
 
       if (!res.ok) {
-        console.error('Booking API error:', data)
         setError(`${t('errors.generic')} (${data.error ?? res.status})`)
         return
       }
 
       setSubmitted(true)
-    } catch (err) {
-      console.error('Booking submit error:', err)
+    } catch {
       setError(t('errors.generic'))
     } finally {
       setSubmitting(false)
@@ -215,6 +342,13 @@ export function BookingPage() {
           <CheckCircle2 size={48} className="text-gold mx-auto mb-6" />
           <h2 className="font-heading text-3xl text-white mb-3">{t('success.title')}</h2>
           <p className="text-white/60 font-body text-sm leading-relaxed">{t('success.message')}</p>
+          {pickupTime && (
+            <p className="text-gold font-body text-sm mt-4">
+              {timeMode === 'pickup'
+                ? t('form.pickupAt', { time: fmtTime(pickupTime) })
+                : t('form.arrivalAt', { time: fmtTime(arrivalTime!) })}
+            </p>
+          )}
           <a
             href="tel:+34670254729"
             className="mt-8 inline-flex items-center gap-2 text-gold text-sm font-body tracking-widest uppercase"
@@ -227,9 +361,11 @@ export function BookingPage() {
   }
 
   const stepIndex = STEPS.indexOf(step)
-  const scheduleReady =
-    !!selectedDate &&
-    !!selectedTime &&
+  const scheduleReady = !!selectedDate && !!selectedTime
+  const tripReady =
+    !!form.pickup &&
+    !!form.dropoff &&
+    !!routeInfo &&
     feasibility.status !== 'blocked' &&
     feasibility.status !== 'checking'
 
@@ -276,62 +412,13 @@ export function BookingPage() {
             exit={{ opacity: 0, x: -20 }}
             transition={{ duration: 0.3 }}
           >
-            {step === 'trip' && (
-              <div className="glass rounded-sm p-8 space-y-5">
-                <h2 className="font-heading text-2xl text-white gold-line">{t('form.trip')}</h2>
-                <PlaceInput
-                  label={t('form.pickup')}
-                  placeholder={t('form.pickupPlaceholder')}
-                  value={form.pickup}
-                  onChange={(pickup) => setForm({ ...form, pickup })}
-                />
-                <PlaceInput
-                  label={t('form.dropoff')}
-                  placeholder={t('form.dropoffPlaceholder')}
-                  value={form.dropoff}
-                  onChange={(dropoff) => setForm({ ...form, dropoff })}
-                />
-
-                <AnimatePresence>
-                  {(estimating || estimatedMinutes !== null) && (
-                    <motion.div
-                      initial={{ opacity: 0, height: 0 }}
-                      animate={{ opacity: 1, height: 'auto' }}
-                      exit={{ opacity: 0, height: 0 }}
-                      className="flex items-center gap-3 px-4 py-3 bg-gold/5 border border-gold/20 rounded-sm"
-                    >
-                      <Clock size={14} className="text-gold flex-shrink-0" />
-                      <span className="text-white/70 text-sm font-body">
-                        {estimating ? (
-                          <span className="flex items-center gap-2">
-                            <Loader2 size={12} className="animate-spin" />
-                            {t('form.estimating')}
-                          </span>
-                        ) : (
-                          t('form.estimatedMinutes', { minutes: estimatedMinutes })
-                        )}
-                      </span>
-                    </motion.div>
-                  )}
-                </AnimatePresence>
-
-                <div className="flex justify-end pt-2">
-                  <button
-                    onClick={() => setStep('schedule')}
-                    disabled={!form.pickup || !form.dropoff}
-                    className="flex items-center gap-2 px-6 py-3 bg-gold text-black font-body font-semibold text-sm tracking-widest uppercase rounded-sm disabled:opacity-40 disabled:cursor-not-allowed hover:bg-gold-light transition-colors"
-                  >
-                    {t('form.date')} <ChevronRight size={14} />
-                  </button>
-                </div>
-              </div>
-            )}
-
+            {/* ── STEP 1: Schedule ── */}
             {step === 'schedule' && (
               <div className="glass rounded-sm p-8">
                 <h2 className="font-heading text-2xl text-white mb-6 gold-line">
                   {t('form.schedule')}
                 </h2>
+
                 <div className="flex justify-center mb-8">
                   <DayPicker
                     mode="single"
@@ -362,9 +449,27 @@ export function BookingPage() {
                   />
                 </div>
 
+                {/* Pickup vs arrival toggle */}
+                <div className="flex gap-2 mb-4">
+                  {(['pickup', 'arrival'] as TimeMode[]).map((mode) => (
+                    <button
+                      key={mode}
+                      type="button"
+                      onClick={() => setTimeMode(mode)}
+                      className={`flex-1 py-2.5 text-xs font-body tracking-widest uppercase rounded-sm border transition-colors ${
+                        timeMode === mode
+                          ? 'bg-gold/15 border-gold text-gold'
+                          : 'border-white/10 text-white/40 hover:border-white/25'
+                      }`}
+                    >
+                      {mode === 'pickup' ? t('form.timeModePickup') : t('form.timeModeArrival')}
+                    </button>
+                  ))}
+                </div>
+
                 <label className="text-white/40 text-xs font-body tracking-widest uppercase mb-2 flex items-center gap-1.5">
                   <Clock size={14} className="text-gold/60" />
-                  {t('form.time')}
+                  {timeMode === 'pickup' ? t('form.timeModePickup') : t('form.timeModeArrival')}
                 </label>
                 <input
                   type="time"
@@ -374,38 +479,104 @@ export function BookingPage() {
                 />
                 <p className="text-white/35 text-xs font-body mt-2">{t('form.timeHint')}</p>
 
-                {estimatedMinutes !== null && (
-                  <p className="text-white/50 text-sm font-body mt-4">
-                    {t('form.estimatedMinutes', { minutes: estimatedMinutes })}
-                  </p>
+                <div className="mt-6 flex justify-end">
+                  <button
+                    onClick={() => setStep('trip')}
+                    disabled={!scheduleReady}
+                    className="flex items-center gap-2 px-6 py-3 bg-gold text-black font-body font-semibold text-sm tracking-widest uppercase rounded-sm disabled:opacity-40 disabled:cursor-not-allowed hover:bg-gold-light transition-colors"
+                  >
+                    {t('form.continueTrip')} <ChevronRight size={14} />
+                  </button>
+                </div>
+              </div>
+            )}
+
+            {/* ── STEP 2: Trip + map ── */}
+            {step === 'trip' && (
+              <div className="glass rounded-sm p-8 space-y-5">
+                <h2 className="font-heading text-2xl text-white gold-line">{t('form.trip')}</h2>
+
+                <PlaceInput
+                  label={t('form.pickup')}
+                  placeholder={t('form.pickupPlaceholder')}
+                  value={form.pickup}
+                  onChange={(pickup) => setForm({ ...form, pickup })}
+                />
+                <PlaceInput
+                  label={t('form.dropoff')}
+                  placeholder={t('form.dropoffPlaceholder')}
+                  value={form.dropoff}
+                  onChange={(dropoff) => setForm({ ...form, dropoff })}
+                />
+
+                {form.pickup && form.dropoff && (
+                  <RouteMap pickup={form.pickup} dropoff={form.dropoff} polyline={routeInfo?.polyline} />
                 )}
 
+                <AnimatePresence>
+                  {(estimating || routeInfo) && (
+                    <motion.div
+                      initial={{ opacity: 0, height: 0 }}
+                      animate={{ opacity: 1, height: 'auto' }}
+                      exit={{ opacity: 0, height: 0 }}
+                      className="space-y-2 px-4 py-3 bg-gold/5 border border-gold/20 rounded-sm"
+                    >
+                      {estimating ? (
+                        <span className="flex items-center gap-2 text-white/70 text-sm font-body">
+                          <Loader2 size={12} className="animate-spin" />
+                          {t('form.estimating')}
+                        </span>
+                      ) : routeInfo && pickupTime && arrivalTime ? (
+                        <>
+                          <div className="flex items-center gap-2 text-white/70 text-sm font-body">
+                            <Clock size={14} className="text-gold flex-shrink-0" />
+                            {t('form.estimatedMinutes', { minutes: routeInfo.duration_minutes })}
+                            {routeInfo.distance_km > 0 && (
+                              <span className="text-white/40">
+                                · {t('form.distanceKm', { km: routeInfo.distance_km })}
+                              </span>
+                            )}
+                          </div>
+                          <div className="flex items-center gap-2 text-gold text-sm font-body">
+                            <MapPin size={14} className="flex-shrink-0" />
+                            {t('form.pickupAt', { time: fmtTime(pickupTime) })}
+                          </div>
+                          <div className="flex items-center gap-2 text-white/60 text-sm font-body">
+                            <MapPin size={14} className="flex-shrink-0" />
+                            {t('form.arrivalAt', { time: fmtTime(arrivalTime) })}
+                          </div>
+                        </>
+                      ) : null}
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+
                 {feasibility.status === 'checking' && (
-                  <p className="mt-4 flex items-center gap-2 text-white/50 text-sm">
+                  <p className="flex items-center gap-2 text-white/50 text-sm">
                     <Loader2 size={14} className="animate-spin" />
                     {t('feasibility.checking')}
                   </p>
                 )}
-                {feasibility.status === 'ok' && selectedTime && (
-                  <p className="mt-4 text-emerald-400 text-sm font-body">{t('feasibility.ok')}</p>
+                {feasibility.status === 'ok' && routeInfo && (
+                  <p className="text-emerald-400 text-sm font-body">{t('feasibility.ok')}</p>
                 )}
                 {feasibility.status === 'blocked' && (
-                  <p className="mt-4 flex items-start gap-2 text-amber-400 text-sm font-body">
+                  <p className="flex items-start gap-2 text-amber-400 text-sm font-body">
                     <AlertTriangle size={16} className="flex-shrink-0 mt-0.5" />
                     {feasibility.reason}
                   </p>
                 )}
 
-                <div className="mt-6 flex justify-between">
+                <div className="flex justify-between pt-2">
                   <button
-                    onClick={() => setStep('trip')}
+                    onClick={() => setStep('schedule')}
                     className="text-white/40 hover:text-white text-sm font-body tracking-widest uppercase"
                   >
                     ← {t('form.back')}
                   </button>
                   <button
                     onClick={() => setStep('details')}
-                    disabled={!scheduleReady}
+                    disabled={!tripReady}
                     className="flex items-center gap-2 px-6 py-3 bg-gold text-black font-body font-semibold text-sm tracking-widest uppercase rounded-sm disabled:opacity-40 disabled:cursor-not-allowed hover:bg-gold-light transition-colors"
                   >
                     {t('form.details')} <ChevronRight size={14} />
@@ -414,6 +585,7 @@ export function BookingPage() {
               </div>
             )}
 
+            {/* ── STEP 3: Details ── */}
             {step === 'details' && (
               <div className="glass rounded-sm p-8 space-y-5">
                 <h2 className="font-heading text-2xl text-white gold-line">{t('form.details')}</h2>
@@ -435,6 +607,13 @@ export function BookingPage() {
                   />
                 </div>
                 <InputField
+                  label={t('form.email')}
+                  placeholder={t('form.emailPlaceholder')}
+                  value={form.email}
+                  onChange={(email) => setForm({ ...form, email })}
+                  type="email"
+                />
+                <InputField
                   label={t('form.notes')}
                   placeholder={t('form.notesPlaceholder')}
                   value={form.notes}
@@ -443,7 +622,7 @@ export function BookingPage() {
                 />
                 <div className="flex justify-between pt-2">
                   <button
-                    onClick={() => setStep('schedule')}
+                    onClick={() => setStep('trip')}
                     className="text-white/40 hover:text-white text-sm font-body tracking-widest uppercase"
                   >
                     ← {t('form.back')}
@@ -459,28 +638,52 @@ export function BookingPage() {
               </div>
             )}
 
+            {/* ── STEP 4: Confirm ── */}
             {step === 'confirm' && (
               <div className="glass rounded-sm p-8">
                 <h2 className="font-heading text-2xl text-white mb-6 gold-line">
                   {t('form.submit')}
                 </h2>
+
+                {form.pickup && form.dropoff && (
+                  <div className="mb-6">
+                    <RouteMap pickup={form.pickup} dropoff={form.dropoff} polyline={routeInfo?.polyline} />
+                  </div>
+                )}
+
                 <div className="space-y-3 mb-8">
                   {[
                     { label: t('form.pickup'), value: form.pickup },
                     { label: t('form.dropoff'), value: form.dropoff },
                     {
                       label: t('form.date'),
-                      value: selectedDate ? format(selectedDate, 'EEEE, d MMMM yyyy') : '',
+                      value: selectedDate ? fmtDate(selectedDate) : '',
                     },
-                    { label: t('form.time'), value: selectedTime },
+                    ...(pickupTime
+                      ? [{ label: t('form.timeModePickup'), value: fmtTime(pickupTime) }]
+                      : []),
+                    ...(arrivalTime
+                      ? [{ label: t('form.timeModeArrival'), value: fmtTime(arrivalTime) }]
+                      : []),
                     { label: t('form.name'), value: form.name },
                     { label: t('form.phone'), value: form.phone },
-                    ...(estimatedMinutes
-                      ? [{ label: t('form.estimatedTime'), value: `~${estimatedMinutes} min` }]
+                    ...(routeInfo
+                      ? [
+                          {
+                            label: t('form.estimatedTime'),
+                            value: `~${routeInfo.duration_minutes} min`,
+                          },
+                          ...(routeInfo.distance_km > 0
+                            ? [{
+                                label: t('form.distance'),
+                                value: t('form.distanceKm', { km: routeInfo.distance_km }),
+                              }]
+                            : []),
+                        ]
                       : []),
                     ...(form.notes ? [{ label: t('form.notes'), value: form.notes }] : []),
-                  ].map(({ label, value }) => (
-                    <div key={label} className="flex justify-between py-2 border-b border-white/5">
+                  ].map(({ label, value }, i) => (
+                    <div key={`${label}-${i}`} className="flex justify-between py-2 border-b border-white/5">
                       <span className="text-white/40 text-sm font-body">{label}</span>
                       <span className="text-white text-sm font-body text-right max-w-[60%]">
                         {value}
@@ -488,7 +691,9 @@ export function BookingPage() {
                     </div>
                   ))}
                 </div>
+
                 {error && <p className="text-red-400 text-sm font-body mb-4">{error}</p>}
+
                 <div className="flex justify-between">
                   <button
                     onClick={() => setStep('details')}

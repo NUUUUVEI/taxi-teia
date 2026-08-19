@@ -1,13 +1,13 @@
 import { Nav } from '@/components/Nav'
-import { Services } from '@/components/Services'
+import { AboutUs } from '@/components/AboutUs'
 import { Footer } from '@/components/Footer'
 
-export default function ServicesPage() {
+export default function AboutPage() {
   return (
     <>
       <Nav />
       <main className="min-h-screen pt-20">
-        <Services />
+        <AboutUs />
       </main>
       <Footer />
     </>

@@ -33,11 +33,13 @@ export function Footer() {
           {/* Navigation */}
           <div>
             <h3 className="text-gold text-xs font-body tracking-[0.2em] uppercase mb-4">
-              Navigation
+              {tNav('navigation')}
             </h3>
             <div className="flex flex-col gap-2">
               {[
                 { href: `/${locale}`, label: tNav('home') },
+                { href: `/${locale}/about`, label: tNav('about') },
+                { href: `/${locale}/services`, label: tNav('services') },
                 { href: `/${locale}/car`, label: tNav('car') },
                 { href: `/${locale}/book`, label: tNav('book') },
               ].map((item) => (

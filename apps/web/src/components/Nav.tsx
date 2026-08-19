@@ -43,6 +43,8 @@ export function Nav() {
 
   const navItems = [
     { href: `/${locale}`, label: t('home') },
+    { href: `/${locale}/about`, label: t('about') },
+    { href: `/${locale}/services`, label: t('services') },
     { href: `/${locale}/car`, label: t('car') },
   ]
 
