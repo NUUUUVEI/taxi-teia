@@ -2,12 +2,12 @@
 
 import { useState, useEffect, useCallback, useMemo } from 'react'
 import { DayPicker } from 'react-day-picker'
-import { format, startOfDay, addMinutes, subMinutes, parseISO } from 'date-fns'
+import { format, startOfDay, addMinutes, subMinutes, parseISO, isSameDay } from 'date-fns'
 import { useTranslations, useLocale } from 'next-intl'
 import { motion, AnimatePresence } from 'framer-motion'
 import {
   Clock, User, Phone, ChevronRight, CheckCircle2, Loader2, AlertTriangle, MapPin,
-  Plane, Users, Briefcase, Minus, Plus,
+  Plane, Users, Briefcase, Minus, Plus, ChevronDown,
 } from 'lucide-react'
 import { getSupabase } from '@/lib/supabase'
 import { PlaceInput } from './PlaceInput'
@@ -21,6 +21,9 @@ const BUFFER_MINUTES = 10
  * Enough to catch the airports people actually fly from here without matching
  * ordinary street names — deliberately no bare "BCN" or terminal codes.
  */
+const HOURS = Array.from({ length: 24 }, (_, i) => String(i).padStart(2, '0'))
+const MINUTES = Array.from({ length: 12 }, (_, i) => String(i * 5).padStart(2, '0'))
+
 const AIRPORT_HINTS = [
   'aeroport',
   'aeropuerto',
@@ -123,7 +126,8 @@ export function BookingPage() {
   const [step, setStep] = useState<StepId>('schedule')
   const [timeMode, setTimeMode] = useState<TimeMode>('pickup')
   const [selectedDate, setSelectedDate] = useState<Date | undefined>()
-  const [selectedTime, setSelectedTime] = useState('')
+  const [hour, setHour] = useState('')
+  const [minute, setMinute] = useState('00')
   const [routeInfo, setRouteInfo] = useState<RouteInfo | null>(null)
   const [pickupTime, setPickupTime] = useState<Date | null>(null)
   const [arrivalTime, setArrivalTime] = useState<Date | null>(null)
@@ -146,10 +150,33 @@ export function BookingPage() {
     notes: '',
   })
 
+  const selectedTime = hour === '' ? '' : `${hour}:${minute}`
+
   const requestedTime = useMemo(() => {
     if (!selectedDate || !selectedTime) return null
     return toStart(selectedDate, selectedTime)
   }, [selectedDate, selectedTime])
+
+  // Times already gone are greyed out rather than letting someone pick one and
+  // only find out from the feasibility check afterwards.
+  const now = new Date()
+  const isToday = selectedDate ? isSameDay(selectedDate, now) : false
+  const hourDisabled = (h: string) => isToday && Number(h) < now.getHours()
+  const minuteDisabled = (m: string) =>
+    isToday && hour !== '' && Number(hour) === now.getHours() && Number(m) <= now.getMinutes()
+
+  const pickHour = (h: string) => {
+    setHour(h)
+    if (isToday && Number(h) === now.getHours()) {
+      setMinute(MINUTES.find((m) => Number(m) > now.getMinutes()) ?? '00')
+    }
+  }
+
+  // Changing the date can strand a time in the past; drop it if so.
+  useEffect(() => {
+    if (!selectedDate || hour === '') return
+    if (toStart(selectedDate, `${hour}:${minute}`) <= new Date()) setHour('')
+  }, [selectedDate, hour, minute])
 
   const looksLikeAirport = useMemo(() => {
     const haystack = `${form.pickup} ${form.dropoff}`.toLowerCase()
@@ -481,35 +508,56 @@ export function BookingPage() {
                   />
                 </div>
 
-                {/* Pickup vs arrival toggle */}
-                <div className="flex gap-2 mb-4">
-                  {(['pickup', 'arrival'] as TimeMode[]).map((mode) => (
-                    <button
-                      key={mode}
-                      type="button"
-                      onClick={() => setTimeMode(mode)}
-                      className={`flex-1 py-2.5 text-xs font-body tracking-widest uppercase rounded-sm border transition-colors ${
-                        timeMode === mode
-                          ? 'bg-gold/15 border-gold text-gold'
-                          : 'border-white/10 text-white/40 hover:border-white/25'
-                      }`}
+                {/* Reads as a sentence: "I want to be picked up at 08:30" */}
+                <label className="text-white/40 text-xs font-body tracking-widest uppercase mb-3 flex items-center gap-1.5">
+                  <Clock size={14} className="text-gold/60" />
+                  {t('form.whenLabel')}
+                </label>
+
+                <div className="flex flex-col sm:flex-row sm:items-center gap-3">
+                  <Select
+                    value={timeMode}
+                    onChange={(v) => setTimeMode(v as TimeMode)}
+                    ariaLabel={t('form.whenLabel')}
+                    className="sm:flex-1"
+                  >
+                    <option value="pickup">{t('form.modePickupSentence')}</option>
+                    <option value="arrival">{t('form.modeArrivalSentence')}</option>
+                  </Select>
+
+                  <div className="flex items-center gap-2">
+                    <Select
+                      value={hour}
+                      onChange={pickHour}
+                      ariaLabel={t('form.hour')}
+                      className="w-28"
                     >
-                      {mode === 'pickup' ? t('form.timeModePickup') : t('form.timeModeArrival')}
-                    </button>
-                  ))}
+                      <option value="" disabled>
+                        {t('form.hour')}
+                      </option>
+                      {HOURS.map((h) => (
+                        <option key={h} value={h} disabled={hourDisabled(h)}>
+                          {h}
+                        </option>
+                      ))}
+                    </Select>
+                    <span className="text-gold/50 font-body">:</span>
+                    <Select
+                      value={minute}
+                      onChange={setMinute}
+                      ariaLabel={t('form.minute')}
+                      className="w-28"
+                    >
+                      {MINUTES.map((m) => (
+                        <option key={m} value={m} disabled={minuteDisabled(m)}>
+                          {m}
+                        </option>
+                      ))}
+                    </Select>
+                  </div>
                 </div>
 
-                <label className="text-white/40 text-xs font-body tracking-widest uppercase mb-2 flex items-center gap-1.5">
-                  <Clock size={14} className="text-gold/60" />
-                  {timeMode === 'pickup' ? t('form.timeModePickup') : t('form.timeModeArrival')}
-                </label>
-                <input
-                  type="time"
-                  value={selectedTime}
-                  onChange={(e) => setSelectedTime(e.target.value)}
-                  className="w-full sm:w-56 bg-black/40 border border-white/10 text-white font-body text-sm px-4 py-3 rounded-sm focus:outline-none focus:border-gold/50"
-                />
-                <p className="text-white/35 text-xs font-body mt-2">{t('form.timeHint')}</p>
+                <p className="text-white/35 text-xs font-body mt-3">{t('form.timeHint')}</p>
 
                 <div className="mt-6 flex justify-end">
                   <button
@@ -810,6 +858,37 @@ export function BookingPage() {
           </motion.div>
         </AnimatePresence>
       </div>
+    </div>
+  )
+}
+
+function Select({
+  value,
+  onChange,
+  children,
+  ariaLabel,
+  className = '',
+}: {
+  value: string
+  onChange: (v: string) => void
+  children: React.ReactNode
+  ariaLabel: string
+  className?: string
+}) {
+  return (
+    <div className={`relative ${className}`}>
+      <select
+        value={value}
+        onChange={(e) => onChange(e.target.value)}
+        aria-label={ariaLabel}
+        className="w-full appearance-none cursor-pointer bg-black/40 border border-white/10 text-white font-body text-sm pl-4 pr-10 py-3 rounded-sm focus:outline-none focus:border-gold/50 transition-colors [&>option]:bg-card [&>option]:text-white"
+      >
+        {children}
+      </select>
+      <ChevronDown
+        size={14}
+        className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-gold/60"
+      />
     </div>
   )
 }
