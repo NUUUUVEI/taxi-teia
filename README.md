@@ -53,6 +53,27 @@ Two things are deliberately left as placeholders:
    missing field as a visible "to be completed" warning. Fill them in, and update
    `footer.license` in the three `messages/*.json` files (still `VT-XXXXX`).
 2. **Car photos** — see below.
+3. **Taxi rates** — `apps/web/src/lib/tariff.ts` holds the official interurban
+   tariff shown on `/prices`. Confirm the figures match the current Generalitat
+   order before launch, and note that they are revised every January: bump `year`
+   and the rates together and the whole page updates itself.
+
+   Two things were left off that page on purpose, both waiting on Marc:
+
+   - **Payment methods.** Nothing on the site claims which are accepted, and
+     `paymentAccepted` is absent from the structured data. Once confirmed, add a
+     `prices.how.payment` string to the three `messages/*.json` files, list the
+     key in `Prices.tsx`, and set `paymentAccepted` in `StructuredData.tsx`.
+   - **The round-trip kilometre rule.** Interurban fares appear to count the
+     return leg (origin → destination → origin), since the taxi has to get back
+     to its own municipality. That roughly doubles what a customer would expect
+     from the per-km figure, so it belongs on the page — but it came from a
+     single secondary source, so it stays off until Marc confirms how his meter
+     actually bills it.
+
+   Whether Marc charges strictly by meter or quotes closed prices for airport
+   runs is also still unconfirmed. If he quotes closed prices, `/prices` should
+   list them, since that is the number customers care about most.
 
 The site sets no analytics or advertising cookies, only the language preference,
 which is why there is no consent banner and the privacy policy says so. If

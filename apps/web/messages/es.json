@@ -8,6 +8,10 @@
       "title": "Servicios de taxi en Teià y el Maresme | Taxi Teià",
       "description": "Aeropuerto y puerto de Barcelona, estaciones de tren, visitas médicas, recados y larga distancia. Servicio de taxi 24 horas con tarifa oficial."
     },
+    "prices": {
+      "title": "Tarifas de taxi en Teià · Precios oficiales | Taxi Teià",
+      "description": "Precios oficiales del taxi desde Teià: tarifa diurna y nocturna, mínimo de percepción, hora de espera y suplementos de aeropuerto. Sin precios dinámicos ni sorpresas."
+    },
     "car": {
       "title": "El vehículo · Toyota Corolla Touring Sports Hybrid | Taxi Teià",
       "description": "Toyota Corolla Touring Sports Hybrid 140: 596 litros de maletero, interior climatizado y motor híbrido silencioso. Descubre el vehículo por dentro antes de reservar."
@@ -33,6 +37,7 @@
     "home": "Inicio",
     "about": "Quién soy",
     "services": "Servicios",
+    "prices": "Tarifas",
     "car": "El Vehículo",
     "book": "Reserva",
     "language": "Idioma",
@@ -147,6 +152,7 @@
       "flightPlaceholder": "Ej. VY1234",
       "flightHint": "Sigo el vuelo: si se retrasa, ajusto la hora de recogida sin que tengas que llamar.",
       "airportToggle": "Voy o vengo del aeropuerto",
+      "flightRemove": "No es un trayecto de aeropuerto",
       "capacityNote": "Con 4 pasajeros y tanto equipaje el espacio puede quedar justo. Llámame y lo confirmamos antes."
     },
     "feasibility": {
@@ -167,6 +173,48 @@
       "invalidPhone": "Número de teléfono no válido",
       "generic": "Ha habido un error. Inténtalo de nuevo."
     }
+  },
+  "prices": {
+    "badge": "Tarifas oficiales",
+    "title": "Cuánto cuesta el trayecto",
+    "lead": "Los precios no me los invento yo. Los trayectos que salen de Teià son servicios interurbanos y se cobran con taxímetro según las tarifas oficiales que aprueba cada año la Generalitat de Catalunya. Aquí las tienes completas, para que sepas qué pagas antes de subir.",
+    "perKm": "por kilómetro",
+    "minimum": "Mínimo de percepción",
+    "waitingHour": "Hora de espera",
+    "waitingQuarter": "Cada 15 min de espera",
+    "bands": {
+      "t6": {
+        "name": "Tarifa diurna",
+        "when": "De lunes a viernes laborables, de 8 h a 20 h"
+      },
+      "t7": {
+        "name": "Tarifa nocturna y festiva",
+        "when": "Noches de 20 h a 8 h, sábados, domingos y festivos"
+      }
+    },
+    "supplements": {
+      "title": "Suplementos",
+      "airport": "Entrada o salida de aeropuerto",
+      "passengers": "Más de 4 pasajeros",
+      "specialNights": "Noches de San Juan, Navidad y Fin de Año",
+      "luggage": "Equipaje en el espacio reglamentario",
+      "free": "Gratuito"
+    },
+    "how": {
+      "title": "Cómo se calcula el precio",
+      "meter": "El precio lo marca el taxímetro, no una estimación mía. Lo verás encendido desde el primer metro y podrás consultarlo durante todo el trayecto.",
+      "noSurge": "No hay precios dinámicos ni multiplicadores por demanda. Un viernes de lluvia a las 8 de la tarde pagas exactamente lo mismo que cualquier otro viernes a la misma hora.",
+      "receipt": "Siempre puedes pedir el recibo del servicio. Si necesitas factura con tus datos o los de la empresa, dímelo y te la preparo.",
+      "updated": "Las tarifas se revisan cada mes de enero. En esta página encontrarás siempre las vigentes."
+    },
+    "cta": {
+      "title": "¿Quieres saber qué te costará exactamente?",
+      "body": "Pon el origen y el destino en el formulario de reserva y te calculo la ruta real con el tráfico del momento, con los kilómetros y el tiempo previsto. Si lo prefieres de viva voz, llámame y te lo concreto en un minuto.",
+      "book": "Calcular mi trayecto",
+      "call": "Llámame"
+    },
+    "disclaimer": "Tarifas vigentes de {year}, impuestos incluidos. Los importes de esta página son informativos: el precio final del servicio es el que marca el taxímetro según la tarifa oficial aplicable.",
+    "source": "Tarifas interurbanas de taxi aprobadas por la Generalitat de Catalunya. Teià no pertenece al área metropolitana del taxi de Barcelona, por lo que no se le aplican las tarifas urbanas del AMB."
   },
   "about": {
     "badge": "Por qué elegirme",

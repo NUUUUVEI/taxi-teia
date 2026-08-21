@@ -8,6 +8,10 @@
       "title": "Serveis de taxi a Teià i el Maresme | Taxi Teià",
       "description": "Aeroport i port de Barcelona, estacions de tren, visites mèdiques, encàrrecs i llarg recorregut. Servei de taxi les 24 hores amb tarifa oficial."
     },
+    "prices": {
+      "title": "Tarifes de taxi a Teià · Preus oficials | Taxi Teià",
+      "description": "Preus oficials del taxi des de Teià: tarifa diürna i nocturna, mínim de percepció, hora d'espera i suplements d'aeroport. Sense preus dinàmics ni sorpreses."
+    },
     "car": {
       "title": "El vehicle · Toyota Corolla Touring Sports Hybrid | Taxi Teià",
       "description": "Toyota Corolla Touring Sports Hybrid 140: 596 litres de maleter, interior climatitzat i motor híbrid silenciós. Descobreix el vehicle per dins abans de reservar."
@@ -33,6 +37,7 @@
     "home": "Inici",
     "about": "Qui sóc",
     "services": "Serveis",
+    "prices": "Tarifes",
     "car": "El Vehicle",
     "book": "Reserva",
     "language": "Idioma",
@@ -147,6 +152,7 @@
       "flightPlaceholder": "Ex. VY1234",
       "flightHint": "Segueixo el vol: si s'endarrereix, ajusto l'hora de recollida sense que hagis de trucar.",
       "airportToggle": "Vaig o vinc de l'aeroport",
+      "flightRemove": "No és un trajecte d'aeroport",
       "capacityNote": "Amb 4 passatgers i tant equipatge l'espai pot anar just. Truca'm i ho confirmem abans."
     },
     "feasibility": {
@@ -167,6 +173,48 @@
       "invalidPhone": "Número de telèfon no vàlid",
       "generic": "Hi ha hagut un error. Intenta-ho de nou."
     }
+  },
+  "prices": {
+    "badge": "Tarifes oficials",
+    "title": "Quant costa el trajecte",
+    "lead": "Els preus no me'ls invento jo. Els trajectes que surten de Teià són serveis interurbans i es cobren amb taxímetre segons les tarifes oficials que aprova cada any la Generalitat de Catalunya. Aquí les tens senceres, perquè sàpigues què pagues abans de pujar.",
+    "perKm": "per quilòmetre",
+    "minimum": "Mínim de percepció",
+    "waitingHour": "Hora d'espera",
+    "waitingQuarter": "Cada 15 min d'espera",
+    "bands": {
+      "t6": {
+        "name": "Tarifa diürna",
+        "when": "De dilluns a divendres feiners, de 8 h a 20 h"
+      },
+      "t7": {
+        "name": "Tarifa nocturna i festiva",
+        "when": "Nits de 20 h a 8 h, dissabtes, diumenges i festius"
+      }
+    },
+    "supplements": {
+      "title": "Suplements",
+      "airport": "Entrada o sortida d'aeroport",
+      "passengers": "Més de 4 passatgers",
+      "specialNights": "Nits de Sant Joan, Nadal i Cap d'Any",
+      "luggage": "Equipatge a l'espai reglamentari",
+      "free": "Gratuït"
+    },
+    "how": {
+      "title": "Com es calcula el preu",
+      "meter": "El preu el marca el taxímetre, no una estimació meva. El veuràs engegat des del primer metre i el podràs consultar durant tot el trajecte.",
+      "noSurge": "No hi ha preus dinàmics ni multiplicadors per demanda. Un divendres de pluja a les 8 del vespre pagues exactament el mateix que qualsevol altre divendres a la mateixa hora.",
+      "receipt": "Sempre pots demanar el rebut del servei. Si necessites factura amb les teves dades o les de l'empresa, digue-m'ho i te la preparo.",
+      "updated": "Les tarifes es revisen cada mes de gener. En aquesta pàgina hi trobaràs sempre les vigents."
+    },
+    "cta": {
+      "title": "Vols saber què et costarà exactament?",
+      "body": "Posa l'origen i el destí al formulari de reserva i et calculo la ruta real amb el trànsit del moment, amb els quilòmetres i el temps previst. Si ho prefereixes de viva veu, truca'm i t'ho concreto en un minut.",
+      "book": "Calcular el meu trajecte",
+      "call": "Truca'm"
+    },
+    "disclaimer": "Tarifes vigents del {year}, impostos inclosos. Els imports d'aquesta pàgina són informatius: el preu final del servei és el que marca el taxímetre segons la tarifa oficial aplicable.",
+    "source": "Tarifes interurbanes de taxi aprovades per la Generalitat de Catalunya. Teià no pertany a l'àrea metropolitana del taxi de Barcelona, per tant no s'hi apliquen les tarifes urbanes de l'AMB."
   },
   "about": {
     "badge": "Per què triar-me",

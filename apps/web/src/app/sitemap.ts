@@ -8,6 +8,7 @@ const priorities: Record<PageKey, number> = {
   home: 1,
   book: 0.9,
   services: 0.8,
+  prices: 0.8,
   car: 0.6,
   about: 0.6,
   privacy: 0.2,

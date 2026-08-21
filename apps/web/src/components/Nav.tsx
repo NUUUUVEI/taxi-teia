@@ -45,6 +45,7 @@ export function Nav() {
     { href: localePath(locale, '/'), label: t('home') },
     { href: localePath(locale, '/about'), label: t('about') },
     { href: localePath(locale, '/services'), label: t('services') },
+    { href: localePath(locale, '/prices'), label: t('prices') },
     { href: localePath(locale, '/car'), label: t('car') },
   ]
 
@@ -66,12 +67,12 @@ export function Nav() {
         </Link>
 
         {/* Desktop nav */}
-        <div className="hidden md:flex items-center gap-8">
+        <div className="hidden md:flex items-center gap-5 lg:gap-8">
           {navItems.map((item) => (
             <Link
               key={item.href}
               href={item.href}
-              className={`text-sm font-body tracking-widest uppercase transition-colors duration-200 ${
+              className={`text-xs lg:text-sm font-body tracking-widest uppercase transition-colors duration-200 whitespace-nowrap ${
                 pathname === item.href
                   ? 'text-gold'
                   : 'text-white/70 hover:text-white'

@@ -7,7 +7,7 @@ import { useTranslations, useLocale } from 'next-intl'
 import { motion, AnimatePresence } from 'framer-motion'
 import {
   Clock, User, Phone, ChevronRight, CheckCircle2, Loader2, AlertTriangle, MapPin,
-  Plane, Users, Briefcase, Minus, Plus, ChevronDown,
+  Plane, Users, Briefcase, Minus, Plus, ChevronDown, X,
 } from 'lucide-react'
 import { getSupabase } from '@/lib/supabase'
 import { PlaceInput } from './PlaceInput'
@@ -139,7 +139,8 @@ export function BookingPage() {
   const [passengers, setPassengers] = useState(1)
   const [luggage, setLuggage] = useState(0)
   const [flight, setFlight] = useState('')
-  const [flightRequested, setFlightRequested] = useState(false)
+  // null = follow the address sniffing; true/false = the visitor decided.
+  const [flightOverride, setFlightOverride] = useState<boolean | null>(null)
 
   const [form, setForm] = useState<FormData>({
     name: '',
@@ -183,8 +184,13 @@ export function BookingPage() {
     return AIRPORT_HINTS.some((hint) => haystack.includes(hint))
   }, [form.pickup, form.dropoff])
 
-  const showFlight = looksLikeAirport || flightRequested
+  const showFlight = flightOverride ?? looksLikeAirport
   const tightFit = passengers >= MAX_PASSENGERS && luggage >= 4
+
+  const hideFlight = () => {
+    setFlightOverride(false)
+    setFlight('')
+  }
 
   const fmtTime = useCallback(
     (d: Date) => format(d, 'HH:mm', { locale: dfLocale }),
@@ -721,13 +727,26 @@ export function BookingPage() {
 
                 {showFlight ? (
                   <div>
-                    <InputField
-                      icon={<Plane size={14} />}
-                      label={t('form.flightNumber')}
-                      placeholder={t('form.flightPlaceholder')}
-                      value={flight}
-                      onChange={setFlight}
-                    />
+                    <div className="flex items-end gap-2">
+                      <div className="flex-1">
+                        <InputField
+                          icon={<Plane size={14} />}
+                          label={t('form.flightNumber')}
+                          placeholder={t('form.flightPlaceholder')}
+                          value={flight}
+                          onChange={setFlight}
+                        />
+                      </div>
+                      <button
+                        type="button"
+                        onClick={hideFlight}
+                        aria-label={t('form.flightRemove')}
+                        title={t('form.flightRemove')}
+                        className="p-3 text-white/30 hover:text-white border border-white/10 hover:border-white/25 rounded-sm transition-colors"
+                      >
+                        <X size={16} />
+                      </button>
+                    </div>
                     <p className="text-white/35 text-xs font-body mt-2">
                       {t('form.flightHint')}
                     </p>
@@ -735,7 +754,7 @@ export function BookingPage() {
                 ) : (
                   <button
                     type="button"
-                    onClick={() => setFlightRequested(true)}
+                    onClick={() => setFlightOverride(true)}
                     className="flex items-center gap-2 text-gold/70 hover:text-gold text-xs font-body tracking-widest uppercase transition-colors"
                   >
                     <Plane size={14} />

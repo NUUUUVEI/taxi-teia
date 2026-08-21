@@ -8,6 +8,10 @@
       "title": "Taxi services in Teià and the Maresme | Taxi Teià",
       "description": "Barcelona airport and cruise port, train stations, medical appointments, errands and long distance. Taxi service 24 hours a day at official fares."
     },
+    "prices": {
+      "title": "Taxi rates in Teià · Official prices | Taxi Teià",
+      "description": "Official taxi prices from Teià: daytime and night rates, minimum fare, waiting time and airport supplements. No surge pricing, no surprises."
+    },
     "car": {
       "title": "The car · Toyota Corolla Touring Sports Hybrid | Taxi Teià",
       "description": "Toyota Corolla Touring Sports Hybrid 140: 596 litres of boot space, climate-controlled interior and a quiet hybrid engine. Look inside before you book."
@@ -33,6 +37,7 @@
     "home": "Home",
     "about": "About me",
     "services": "Services",
+    "prices": "Rates",
     "car": "The Car",
     "book": "Book",
     "language": "Language",
@@ -147,6 +152,7 @@
       "flightPlaceholder": "e.g. VY1234",
       "flightHint": "I track the flight: if it is delayed I move the pickup time without you having to call.",
       "airportToggle": "I am going to or from the airport",
+      "flightRemove": "This is not an airport journey",
       "capacityNote": "With 4 passengers and this much luggage space may be tight. Give me a call so we can check first."
     },
     "feasibility": {
@@ -167,6 +173,48 @@
       "invalidPhone": "Invalid phone number",
       "generic": "Something went wrong. Please try again."
     }
+  },
+  "prices": {
+    "badge": "Official rates",
+    "title": "What the ride costs",
+    "lead": "I don't set these prices. Journeys starting in Teià are interurban services, metered and charged according to the official rates approved every year by the Government of Catalonia. Here they are in full, so you know what you're paying before you get in.",
+    "perKm": "per kilometre",
+    "minimum": "Minimum fare",
+    "waitingHour": "Waiting time, per hour",
+    "waitingQuarter": "Per 15 min of waiting",
+    "bands": {
+      "t6": {
+        "name": "Daytime rate",
+        "when": "Monday to Friday on working days, 8 am to 8 pm"
+      },
+      "t7": {
+        "name": "Night and holiday rate",
+        "when": "Nights 8 pm to 8 am, Saturdays, Sundays and public holidays"
+      }
+    },
+    "supplements": {
+      "title": "Supplements",
+      "airport": "Airport pick-up or drop-off",
+      "passengers": "More than 4 passengers",
+      "specialNights": "Saint John's Eve, Christmas and New Year's Eve nights",
+      "luggage": "Luggage in the regulated space",
+      "free": "Free"
+    },
+    "how": {
+      "title": "How the fare is worked out",
+      "meter": "The meter sets the price, not a guess of mine. You'll see it running from the first metre and you can check it throughout the journey.",
+      "noSurge": "No surge pricing, no demand multipliers. A rainy Friday at 8 pm costs exactly the same as any other Friday at the same hour.",
+      "receipt": "A receipt is always available. If you need a proper invoice with your details or your company's, just ask and I'll prepare it.",
+      "updated": "Rates are revised every January. This page always shows the ones currently in force."
+    },
+    "cta": {
+      "title": "Want to know exactly what it will cost?",
+      "body": "Enter your pick-up and drop-off in the booking form and I'll work out the real route with live traffic, including distance and expected time. If you'd rather hear it from me, give me a call and I'll tell you in a minute.",
+      "book": "Work out my journey",
+      "call": "Call me"
+    },
+    "disclaimer": "Rates in force for {year}, taxes included. The amounts on this page are for guidance: the final price of the service is the one shown on the meter under the applicable official rate.",
+    "source": "Interurban taxi rates approved by the Government of Catalonia. Teià is not part of the Barcelona metropolitan taxi area, so the AMB city rates do not apply."
   },
   "about": {
     "badge": "Why choose me",

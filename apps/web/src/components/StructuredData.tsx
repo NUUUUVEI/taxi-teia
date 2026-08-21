@@ -31,7 +31,6 @@ export async function StructuredData({ locale }: { locale: string }) {
       priceRange: business.priceRange,
       foundingDate: String(business.foundingYear),
       currenciesAccepted: 'EUR',
-      paymentAccepted: 'Cash, Credit Card, Bizum',
       address: {
         '@type': 'PostalAddress',
         addressLocality: contact.town,

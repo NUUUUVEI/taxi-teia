@@ -3,6 +3,7 @@ import { defaultLocale } from './locales'
 export type PageKey =
   | 'home'
   | 'services'
+  | 'prices'
   | 'car'
   | 'about'
   | 'book'
@@ -13,6 +14,7 @@ export type PageKey =
 export const pagePaths: Record<PageKey, string> = {
   home: '/',
   services: '/services',
+  prices: '/prices',
   car: '/car',
   about: '/about',
   book: '/book',

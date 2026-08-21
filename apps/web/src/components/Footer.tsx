@@ -41,6 +41,7 @@ export function Footer() {
                 { href: localePath(locale, '/'), label: tNav('home') },
                 { href: localePath(locale, '/about'), label: tNav('about') },
                 { href: localePath(locale, '/services'), label: tNav('services') },
+                { href: localePath(locale, '/prices'), label: tNav('prices') },
                 { href: localePath(locale, '/car'), label: tNav('car') },
                 { href: localePath(locale, '/book'), label: tNav('book') },
               ].map((item) => (
