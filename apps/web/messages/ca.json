@@ -1,4 +1,34 @@
 {
+  "meta": {
+    "home": {
+      "title": "Taxi a Teià 24 h · Aeroport i Maresme | Taxi Teià",
+      "description": "Taxi de confiança a Teià, el Masnou i tot el Maresme. Trasllats a l'aeroport del Prat, hospitals, estacions i llarg recorregut. Reserva en línia o truca al 670 254 729."
+    },
+    "services": {
+      "title": "Serveis de taxi a Teià i el Maresme | Taxi Teià",
+      "description": "Aeroport i port de Barcelona, estacions de tren, visites mèdiques, encàrrecs i llarg recorregut. Servei de taxi les 24 hores amb tarifa oficial."
+    },
+    "car": {
+      "title": "El vehicle · Toyota Corolla Touring Sports Hybrid | Taxi Teià",
+      "description": "Toyota Corolla Touring Sports Hybrid 140: 596 litres de maleter, interior climatitzat i motor híbrid silenciós. Descobreix el vehicle per dins abans de reservar."
+    },
+    "about": {
+      "title": "Qui sóc · Marc, taxista a Teià | Taxi Teià",
+      "description": "Més de 10 anys portant veïns del Maresme a l'aeroport, a l'hospital i a l'estació. Sempre el mateix taxista, sempre puntual."
+    },
+    "book": {
+      "title": "Reserva el teu taxi a Teià | Taxi Teià",
+      "description": "Reserva en línia en un minut. Calculo la ruta amb tràfic real i et dic a quina hora et recullo o a quina hora arribes. Trasllats a l'aeroport amb seguiment del vol."
+    },
+    "privacy": {
+      "title": "Política de privacitat | Taxi Teià",
+      "description": "Quines dades demano quan reserves un taxi, per què les necessito, quant temps les guardo i com pots exercir els teus drets."
+    },
+    "notice": {
+      "title": "Avís legal | Taxi Teià",
+      "description": "Dades del titular del lloc web, condicions d'ús, condicions de reserva i informació sobre les tarifes oficials del taxi."
+    }
+  },
   "nav": {
     "home": "Inici",
     "about": "Qui sóc",
@@ -49,16 +79,16 @@
   },
   "car": {
     "title": "El Vehicle",
-    "subtitle": "Toyota Corolla Hybrid 2026 — Confort, seguretat i estil per als teus trajectes.",
+    "subtitle": "Toyota Corolla Touring Sports Hybrid 140 — Confort, seguretat i estil per als teus trajectes.",
     "scrollHint": "Fes scroll per descobrir el vehicle",
     "sections": {
       "overview": {
         "title": "Disseny Elegant",
-        "description": "El nou Toyota Corolla combina un disseny modern i aerodinàmic amb la fiabilitat llegendària de la marca. Perfecte per a qualsevol trajecte."
+        "description": "El Toyota Corolla Touring Sports uneix la carrosseria familiar, molt més espaiosa, amb un disseny modern i aerodinàmic i la fiabilitat llegendària de la marca. Perfecte per a qualsevol trajecte."
       },
       "trunk": {
         "title": "Ampli Maleter",
-        "description": "Maleter de 361 litres. Caben perfectament dues maletes grans i el teu equipatge de mà. Viatge còmode sense preocupacions."
+        "description": "Maleter de 596 litres, ampliables fins a 1.606 abatent els seients. Hi caben maletes grans, cotxets o material esportiu sense problemes."
       },
       "doors": {
         "title": "Interior Confortable",
@@ -66,7 +96,7 @@
       },
       "hood": {
         "title": "Motor Híbrid",
-        "description": "Motor híbrid 2.0 HEV de 196 CV. Eficient, silenciós i ecològic. Menys emissions, més quilòmetres, menys soroll per als passatgers."
+        "description": "Motor híbrid autorecarregable de 1.8 litres i 140 CV. Amb un consum de només 4,5 l/100 km i 101 g/km de CO₂: silenciós, eficient i ecològic."
       }
     }
   },
@@ -105,7 +135,14 @@
       "distance": "Distància",
       "distanceKm": "{km} km",
       "continueTrip": "Continua",
-      "notesPlaceholder": "Algun detall addicional..."
+      "notesPlaceholder": "Algun detall addicional...",
+      "passengers": "Passatgers",
+      "luggage": "Maletes",
+      "flightNumber": "Número de vol",
+      "flightPlaceholder": "Ex. VY1234",
+      "flightHint": "Segueixo el vol: si s'endarrereix, ajusto l'hora de recollida sense que hagis de trucar.",
+      "airportToggle": "Vaig o vinc de l'aeroport",
+      "capacityNote": "Amb 4 passatgers i tant equipatge l'espai pot anar just. Truca'm i ho confirmem abans."
     },
     "feasibility": {
       "checking": "Comprovant si aquesta hora encaixa amb altres viatges...",
@@ -140,9 +177,136 @@
       "punctuality": { "title": "Puntualitat garantida",   "desc": "Arribo a l'hora acordada. Sempre. Si hi ha tràfic, ho gestiono jo." },
       "trust":       { "title": "Serietat i confiança",    "desc": "Llicència de taxi en regla, vehicle assegurat i conductor professional." },
       "local":       { "title": "Coneixement local",       "desc": "Conec cada carrer del Maresme. Faig servir la millor ruta, no la que diu el GPS." },
-      "quality":     { "title": "Vehicle còmode",          "desc": "Toyota Corolla Hybrid 2026, net, silenciós i climatitzat per al teu confort." },
+      "quality":     { "title": "Vehicle còmode",          "desc": "Toyota Corolla Touring Sports Hybrid 140, net, silenciós i climatitzat per al teu confort." },
       "personal":    { "title": "Tracte personal",         "desc": "No ets un número. Et recordo, adapto el servei i em preocupo per la teva comoditat." },
       "available":   { "title": "Disponible 24/7",         "desc": "Vols un taxi a les 4 del matí per agafar un vol? Aquí estic. Truca o reserva en línia." }
+    }
+  },
+  "legal": {
+    "updatedLabel": "Última actualització",
+    "pending": "Pendent de completar",
+    "pendingNote": "Aquesta dada encara no s'ha omplert. Cal completar-la amb la informació registral real abans de considerar el web definitiu.",
+    "notice": {
+      "title": "Avís legal",
+      "lead": "Informació general sobre el titular d'aquest lloc web i les condicions d'ús, d'acord amb la Llei 34/2002 de serveis de la societat de la informació i de comerç electrònic.",
+      "identityTitle": "Titular del lloc web",
+      "fields": {
+        "name": "Nom o raó social",
+        "taxId": "NIF",
+        "address": "Domicili",
+        "licence": "Llicència municipal de taxi",
+        "phone": "Telèfon",
+        "email": "Correu electrònic",
+        "site": "Lloc web"
+      },
+      "sections": [
+        {
+          "title": "Objecte i acceptació",
+          "body": "Aquest lloc web serveix per informar dels serveis de taxi que ofereixo i per permetre que em demanis un trajecte. Si el fas servir, acceptes aquestes condicions. Si no hi estàs d'acord, no facis servir el formulari de reserva."
+        },
+        {
+          "title": "Com funciona una reserva",
+          "body": "Quan envies el formulari em fas una sol·licitud, no una reserva tancada. El sistema comprova automàticament si l'hora encaixa amb la resta de l'agenda i, si encaixa, jo la confirmo. La reserva només és ferma quan rebo la sol·licitud i te la confirmo per correu, per WhatsApp o per telèfon.",
+          "items": [
+            "Si no reps confirmació, truca al telèfon de contacte per assegurar-te.",
+            "Per anul·lar o canviar l'hora, truca o escriu com abans millor.",
+            "Si no et presentes al punt de recollida, es pot cobrar el desplaçament segons la tarifa oficial."
+          ]
+        },
+        {
+          "title": "Tarifes",
+          "body": "El preu del trajecte es calcula amb el taxímetre segons les tarifes oficials vigents aprovades per l'administració competent, amb els suplements que hi corresponguin. Els imports que puguis veure al web són orientatius i no substitueixen la tarifa oficial. Sempre pots demanar rebut."
+        },
+        {
+          "title": "Propietat intel·lectual",
+          "body": "Els textos, el disseny i les imatges d'aquest web són propietat del seu titular o s'utilitzen amb permís. No es poden reproduir ni reutilitzar amb finalitats comercials sense autorització escrita."
+        },
+        {
+          "title": "Responsabilitat",
+          "body": "Procuro que la informació del web sigui correcta i actualitzada, però no puc garantir que estigui lliure d'errors ni que el servei estigui disponible sense interrupcions. Els càlculs de temps i de ruta són estimacions basades en dades de tràfic de tercers i poden variar."
+        },
+        {
+          "title": "Protecció de dades",
+          "body": "El tractament de les dades personals que em facilites en reservar està explicat a la política de privacitat."
+        },
+        {
+          "title": "Legislació aplicable i reclamacions",
+          "body": "Aquestes condicions es regeixen per la legislació espanyola. Si ets consumidor, conserves el dret d'acudir als tribunals del teu domicili. Disposo de fulls oficials de queixa i reclamació a disposició de qui els demani."
+        }
+      ]
+    },
+    "privacy": {
+      "title": "Política de privacitat",
+      "lead": "Aquí t'explico exactament quines dades et demano quan reserves un taxi, per què les necessito, amb qui les comparteixo i com pots controlar-les.",
+      "sections": [
+        {
+          "title": "Qui tracta les teves dades",
+          "body": "El responsable del tractament és el titular d'aquest web, identificat a l'avís legal. Pots contactar-hi per qualsevol qüestió de privacitat al correu electrònic o al telèfon que hi consten."
+        },
+        {
+          "title": "Quines dades tracto",
+          "body": "Només et demano el que necessito per venir a buscar-te i completar el trajecte:",
+          "items": [
+            "Nom i telèfon, per identificar-te i poder-te avisar.",
+            "Correu electrònic, si el dones, per enviar-te la confirmació.",
+            "Adreça de recollida i de destí, data i hora del trajecte.",
+            "Nombre de passatgers i de maletes, per comprovar que hi caben al vehicle.",
+            "Número de vol, si vas o véns de l'aeroport, per ajustar l'hora si el vol s'endarrereix.",
+            "Notes que hi vulguis afegir i l'idioma en què has fet la reserva."
+          ]
+        },
+        {
+          "title": "Per què les necessito",
+          "body": "Tracto aquestes dades per gestionar i prestar el servei de transport que em demanes, que és l'execució del contracte entre tu i jo. La confirmació per correu forma part del mateix servei. Si em dones el correu electrònic sense reservar, el faig servir només per respondre't.",
+          "items": [
+            "Prestació del servei de taxi i contacte previ al trajecte.",
+            "Compliment de les obligacions fiscals i comptables derivades del cobrament.",
+            "Atenció de consultes i reclamacions."
+          ]
+        },
+        {
+          "title": "Comprovació automàtica de disponibilitat",
+          "body": "Quan tries una hora, el sistema calcula amb dades de tràfic si puc arribar a temps al punt de recollida i si l'hora se solapa amb un altre trajecte. Si no encaixa, et proposa triar-ne una altra. És una comprovació d'agenda, no un perfil sobre tu: si creus que s'equivoca, truca'm i ho miro personalment."
+        },
+        {
+          "title": "Amb qui les comparteixo",
+          "body": "No venc ni cedeixo les teves dades a ningú. Per fer funcionar la reserva faig servir aquests proveïdors, que actuen com a encarregats del tractament:",
+          "items": [
+            "Supabase, per allotjar la base de dades de reserves.",
+            "Google Maps, per calcular la ruta, el temps amb tràfic real i el mapa del trajecte.",
+            "Resend, per enviar els correus de confirmació.",
+            "Un servei de notificacions al mòbil, per avisar-me quan entra una reserva nova."
+          ]
+        },
+        {
+          "title": "Quant temps les guardo",
+          "body": "Guardo les dades del trajecte mentre calgui per prestar el servei i atendre qualsevol reclamació. Les dades vinculades a un cobrament es conserven durant els terminis que exigeix la normativa fiscal i comptable. Després s'eliminen o s'anonimitzen."
+        },
+        {
+          "title": "Els teus drets",
+          "body": "En qualsevol moment pots escriure'm per exercir els drets que et dona el Reglament General de Protecció de Dades:",
+          "items": [
+            "Accedir a les dades que tinc sobre tu i obtenir-ne una còpia.",
+            "Rectificar-les si són incorrectes o incompletes.",
+            "Demanar que les suprimeixi quan ja no siguin necessàries.",
+            "Limitar-ne o oposar-te'n al tractament.",
+            "Rebre-les en un format portable.",
+            "Presentar una reclamació davant l'Agència Espanyola de Protecció de Dades si creus que no he respectat els teus drets."
+          ]
+        },
+        {
+          "title": "Cookies",
+          "body": "Aquest web no fa servir cookies de publicitat, d'analítica ni de seguiment. Només es guarda una preferència tècnica al teu navegador per recordar en quin idioma vols veure el web. Com que no hi ha cookies de tercers ni perfilat, no cal cap banner de consentiment; si algun dia n'afegeixo, t'ho demanaré abans."
+        },
+        {
+          "title": "Seguretat",
+          "body": "Les dades viatgen xifrades i es guarden en serveis amb accés restringit. Només jo, com a taxista, puc consultar les reserves des de la meva aplicació."
+        },
+        {
+          "title": "Canvis en aquesta política",
+          "body": "Si canvio la manera de tractar les dades, actualitzaré aquesta pàgina i la data d'última actualització que hi trobaràs a dalt."
+        }
+      ]
     }
   },
   "footer": {
@@ -153,6 +317,9 @@
     "whatsapp": "WhatsApp",
     "location": "Teià, Maresme",
     "rights": "© {year} Taxi Teià. Tots els drets reservats.",
-    "license": "Llicència de taxi: VT-XXXXX"
+    "license": "Llicència de taxi: VT-XXXXX",
+    "legal": "Legal",
+    "privacy": "Política de privacitat",
+    "notice": "Avís legal"
   }
 }

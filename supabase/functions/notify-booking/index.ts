@@ -29,8 +29,21 @@ interface BookingPayload {
     estimated_minutes: number
     status: string
     notes: string | null
+    flight_number: string | null
+    passengers: number | null
+    luggage: number | null
   }
   old_record?: { status: string }
+}
+
+/** These emails interpolate text typed into a public form, so escape it. */
+function esc(value: string | number | null | undefined) {
+  if (value === null || value === undefined) return ''
+  return String(value)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
 }
 
 async function sendEmail(to: string, subject: string, html: string) {
@@ -87,10 +100,20 @@ serve(async (req) => {
   const b = payload.record
   const loc = b.locale ?? 'ca'
 
+  const pax = b.passengers ?? 1
+  const bags = b.luggage ?? 0
+  const paxLine = `${pax} pax${bags > 0 ? ` · ${bags} maletes` : ''}`
+
   if (payload.type === 'INSERT') {
     await sendPushToDriver(
       `Nova reserva — ${b.client_name}`,
-      `${formatShort(b.start_time, 'ca')} · ${b.pickup_address}`
+      [
+        `${formatShort(b.start_time, 'ca')} · ${b.pickup_address}`,
+        paxLine,
+        b.flight_number ? `Vol ${b.flight_number}` : '',
+      ]
+        .filter(Boolean)
+        .join('\n')
     )
     await sendEmail(
       DRIVER_EMAIL,
@@ -101,15 +124,18 @@ serve(async (req) => {
         <p style="color:#a0a0a0;font-size:14px;margin-top:0">Taxi Teià · Sistema de reserves</p>
         <hr style="border-color:#2a2a2a;margin:24px 0"/>
         <table style="width:100%;font-size:14px;border-collapse:collapse">
-          <tr><td style="padding:8px 0;color:#a0a0a0;width:140px">Client</td><td style="color:#f5f5f5"><strong>${b.client_name}</strong></td></tr>
-          <tr><td style="padding:8px 0;color:#a0a0a0">Telèfon</td><td style="color:#f5f5f5">${b.client_phone}</td></tr>
-          ${b.client_email ? `<tr><td style="padding:8px 0;color:#a0a0a0">Email</td><td style="color:#f5f5f5">${b.client_email}</td></tr>` : ''}
+          <tr><td style="padding:8px 0;color:#a0a0a0;width:140px">Client</td><td style="color:#f5f5f5"><strong>${esc(b.client_name)}</strong></td></tr>
+          <tr><td style="padding:8px 0;color:#a0a0a0">Telèfon</td><td style="color:#f5f5f5">${esc(b.client_phone)}</td></tr>
+          ${b.client_email ? `<tr><td style="padding:8px 0;color:#a0a0a0">Email</td><td style="color:#f5f5f5">${esc(b.client_email)}</td></tr>` : ''}
           <tr><td style="padding:8px 0;color:#a0a0a0">Recollida</td><td style="color:#C9A84C"><strong>${formatDate(b.start_time, 'ca')}</strong></td></tr>
           ${b.time_mode === 'arrival' && b.requested_time ? `<tr><td style="padding:8px 0;color:#a0a0a0">Arribada sol·licitada</td><td style="color:#f5f5f5">${formatDate(b.requested_time, 'ca')}</td></tr>` : ''}
-          <tr><td style="padding:8px 0;color:#a0a0a0">Origen</td><td style="color:#f5f5f5">${b.pickup_address}</td></tr>
-          <tr><td style="padding:8px 0;color:#a0a0a0">Destí</td><td style="color:#f5f5f5">${b.dropoff_address}</td></tr>
-          <tr><td style="padding:8px 0;color:#a0a0a0">Temps estimat</td><td style="color:#f5f5f5">${b.estimated_minutes} min</td></tr>
-          ${b.notes ? `<tr><td style="padding:8px 0;color:#a0a0a0">Notes</td><td style="color:#f5f5f5">${b.notes}</td></tr>` : ''}
+          <tr><td style="padding:8px 0;color:#a0a0a0">Origen</td><td style="color:#f5f5f5">${esc(b.pickup_address)}</td></tr>
+          <tr><td style="padding:8px 0;color:#a0a0a0">Destí</td><td style="color:#f5f5f5">${esc(b.dropoff_address)}</td></tr>
+          <tr><td style="padding:8px 0;color:#a0a0a0">Passatgers</td><td style="color:#f5f5f5">${esc(pax)}</td></tr>
+          <tr><td style="padding:8px 0;color:#a0a0a0">Maletes</td><td style="color:#f5f5f5">${esc(bags)}</td></tr>
+          ${b.flight_number ? `<tr><td style="padding:8px 0;color:#a0a0a0">Vol</td><td style="color:#C9A84C"><strong>${esc(b.flight_number)}</strong></td></tr>` : ''}
+          <tr><td style="padding:8px 0;color:#a0a0a0">Temps estimat</td><td style="color:#f5f5f5">${esc(b.estimated_minutes)} min</td></tr>
+          ${b.notes ? `<tr><td style="padding:8px 0;color:#a0a0a0">Notes</td><td style="color:#f5f5f5">${esc(b.notes)}</td></tr>` : ''}
         </table>
         <hr style="border-color:#2a2a2a;margin:24px 0"/>
         <p style="font-size:12px;color:#606060">Obre l'app per confirmar o rebutjar el viatge.</p>
@@ -133,6 +159,9 @@ serve(async (req) => {
         pickup: 'Recollida',
         dropoff: 'Destí',
         arrival: 'Arribada sol·licitada',
+        passengers: 'Passatgers',
+        luggage: 'Maletes',
+        flight: 'Vol',
         change: 'Si necessites algun canvi, truca al',
         sorry: 'Ho sentim, el servei sol·licitat no està disponible en aquell horari. Contacta\'ns per trobar una alternativa.',
         subjectConfirmed: `Reserva confirmada — ${formatDate(b.start_time, loc)}`,
@@ -145,6 +174,9 @@ serve(async (req) => {
         pickup: 'Recogida',
         dropoff: 'Destino',
         arrival: 'Llegada solicitada',
+        passengers: 'Pasajeros',
+        luggage: 'Maletas',
+        flight: 'Vuelo',
         change: 'Si necesitas algún cambio, llama al',
         sorry: 'Lo sentimos, el servicio solicitado no está disponible en ese horario. Contáctanos para encontrar una alternativa.',
         subjectConfirmed: `Reserva confirmada — ${formatDate(b.start_time, loc)}`,
@@ -157,6 +189,9 @@ serve(async (req) => {
         pickup: 'Pick-up',
         dropoff: 'Drop-off',
         arrival: 'Requested arrival',
+        passengers: 'Passengers',
+        luggage: 'Suitcases',
+        flight: 'Flight',
         change: 'If you need any changes, call',
         sorry: 'Sorry, the requested service is not available at that time. Please contact us to find an alternative.',
         subjectConfirmed: `Booking confirmed — ${formatDate(b.start_time, loc)}`,
@@ -173,14 +208,16 @@ serve(async (req) => {
         <h2 style="color:${isConfirmed ? '#22C55E' : '#EF4444'};margin-bottom:4px">
           ${isConfirmed ? L.confirmed : L.cancelled}
         </h2>
-        <p style="color:#a0a0a0;font-size:14px;margin-top:0">Taxi Teià · ${b.client_name}</p>
+        <p style="color:#a0a0a0;font-size:14px;margin-top:0">Taxi Teià · ${esc(b.client_name)}</p>
         <hr style="border-color:#2a2a2a;margin:24px 0"/>
         ${isConfirmed ? `
         <table style="width:100%;font-size:14px;border-collapse:collapse">
           <tr><td style="padding:8px 0;color:#a0a0a0;width:160px">${L.dateTime}</td><td style="color:#C9A84C"><strong>${formatDate(b.start_time, loc)}</strong></td></tr>
           ${b.time_mode === 'arrival' && b.requested_time ? `<tr><td style="padding:8px 0;color:#a0a0a0">${L.arrival}</td><td style="color:#f5f5f5">${formatDate(b.requested_time, loc)}</td></tr>` : ''}
-          <tr><td style="padding:8px 0;color:#a0a0a0">${L.pickup}</td><td style="color:#f5f5f5">${b.pickup_address}</td></tr>
-          <tr><td style="padding:8px 0;color:#a0a0a0">${L.dropoff}</td><td style="color:#f5f5f5">${b.dropoff_address}</td></tr>
+          <tr><td style="padding:8px 0;color:#a0a0a0">${L.pickup}</td><td style="color:#f5f5f5">${esc(b.pickup_address)}</td></tr>
+          <tr><td style="padding:8px 0;color:#a0a0a0">${L.dropoff}</td><td style="color:#f5f5f5">${esc(b.dropoff_address)}</td></tr>
+          <tr><td style="padding:8px 0;color:#a0a0a0">${L.passengers}</td><td style="color:#f5f5f5">${esc(pax)}${bags > 0 ? ` · ${esc(bags)} ${esc(L.luggage.toLowerCase())}` : ''}</td></tr>
+          ${b.flight_number ? `<tr><td style="padding:8px 0;color:#a0a0a0">${L.flight}</td><td style="color:#C9A84C"><strong>${esc(b.flight_number)}</strong></td></tr>` : ''}
         </table>
         <hr style="border-color:#2a2a2a;margin:24px 0"/>
         <p style="font-size:14px;color:#a0a0a0">${L.change} <strong style="color:#C9A84C">670 254 729</strong> o escriu a <a href="mailto:marctaxiteia@gmail.com" style="color:#C9A84C">marctaxiteia@gmail.com</a>.</p>

@@ -3,9 +3,15 @@ import { supabase } from './supabase'
 
 let _watchSubscription: Location.LocationSubscription | null = null
 
-export async function startLocationSharing() {
+export function isLocationSharing() {
+  return _watchSubscription !== null
+}
+
+export async function startLocationSharing(): Promise<boolean> {
+  if (_watchSubscription) return true
+
   const { status } = await Location.requestForegroundPermissionsAsync()
-  if (status !== 'granted') return
+  if (status !== 'granted') return false
 
   // Push location every 30 seconds while app is open
   _watchSubscription = await Location.watchPositionAsync(
@@ -25,6 +31,8 @@ export async function startLocationSharing() {
       })
     }
   )
+
+  return true
 }
 
 export function stopLocationSharing() {

@@ -6,6 +6,8 @@ import { usePathname, useRouter } from 'next/navigation'
 import { useTranslations, useLocale } from 'next-intl'
 import { motion, AnimatePresence } from 'framer-motion'
 import { Menu, X, Globe, Phone } from 'lucide-react'
+import { locales } from '@/lib/locales'
+import { localePath } from '@/lib/routes'
 
 const localeLabels: Record<string, string> = {
   ca: 'CA',
@@ -29,23 +31,21 @@ export function Nav() {
   }, [])
 
   const switchLocale = (newLocale: string) => {
-    // Strip current locale prefix and replace
+    // Reduce the current URL to a locale-free path, then re-prefix it the way
+    // the middleware expects (no prefix for the default locale).
     const segments = pathname.split('/')
-    const knownLocales = ['ca', 'es', 'en']
-    if (knownLocales.includes(segments[1])) {
-      segments[1] = newLocale
-    } else {
-      segments.splice(1, 0, newLocale)
-    }
-    router.push(segments.join('/') || '/')
+    if ((locales as readonly string[]).includes(segments[1])) segments.splice(1, 1)
+    router.push(localePath(newLocale, segments.join('/') || '/'))
     setLangOpen(false)
   }
 
+  const bookHref = localePath(locale, '/book')
+
   const navItems = [
-    { href: `/${locale}`, label: t('home') },
-    { href: `/${locale}/about`, label: t('about') },
-    { href: `/${locale}/services`, label: t('services') },
-    { href: `/${locale}/car`, label: t('car') },
+    { href: localePath(locale, '/'), label: t('home') },
+    { href: localePath(locale, '/about'), label: t('about') },
+    { href: localePath(locale, '/services'), label: t('services') },
+    { href: localePath(locale, '/car'), label: t('car') },
   ]
 
   return (
@@ -56,7 +56,7 @@ export function Nav() {
     >
       <div className="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
         {/* Logo */}
-        <Link href={`/${locale}`} className="flex items-center gap-3 group">
+        <Link href={localePath(locale, '/')} className="flex items-center gap-3 group">
           <div className="w-9 h-9 rounded-full border border-gold flex items-center justify-center">
             <span className="text-gold font-heading font-bold text-sm">T</span>
           </div>
@@ -119,7 +119,7 @@ export function Nav() {
 
           {/* Book CTA */}
           <Link
-            href={`/${locale}/book`}
+            href={bookHref}
             className="px-5 py-2 bg-gold text-black text-sm font-body font-semibold tracking-widest uppercase rounded-sm hover:bg-gold-light transition-colors duration-200"
           >
             {t('book')}
@@ -184,7 +184,7 @@ export function Nav() {
                 ))}
               </div>
               <Link
-                href={`/${locale}/book`}
+                href={bookHref}
                 onClick={() => setMobileOpen(false)}
                 className="mt-2 px-5 py-3 bg-gold text-black text-sm font-body font-semibold tracking-widest uppercase rounded-sm text-center"
               >

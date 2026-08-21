@@ -1,4 +1,34 @@
 {
+  "meta": {
+    "home": {
+      "title": "Taxi en Teià 24 h · Aeropuerto y Maresme | Taxi Teià",
+      "description": "Taxi de confianza en Teià, El Masnou y todo el Maresme. Traslados al aeropuerto del Prat, hospitales, estaciones y larga distancia. Reserva online o llama al 670 254 729."
+    },
+    "services": {
+      "title": "Servicios de taxi en Teià y el Maresme | Taxi Teià",
+      "description": "Aeropuerto y puerto de Barcelona, estaciones de tren, visitas médicas, recados y larga distancia. Servicio de taxi 24 horas con tarifa oficial."
+    },
+    "car": {
+      "title": "El vehículo · Toyota Corolla Touring Sports Hybrid | Taxi Teià",
+      "description": "Toyota Corolla Touring Sports Hybrid 140: 596 litros de maletero, interior climatizado y motor híbrido silencioso. Descubre el vehículo por dentro antes de reservar."
+    },
+    "about": {
+      "title": "Quién soy · Marc, taxista en Teià | Taxi Teià",
+      "description": "Más de 10 años llevando a vecinos del Maresme al aeropuerto, al hospital y a la estación. Siempre el mismo taxista, siempre puntual."
+    },
+    "book": {
+      "title": "Reserva tu taxi en Teià | Taxi Teià",
+      "description": "Reserva online en un minuto. Calculo la ruta con tráfico real y te digo a qué hora te recojo o a qué hora llegas. Traslados al aeropuerto con seguimiento del vuelo."
+    },
+    "privacy": {
+      "title": "Política de privacidad | Taxi Teià",
+      "description": "Qué datos te pido cuando reservas un taxi, por qué los necesito, cuánto tiempo los guardo y cómo puedes ejercer tus derechos."
+    },
+    "notice": {
+      "title": "Aviso legal | Taxi Teià",
+      "description": "Datos del titular del sitio web, condiciones de uso, condiciones de reserva e información sobre las tarifas oficiales del taxi."
+    }
+  },
   "nav": {
     "home": "Inicio",
     "about": "Quién soy",
@@ -49,16 +79,16 @@
   },
   "car": {
     "title": "El Vehículo",
-    "subtitle": "Toyota Corolla Hybrid 2026 — Confort, seguridad y estilo para tus trayectos.",
+    "subtitle": "Toyota Corolla Touring Sports Hybrid 140 — Confort, seguridad y estilo para tus trayectos.",
     "scrollHint": "Desplázate para descubrir el vehículo",
     "sections": {
       "overview": {
         "title": "Diseño Elegante",
-        "description": "El nuevo Toyota Corolla combina un diseño moderno y aerodinámico con la legendaria fiabilidad de la marca. Perfecto para cualquier trayecto."
+        "description": "El Toyota Corolla Touring Sports une la carrocería familiar, mucho más espaciosa, con un diseño moderno y aerodinámico y la legendaria fiabilidad de la marca. Perfecto para cualquier trayecto."
       },
       "trunk": {
         "title": "Maletero Amplio",
-        "description": "Maletero de 361 litros. Caben perfectamente dos maletas grandes y tu equipaje de mano. Viaje cómodo sin preocupaciones."
+        "description": "Maletero de 596 litros, ampliables hasta 1.606 abatiendo los asientos. Caben maletas grandes, carritos o material deportivo sin problemas."
       },
       "doors": {
         "title": "Interior Confortable",
@@ -66,7 +96,7 @@
       },
       "hood": {
         "title": "Motor Híbrido",
-        "description": "Motor híbrido 2.0 HEV de 196 CV. Eficiente, silencioso y ecológico. Menos emisiones, más kilómetros, menos ruido para los pasajeros."
+        "description": "Motor híbrido autorrecargable de 1.8 litros y 140 CV. Con un consumo de solo 4,5 l/100 km y 101 g/km de CO₂: silencioso, eficiente y ecológico."
       }
     }
   },
@@ -105,7 +135,14 @@
       "distance": "Distancia",
       "distanceKm": "{km} km",
       "continueTrip": "Continuar",
-      "notesPlaceholder": "Algún detalle adicional..."
+      "notesPlaceholder": "Algún detalle adicional...",
+      "passengers": "Pasajeros",
+      "luggage": "Maletas",
+      "flightNumber": "Número de vuelo",
+      "flightPlaceholder": "Ej. VY1234",
+      "flightHint": "Sigo el vuelo: si se retrasa, ajusto la hora de recogida sin que tengas que llamar.",
+      "airportToggle": "Voy o vengo del aeropuerto",
+      "capacityNote": "Con 4 pasajeros y tanto equipaje el espacio puede quedar justo. Llámame y lo confirmamos antes."
     },
     "feasibility": {
       "checking": "Comprobando si esta hora encaja con otros viajes...",
@@ -140,9 +177,136 @@
       "punctuality": { "title": "Puntualidad garantizada", "desc": "Llego a la hora acordada. Siempre. Si hay tráfico, lo gestiono yo." },
       "trust":       { "title": "Seriedad y confianza",    "desc": "Licencia de taxi en regla, vehículo asegurado y conductor profesional." },
       "local":       { "title": "Conocimiento local",      "desc": "Conozco cada calle del Maresme. Uso la mejor ruta, no la que dice el GPS." },
-      "quality":     { "title": "Vehículo cómodo",         "desc": "Toyota Corolla Hybrid 2026, limpio, silencioso y climatizado para tu confort." },
+      "quality":     { "title": "Vehículo cómodo",         "desc": "Toyota Corolla Touring Sports Hybrid 140, limpio, silencioso y climatizado para tu confort." },
       "personal":    { "title": "Trato personal",          "desc": "No eres un número. Te recuerdo, adapto el servicio y me preocupo por tu comodidad." },
       "available":   { "title": "Disponible 24/7",         "desc": "¿Quieres un taxi a las 4 de la mañana para coger un vuelo? Aquí estoy. Llama o reserva online." }
+    }
+  },
+  "legal": {
+    "updatedLabel": "Última actualización",
+    "pending": "Pendiente de completar",
+    "pendingNote": "Este dato aún no se ha rellenado. Debe completarse con la información registral real antes de considerar la web definitiva.",
+    "notice": {
+      "title": "Aviso legal",
+      "lead": "Información general sobre el titular de este sitio web y las condiciones de uso, conforme a la Ley 34/2002 de servicios de la sociedad de la información y de comercio electrónico.",
+      "identityTitle": "Titular del sitio web",
+      "fields": {
+        "name": "Nombre o razón social",
+        "taxId": "NIF",
+        "address": "Domicilio",
+        "licence": "Licencia municipal de taxi",
+        "phone": "Teléfono",
+        "email": "Correo electrónico",
+        "site": "Sitio web"
+      },
+      "sections": [
+        {
+          "title": "Objeto y aceptación",
+          "body": "Esta web sirve para informar de los servicios de taxi que ofrezco y para que puedas pedirme un trayecto. Si la usas, aceptas estas condiciones. Si no estás de acuerdo con ellas, no utilices el formulario de reserva."
+        },
+        {
+          "title": "Cómo funciona una reserva",
+          "body": "Cuando envías el formulario me haces una solicitud, no una reserva cerrada. El sistema comprueba automáticamente si la hora encaja con el resto de la agenda y, si encaja, yo la confirmo. La reserva solo es firme cuando recibo la solicitud y te la confirmo por correo, por WhatsApp o por teléfono.",
+          "items": [
+            "Si no recibes confirmación, llama al teléfono de contacto para asegurarte.",
+            "Para anular o cambiar la hora, llama o escribe cuanto antes.",
+            "Si no te presentas en el punto de recogida, puede cobrarse el desplazamiento según la tarifa oficial."
+          ]
+        },
+        {
+          "title": "Tarifas",
+          "body": "El precio del trayecto se calcula con el taxímetro según las tarifas oficiales vigentes aprobadas por la administración competente, con los suplementos que correspondan. Los importes que puedas ver en la web son orientativos y no sustituyen la tarifa oficial. Siempre puedes pedir recibo."
+        },
+        {
+          "title": "Propiedad intelectual",
+          "body": "Los textos, el diseño y las imágenes de esta web son propiedad de su titular o se utilizan con permiso. No pueden reproducirse ni reutilizarse con fines comerciales sin autorización escrita."
+        },
+        {
+          "title": "Responsabilidad",
+          "body": "Procuro que la información de la web sea correcta y esté actualizada, pero no puedo garantizar que esté libre de errores ni que el servicio esté disponible sin interrupciones. Los cálculos de tiempo y de ruta son estimaciones basadas en datos de tráfico de terceros y pueden variar."
+        },
+        {
+          "title": "Protección de datos",
+          "body": "El tratamiento de los datos personales que me facilitas al reservar está explicado en la política de privacidad."
+        },
+        {
+          "title": "Legislación aplicable y reclamaciones",
+          "body": "Estas condiciones se rigen por la legislación española. Si eres consumidor, conservas el derecho de acudir a los tribunales de tu domicilio. Dispongo de hojas oficiales de queja y reclamación a disposición de quien las solicite."
+        }
+      ]
+    },
+    "privacy": {
+      "title": "Política de privacidad",
+      "lead": "Aquí te explico exactamente qué datos te pido cuando reservas un taxi, para qué los necesito, con quién los comparto y cómo puedes controlarlos.",
+      "sections": [
+        {
+          "title": "Quién trata tus datos",
+          "body": "El responsable del tratamiento es el titular de esta web, identificado en el aviso legal. Puedes contactar con él para cualquier cuestión de privacidad en el correo electrónico o el teléfono que allí constan."
+        },
+        {
+          "title": "Qué datos trato",
+          "body": "Solo te pido lo que necesito para ir a buscarte y completar el trayecto:",
+          "items": [
+            "Nombre y teléfono, para identificarte y poder avisarte.",
+            "Correo electrónico, si lo facilitas, para enviarte la confirmación.",
+            "Dirección de recogida y de destino, fecha y hora del trayecto.",
+            "Número de pasajeros y de maletas, para comprobar que caben en el vehículo.",
+            "Número de vuelo, si vas o vienes del aeropuerto, para ajustar la hora si el vuelo se retrasa.",
+            "Notas que quieras añadir y el idioma en el que has hecho la reserva."
+          ]
+        },
+        {
+          "title": "Para qué los necesito",
+          "body": "Trato estos datos para gestionar y prestar el servicio de transporte que me pides, que es la ejecución del contrato entre tú y yo. La confirmación por correo forma parte del mismo servicio. Si me das el correo electrónico sin reservar, solo lo uso para responderte.",
+          "items": [
+            "Prestación del servicio de taxi y contacto previo al trayecto.",
+            "Cumplimiento de las obligaciones fiscales y contables derivadas del cobro.",
+            "Atención de consultas y reclamaciones."
+          ]
+        },
+        {
+          "title": "Comprobación automática de disponibilidad",
+          "body": "Cuando eliges una hora, el sistema calcula con datos de tráfico si puedo llegar a tiempo al punto de recogida y si la hora se solapa con otro trayecto. Si no encaja, te propone elegir otra. Es una comprobación de agenda, no un perfil sobre ti: si crees que se equivoca, llámame y lo miro personalmente."
+        },
+        {
+          "title": "Con quién los comparto",
+          "body": "No vendo ni cedo tus datos a nadie. Para que la reserva funcione utilizo estos proveedores, que actúan como encargados del tratamiento:",
+          "items": [
+            "Supabase, para alojar la base de datos de reservas.",
+            "Google Maps, para calcular la ruta, el tiempo con tráfico real y el mapa del trayecto.",
+            "Resend, para enviar los correos de confirmación.",
+            "Un servicio de notificaciones al móvil, para avisarme cuando entra una reserva nueva."
+          ]
+        },
+        {
+          "title": "Cuánto tiempo los guardo",
+          "body": "Guardo los datos del trayecto mientras sean necesarios para prestar el servicio y atender cualquier reclamación. Los datos vinculados a un cobro se conservan durante los plazos que exige la normativa fiscal y contable. Después se eliminan o se anonimizan."
+        },
+        {
+          "title": "Tus derechos",
+          "body": "En cualquier momento puedes escribirme para ejercer los derechos que te otorga el Reglamento General de Protección de Datos:",
+          "items": [
+            "Acceder a los datos que tengo sobre ti y obtener una copia.",
+            "Rectificarlos si son incorrectos o incompletos.",
+            "Pedir que los suprima cuando ya no sean necesarios.",
+            "Limitar u oponerte a su tratamiento.",
+            "Recibirlos en un formato portable.",
+            "Presentar una reclamación ante la Agencia Española de Protección de Datos si crees que no he respetado tus derechos."
+          ]
+        },
+        {
+          "title": "Cookies",
+          "body": "Esta web no utiliza cookies de publicidad, de analítica ni de seguimiento. Solo se guarda una preferencia técnica en tu navegador para recordar en qué idioma quieres ver la web. Como no hay cookies de terceros ni perfilado, no hace falta ningún banner de consentimiento; si algún día añado alguna, te lo pediré antes."
+        },
+        {
+          "title": "Seguridad",
+          "body": "Los datos viajan cifrados y se guardan en servicios con acceso restringido. Solo yo, como taxista, puedo consultar las reservas desde mi aplicación."
+        },
+        {
+          "title": "Cambios en esta política",
+          "body": "Si cambio la forma de tratar los datos, actualizaré esta página y la fecha de última actualización que encontrarás arriba."
+        }
+      ]
     }
   },
   "footer": {
@@ -153,6 +317,9 @@
     "whatsapp": "WhatsApp",
     "location": "Teià, Maresme",
     "rights": "© {year} Taxi Teià. Todos los derechos reservados.",
-    "license": "Licencia de taxi: VT-XXXXX"
+    "license": "Licencia de taxi: VT-XXXXX",
+    "legal": "Legal",
+    "privacy": "Política de privacidad",
+    "notice": "Aviso legal"
   }
 }

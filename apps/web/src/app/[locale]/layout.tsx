@@ -4,10 +4,9 @@ import { Cormorant_Garamond, Inter } from 'next/font/google'
 import { NextIntlClientProvider } from 'next-intl'
 import { getMessages, setRequestLocale } from 'next-intl/server'
 import { locales, type Locale } from '@/i18n'
-import { ensureCarImages } from '@/lib/ensureCarImages'
+import { buildMetadata } from '@/lib/metadata'
+import { StructuredData } from '@/components/StructuredData'
 import '../globals.css'
-
-ensureCarImages()
 
 const cormorant = Cormorant_Garamond({
   subsets: ['latin'],
@@ -22,17 +21,12 @@ const inter = Inter({
   display: 'swap',
 })
 
-export const metadata: Metadata = {
-  title: 'Taxi Teià — Servei professional de taxi',
-  description:
-    'Servei professional de taxi a Teià i el Maresme. Aeroports, hospitals, llarg recorregut i més. Truca al 670 254 729.',
-  keywords: ['taxi', 'Teià', 'Maresme', 'aeroport', 'Barcelona', 'transport'],
-  openGraph: {
-    title: 'Taxi Teià',
-    description: 'Servei professional de taxi a Teià i el Maresme',
-    locale: 'ca_ES',
-    type: 'website',
-  },
+export async function generateMetadata({
+  params: { locale },
+}: {
+  params: { locale: string }
+}): Promise<Metadata> {
+  return buildMetadata(locale, 'home')
 }
 
 export function generateStaticParams() {
@@ -57,6 +51,7 @@ export default async function LocaleLayout({
       <body
         className={`${cormorant.variable} ${inter.variable} bg-black text-white antialiased`}
       >
+        <StructuredData locale={locale} />
         <NextIntlClientProvider messages={messages}>
           {children}
         </NextIntlClientProvider>

@@ -11,7 +11,7 @@ export function CarPageClient() {
     <div>
       <div className="relative min-h-[40vh] flex flex-col items-center justify-center pt-24 pb-8 px-6 text-center">
         <span className="text-gold text-xs font-body tracking-[0.3em] uppercase mb-4 block">
-          Toyota Corolla Hybrid 2026
+          Toyota Corolla Touring Sports Hybrid 140
         </span>
         <h1 className="font-heading font-light text-5xl md:text-7xl text-white mb-4">
           {t('title')}

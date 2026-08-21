@@ -3,6 +3,7 @@
 import Link from 'next/link'
 import { useTranslations, useLocale } from 'next-intl'
 import { Phone, Mail, MapPin, MessageCircle } from 'lucide-react'
+import { localePath } from '@/lib/routes'
 
 export function Footer() {
   const t = useTranslations('footer')
@@ -37,11 +38,11 @@ export function Footer() {
             </h3>
             <div className="flex flex-col gap-2">
               {[
-                { href: `/${locale}`, label: tNav('home') },
-                { href: `/${locale}/about`, label: tNav('about') },
-                { href: `/${locale}/services`, label: tNav('services') },
-                { href: `/${locale}/car`, label: tNav('car') },
-                { href: `/${locale}/book`, label: tNav('book') },
+                { href: localePath(locale, '/'), label: tNav('home') },
+                { href: localePath(locale, '/about'), label: tNav('about') },
+                { href: localePath(locale, '/services'), label: tNav('services') },
+                { href: localePath(locale, '/car'), label: tNav('car') },
+                { href: localePath(locale, '/book'), label: tNav('book') },
               ].map((item) => (
                 <Link
                   key={item.href}
@@ -87,6 +88,24 @@ export function Footer() {
                 <MapPin size={14} className="text-gold/40 flex-shrink-0" />
                 {t('location')}
               </div>
+            </div>
+
+            <h3 className="text-gold text-xs font-body tracking-[0.2em] uppercase mt-8 mb-4">
+              {t('legal')}
+            </h3>
+            <div className="flex flex-col gap-2">
+              <Link
+                href={localePath(locale, '/legal/privacy')}
+                className="text-white/50 text-sm font-body hover:text-gold transition-colors duration-200"
+              >
+                {t('privacy')}
+              </Link>
+              <Link
+                href={localePath(locale, '/legal/notice')}
+                className="text-white/50 text-sm font-body hover:text-gold transition-colors duration-200"
+              >
+                {t('notice')}
+              </Link>
             </div>
           </div>
         </div>

@@ -4,6 +4,7 @@ import { motion } from 'framer-motion'
 import { useTranslations, useLocale } from 'next-intl'
 import Link from 'next/link'
 import { Shield, Clock, MapPin, Star, Phone, Heart } from 'lucide-react'
+import { localePath } from '@/lib/routes'
 
 const REASONS = [
   { icon: Clock,   key: 'punctuality' },
@@ -63,7 +64,7 @@ export function AboutUs() {
             </div>
 
             <Link
-              href={`/${locale}/book`}
+              href={localePath(locale, '/book')}
               className="inline-flex items-center gap-3 px-8 py-3.5 bg-gold text-black text-sm font-body font-semibold tracking-widest uppercase rounded-sm hover:bg-gold-light transition-colors duration-200"
             >
               {tNav('book')}

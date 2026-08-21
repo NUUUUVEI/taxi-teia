@@ -1,4 +1,34 @@
 {
+  "meta": {
+    "home": {
+      "title": "Taxi in Teià, 24 h · Airport & Maresme | Taxi Teià",
+      "description": "Reliable taxi in Teià, El Masnou and across the Maresme. Transfers to Barcelona airport, hospitals, stations and long distance. Book online or call +34 670 254 729."
+    },
+    "services": {
+      "title": "Taxi services in Teià and the Maresme | Taxi Teià",
+      "description": "Barcelona airport and cruise port, train stations, medical appointments, errands and long distance. Taxi service 24 hours a day at official fares."
+    },
+    "car": {
+      "title": "The car · Toyota Corolla Touring Sports Hybrid | Taxi Teià",
+      "description": "Toyota Corolla Touring Sports Hybrid 140: 596 litres of boot space, climate-controlled interior and a quiet hybrid engine. Look inside before you book."
+    },
+    "about": {
+      "title": "About me · Marc, taxi driver in Teià | Taxi Teià",
+      "description": "Over 10 years taking Maresme neighbours to the airport, the hospital and the station. Always the same driver, always on time."
+    },
+    "book": {
+      "title": "Book your taxi in Teià | Taxi Teià",
+      "description": "Book online in a minute. I work out the route with live traffic and tell you what time I pick you up or what time you arrive. Airport transfers with flight tracking."
+    },
+    "privacy": {
+      "title": "Privacy policy | Taxi Teià",
+      "description": "What data I ask for when you book a taxi, why I need it, how long I keep it and how you can exercise your rights."
+    },
+    "notice": {
+      "title": "Legal notice | Taxi Teià",
+      "description": "Details of the website owner, terms of use, booking conditions and information about official taxi fares."
+    }
+  },
   "nav": {
     "home": "Home",
     "about": "About me",
@@ -49,16 +79,16 @@
   },
   "car": {
     "title": "The Car",
-    "subtitle": "Toyota Corolla Hybrid 2026 — Comfort, safety and style for every journey.",
+    "subtitle": "Toyota Corolla Touring Sports Hybrid 140 — Comfort, safety and style for every journey.",
     "scrollHint": "Scroll to explore the car",
     "sections": {
       "overview": {
         "title": "Elegant Design",
-        "description": "The new Toyota Corolla blends a modern, aerodynamic design with the brand's legendary reliability. Perfect for any journey, short or long."
+        "description": "The Toyota Corolla Touring Sports pairs a far roomier estate body with a modern, aerodynamic design and the brand's legendary reliability. Perfect for any journey, short or long."
       },
       "trunk": {
         "title": "Generous Boot",
-        "description": "361-litre boot. Two large suitcases and your carry-on fit with ease. Travel comfortably without worrying about space."
+        "description": "596-litre boot, expandable to 1,606 with the rear seats folded. Large suitcases, pushchairs or sports gear all fit without a struggle."
       },
       "doors": {
         "title": "Comfortable Interior",
@@ -66,7 +96,7 @@
       },
       "hood": {
         "title": "Hybrid Engine",
-        "description": "2.0 HEV Hybrid engine, 196 HP. Efficient, quiet and eco-friendly. Lower emissions, more miles, and a quieter ride for all passengers."
+        "description": "Self-charging 1.8-litre hybrid engine with 140 HP. Just 4.5 l/100 km and 101 g/km of CO₂: quiet, efficient and eco-friendly."
       }
     }
   },
@@ -105,7 +135,14 @@
       "distance": "Distance",
       "distanceKm": "{km} km",
       "continueTrip": "Continue",
-      "notesPlaceholder": "Any additional details..."
+      "notesPlaceholder": "Any additional details...",
+      "passengers": "Passengers",
+      "luggage": "Suitcases",
+      "flightNumber": "Flight number",
+      "flightPlaceholder": "e.g. VY1234",
+      "flightHint": "I track the flight: if it is delayed I move the pickup time without you having to call.",
+      "airportToggle": "I am going to or from the airport",
+      "capacityNote": "With 4 passengers and this much luggage space may be tight. Give me a call so we can check first."
     },
     "feasibility": {
       "checking": "Checking if this time works with other trips...",
@@ -140,9 +177,136 @@
       "punctuality": { "title": "Guaranteed punctuality", "desc": "I arrive at the agreed time. Always. If there's traffic, I handle it." },
       "trust":       { "title": "Reliability & trust",    "desc": "Valid taxi licence, insured vehicle and professional driver." },
       "local":       { "title": "Local knowledge",        "desc": "I know every street in the Maresme. I use the best route, not just what the GPS says." },
-      "quality":     { "title": "Comfortable vehicle",    "desc": "2026 Toyota Corolla Hybrid, clean, quiet and climate-controlled for your comfort." },
+      "quality":     { "title": "Comfortable vehicle",    "desc": "Toyota Corolla Touring Sports Hybrid 140, clean, quiet and climate-controlled for your comfort." },
       "personal":    { "title": "Personal service",       "desc": "You're not a number. I remember you, adapt the service and care about your comfort." },
       "available":   { "title": "Available 24/7",         "desc": "Need a taxi at 4am for a flight? I'm here. Call or book online." }
+    }
+  },
+  "legal": {
+    "updatedLabel": "Last updated",
+    "pending": "To be completed",
+    "pendingNote": "This detail has not been filled in yet. It must be completed with the real registration data before the site is treated as final.",
+    "notice": {
+      "title": "Legal notice",
+      "lead": "General information about the owner of this website and the terms of use, as required by Spanish Law 34/2002 on information society services and electronic commerce.",
+      "identityTitle": "Website owner",
+      "fields": {
+        "name": "Name or company name",
+        "taxId": "Tax ID (NIF)",
+        "address": "Registered address",
+        "licence": "Municipal taxi licence",
+        "phone": "Phone",
+        "email": "Email",
+        "site": "Website"
+      },
+      "sections": [
+        {
+          "title": "Purpose and acceptance",
+          "body": "This website exists to describe the taxi services I offer and to let you request a journey. By using it you accept these terms. If you do not agree with them, please do not use the booking form."
+        },
+        {
+          "title": "How a booking works",
+          "body": "Sending the form creates a request, not a locked-in booking. The system automatically checks whether the time fits the rest of the schedule and, if it does, I confirm it. A booking is only firm once I have received the request and confirmed it by email, WhatsApp or phone.",
+          "items": [
+            "If you do not receive a confirmation, call the contact number to make sure.",
+            "To cancel or change the time, call or write as early as you can.",
+            "If you are not at the pickup point, the trip out to meet you may be charged at the official fare."
+          ]
+        },
+        {
+          "title": "Fares",
+          "body": "The price of the journey is metered according to the official fares approved by the competent authority, plus any applicable supplements. Any amounts shown on this website are indicative and do not replace the official fare. You can always ask for a receipt."
+        },
+        {
+          "title": "Intellectual property",
+          "body": "The text, design and images on this website belong to its owner or are used with permission. They may not be reproduced or reused for commercial purposes without written authorisation."
+        },
+        {
+          "title": "Liability",
+          "body": "I aim to keep the information on this website accurate and up to date, but I cannot guarantee that it is free of errors or that the service will be available without interruption. Time and route estimates are based on third-party traffic data and may vary."
+        },
+        {
+          "title": "Data protection",
+          "body": "How I handle the personal data you give me when booking is explained in the privacy policy."
+        },
+        {
+          "title": "Applicable law and complaints",
+          "body": "These terms are governed by Spanish law. If you are a consumer, you keep the right to bring a claim before the courts where you live. Official complaint forms are available on request."
+        }
+      ]
+    },
+    "privacy": {
+      "title": "Privacy policy",
+      "lead": "Here is exactly what data I ask for when you book a taxi, why I need it, who I share it with and how you can stay in control of it.",
+      "sections": [
+        {
+          "title": "Who handles your data",
+          "body": "The data controller is the owner of this website, identified in the legal notice. You can get in touch about any privacy matter using the email address or phone number listed there."
+        },
+        {
+          "title": "What data I handle",
+          "body": "I only ask for what I need to come and get you and complete the journey:",
+          "items": [
+            "Name and phone number, to identify you and be able to reach you.",
+            "Email address, if you provide one, to send you the confirmation.",
+            "Pickup and drop-off address, plus the date and time of the journey.",
+            "Number of passengers and suitcases, to check they fit in the car.",
+            "Flight number, if you are going to or coming from the airport, so I can adjust the time if the flight is delayed.",
+            "Any notes you add and the language you booked in."
+          ]
+        },
+        {
+          "title": "Why I need it",
+          "body": "I handle this data to arrange and provide the transport service you have asked for, which is the performance of the contract between us. The confirmation email is part of that same service. If you send me your email without booking, I only use it to reply to you.",
+          "items": [
+            "Providing the taxi service and contacting you before the journey.",
+            "Meeting the tax and accounting obligations that come with taking payment.",
+            "Answering questions and handling complaints."
+          ]
+        },
+        {
+          "title": "Automated availability check",
+          "body": "When you pick a time, the system uses traffic data to work out whether I can reach the pickup point in time and whether the slot overlaps another journey. If it does not fit, it asks you to choose another time. This is a scheduling check, not a profile of you: if you think it has got it wrong, call me and I will look at it myself."
+        },
+        {
+          "title": "Who I share it with",
+          "body": "I do not sell or pass on your data. To make the booking work I use these providers, acting as data processors:",
+          "items": [
+            "Supabase, to host the bookings database.",
+            "Google Maps, to calculate the route, the live-traffic travel time and the route map.",
+            "Resend, to send confirmation emails.",
+            "A mobile push notification service, to alert me when a new booking arrives."
+          ]
+        },
+        {
+          "title": "How long I keep it",
+          "body": "I keep journey data for as long as it is needed to provide the service and deal with any complaint. Data tied to a payment is kept for the periods required by tax and accounting rules. After that it is deleted or anonymised."
+        },
+        {
+          "title": "Your rights",
+          "body": "You can write to me at any time to exercise the rights the General Data Protection Regulation gives you:",
+          "items": [
+            "Access the data I hold about you and get a copy of it.",
+            "Correct it if it is wrong or incomplete.",
+            "Ask me to delete it once it is no longer needed.",
+            "Restrict or object to the way it is processed.",
+            "Receive it in a portable format.",
+            "Lodge a complaint with the Spanish Data Protection Agency if you believe your rights have not been respected."
+          ]
+        },
+        {
+          "title": "Cookies",
+          "body": "This website uses no advertising, analytics or tracking cookies. The only thing stored in your browser is a technical preference remembering which language you want to read the site in. Because there are no third-party cookies and no profiling, no consent banner is needed; if I ever add any, I will ask you first."
+        },
+        {
+          "title": "Security",
+          "body": "Data is transmitted encrypted and stored in services with restricted access. Only I, as the driver, can view bookings from my app."
+        },
+        {
+          "title": "Changes to this policy",
+          "body": "If I change the way I handle data, I will update this page along with the last-updated date shown at the top."
+        }
+      ]
     }
   },
   "footer": {
@@ -153,6 +317,9 @@
     "whatsapp": "WhatsApp",
     "location": "Teià, Maresme",
     "rights": "© {year} Taxi Teià. All rights reserved.",
-    "license": "Taxi licence: VT-XXXXX"
+    "license": "Taxi licence: VT-XXXXX",
+    "legal": "Legal",
+    "privacy": "Privacy policy",
+    "notice": "Legal notice"
   }
 }

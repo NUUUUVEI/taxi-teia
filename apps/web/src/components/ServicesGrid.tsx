@@ -11,6 +11,7 @@ import {
   Stethoscope,
   Package,
 } from 'lucide-react'
+import { localePath } from '@/lib/routes'
 
 const serviceIcons = {
   airports: Plane,
@@ -124,7 +125,7 @@ export function ServicesGrid() {
           </p>
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
             <Link
-              href={`/${locale}/book`}
+              href={localePath(locale, '/book')}
               className="px-8 py-4 bg-gold text-black font-body font-semibold text-sm tracking-widest uppercase rounded-sm hover:bg-gold-light transition-colors duration-200"
             >
               Reserva ara

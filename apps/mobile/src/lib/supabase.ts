@@ -14,6 +14,8 @@ const supabaseAnonKey =
   (Constants.expoConfig?.extra?.supabaseAnonKey as string) ||
   ''
 
+export const SUPABASE_URL = supabaseUrl
+
 const ExpoSecureStoreAdapter = {
   getItem: (key: string) => SecureStore.getItemAsync(key),
   setItem: (key: string, value: string) => SecureStore.setItemAsync(key, value),

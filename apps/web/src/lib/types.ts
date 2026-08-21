@@ -27,7 +27,14 @@ export interface Booking {
   fare?: number | null
   notes?: string | null
   status: BookingStatus
+  flight_number?: string | null
+  passengers?: number | null
+  luggage?: number | null
 }
+
+/** The Corolla Touring Sports seats four passengers besides the driver. */
+export const MAX_PASSENGERS = 4
+export const MAX_LUGGAGE = 8
 
 export interface DriverLocation {
   user_id: string

@@ -1,14 +1,16 @@
-'use client'
 import { useState, useEffect, useCallback } from 'react'
 import {
   View, Text, ScrollView, StyleSheet, TouchableOpacity,
-  TextInput, Alert, Modal, KeyboardAvoidingView, Platform, Image,
+  TextInput, Alert, Modal, KeyboardAvoidingView, Platform, Image, Linking,
 } from 'react-native'
-import { format, startOfYear, endOfYear, startOfMonth, endOfMonth, getYear } from 'date-fns'
+import {
+  format, startOfYear, endOfYear, startOfMonth, endOfMonth,
+  getYear, addMonths, subMonths, addYears, subYears, isSameMonth,
+} from 'date-fns'
 import * as ImagePicker from 'expo-image-picker'
 import * as Print from 'expo-print'
 import * as Sharing from 'expo-sharing'
-import { supabase } from '../../src/lib/supabase'
+import { supabase, SUPABASE_URL } from '../../src/lib/supabase'
 import { colors } from '../../src/lib/theme'
 import { Ionicons } from '@expo/vector-icons'
 
@@ -40,25 +42,29 @@ type Period = 'month' | 'year'
 
 export default function ExpensesScreen() {
   const [period, setPeriod] = useState<Period>('month')
+  /** Any month/year can be browsed, not just the current one. */
+  const [anchor, setAnchor] = useState(new Date())
   const [expenses, setExpenses] = useState<Expense[]>([])
   const [income, setIncome] = useState(0)
   const [loading, setLoading] = useState(true)
   const [modalVisible, setModalVisible] = useState(false)
+  const [viewingInvoice, setViewingInvoice] = useState<Expense | null>(null)
   const [generatingPdf, setGeneratingPdf] = useState(false)
 
-  // New expense form
+  // Add / edit expense form. `editingId` null means we're adding a new one.
+  const [editingId, setEditingId] = useState<string | null>(null)
   const [newCategory, setNewCategory] = useState<ExpenseCategory>('fuel')
   const [newAmount, setNewAmount] = useState('')
   const [newDesc, setNewDesc] = useState('')
   const [newDate, setNewDate] = useState(format(new Date(), 'yyyy-MM-dd'))
   const [newPhoto, setNewPhoto] = useState<string | null>(null)
+  const [existingPhotoUrl, setExistingPhotoUrl] = useState<string | null>(null)
   const [saving, setSaving] = useState(false)
 
   const fetchData = useCallback(async () => {
     setLoading(true)
-    const now = new Date()
-    const from = period === 'month' ? startOfMonth(now) : startOfYear(now)
-    const to   = period === 'month' ? endOfMonth(now)   : endOfYear(now)
+    const from = period === 'month' ? startOfMonth(anchor) : startOfYear(anchor)
+    const to   = period === 'month' ? endOfMonth(anchor)   : endOfYear(anchor)
 
     const { data: bookings } = await supabase
       .from('bookings')
@@ -78,7 +84,7 @@ export default function ExpensesScreen() {
 
     setExpenses((exp ?? []) as Expense[])
     setLoading(false)
-  }, [period])
+  }, [period, anchor])
 
   useEffect(() => { fetchData() }, [fetchData])
 
@@ -118,21 +124,35 @@ export default function ExpensesScreen() {
 
   const uploadPhoto = async (uri: string, expenseId: string): Promise<string | null> => {
     try {
-      const ext = uri.split('.').pop() ?? 'jpg'
+      const rawExt = (uri.split('.').pop() ?? 'jpg').toLowerCase()
+      const ext = rawExt === 'jpeg' ? 'jpg' : rawExt
       const path = `invoices/${expenseId}.${ext}`
+      const mime = ext === 'png' ? 'image/png' : 'image/jpeg'
+
       const formData = new FormData()
-      formData.append('file', { uri, name: `invoice.${ext}`, type: `image/${ext}` } as any)
+      formData.append('file', { uri, name: `invoice.${ext}`, type: mime } as any)
 
       const { data: { session } } = await supabase.auth.getSession()
       const res = await fetch(
-        `${process.env.EXPO_PUBLIC_SUPABASE_URL}/storage/v1/object/expense-invoices/${path}`,
+        `${SUPABASE_URL}/storage/v1/object/expense-invoices/${path}`,
         {
           method: 'POST',
-          headers: { Authorization: `Bearer ${session?.access_token ?? ''}` },
+          headers: {
+            Authorization: `Bearer ${session?.access_token ?? ''}`,
+            'x-upsert': 'true',
+          },
           body: formData,
         }
       )
-      if (!res.ok) return null
+
+      if (!res.ok) {
+        const detail = await res.text().catch(() => '')
+        Alert.alert(
+          'Factura no desada',
+          `La despesa s'ha guardat, però la foto no s'ha pogut pujar.\n\n${detail.slice(0, 160)}`
+        )
+        return null
+      }
 
       const { data: urlData } = supabase.storage.from('expense-invoices').getPublicUrl(path)
       return urlData.publicUrl
@@ -141,42 +161,91 @@ export default function ExpensesScreen() {
     }
   }
 
-  // ── Add expense ─────────────────────────────────────────────────────────────
-  const handleAdd = async () => {
-    if (!newAmount || isNaN(parseFloat(newAmount))) {
-      Alert.alert('Error', "Introdueix un import vàlid")
+  // ── Add / edit expense ──────────────────────────────────────────────────────
+  const resetForm = () => {
+    setEditingId(null)
+    setNewCategory('fuel')
+    setNewAmount('')
+    setNewDesc('')
+    setNewDate(format(new Date(), 'yyyy-MM-dd'))
+    setNewPhoto(null)
+    setExistingPhotoUrl(null)
+  }
+
+  const openAdd = () => {
+    resetForm()
+    setModalVisible(true)
+  }
+
+  const openEdit = (e: Expense) => {
+    setEditingId(e.id)
+    setNewCategory(e.category)
+    setNewAmount(String(e.amount))
+    setNewDesc(e.description ?? '')
+    setNewDate(e.date)
+    setNewPhoto(null)
+    setExistingPhotoUrl(e.invoice_photo_url)
+    setModalVisible(true)
+  }
+
+  const handleSave = async () => {
+    const amount = parseFloat(newAmount.replace(',', '.'))
+    if (!newAmount || isNaN(amount)) {
+      Alert.alert('Error', 'Introdueix un import vàlid')
       return
     }
+    if (!/^\d{4}-\d{2}-\d{2}$/.test(newDate)) {
+      Alert.alert('Data no vàlida', 'Fes servir el format aaaa-mm-dd.')
+      return
+    }
+
     setSaving(true)
 
-    // Insert first to get the ID for photo path
-    const { data: inserted, error } = await supabase.from('expenses').insert({
+    const fields = {
       date: newDate,
       category: newCategory,
-      amount: parseFloat(newAmount),
+      amount,
       description: newDesc || null,
-    }).select().single()
-
-    if (error || !inserted) {
-      Alert.alert('Error', error?.message ?? 'Error guardant')
-      setSaving(false)
-      return
     }
 
-    // Upload photo if selected
-    if (newPhoto) {
-      const photoUrl = await uploadPhoto(newPhoto, inserted.id)
+    let expenseId = editingId
+
+    if (editingId) {
+      const { error } = await supabase.from('expenses').update(fields).eq('id', editingId)
+      if (error) {
+        Alert.alert('Error', error.message)
+        setSaving(false)
+        return
+      }
+    } else {
+      // Insert first so the photo can be stored under the new row's id.
+      const { data: inserted, error } = await supabase
+        .from('expenses')
+        .insert(fields)
+        .select()
+        .single()
+
+      if (error || !inserted) {
+        Alert.alert('Error', error?.message ?? 'Error guardant')
+        setSaving(false)
+        return
+      }
+      expenseId = inserted.id
+    }
+
+    if (newPhoto && expenseId) {
+      const photoUrl = await uploadPhoto(newPhoto, expenseId)
       if (photoUrl) {
-        await supabase.from('expenses').update({ invoice_photo_url: photoUrl }).eq('id', inserted.id)
+        await supabase
+          .from('expenses')
+          .update({ invoice_photo_url: photoUrl })
+          .eq('id', expenseId)
       }
     }
 
     setSaving(false)
     setModalVisible(false)
-    setNewAmount('')
-    setNewDesc('')
-    setNewDate(format(new Date(), 'yyyy-MM-dd'))
-    setNewPhoto(null)
+    resetForm()
     fetchData()
   }
 
@@ -196,7 +265,7 @@ export default function ExpensesScreen() {
   // ── Year-end PDF ─────────────────────────────────────────────────────────────
   const generatePdf = async () => {
     setGeneratingPdf(true)
-    const year = getYear(new Date())
+    const year = getYear(anchor)
 
     // Get full year data
     const { data: yearExp } = await supabase
@@ -318,8 +387,20 @@ export default function ExpensesScreen() {
   }
 
   const periodLabel = period === 'month'
-    ? format(new Date(), 'MMMM yyyy')
-    : `Any ${getYear(new Date())}`
+    ? format(anchor, 'MMMM yyyy')
+    : `Any ${getYear(anchor)}`
+
+  const step = (direction: -1 | 1) => {
+    setAnchor(a =>
+      period === 'month'
+        ? (direction === 1 ? addMonths(a, 1) : subMonths(a, 1))
+        : (direction === 1 ? addYears(a, 1) : subYears(a, 1))
+    )
+  }
+
+  const isCurrentPeriod = period === 'month'
+    ? isSameMonth(anchor, new Date())
+    : getYear(anchor) === getYear(new Date())
 
   return (
     <View style={{ flex: 1, backgroundColor: colors.black }}>
@@ -352,7 +433,27 @@ export default function ExpensesScreen() {
           </View>
         </View>
 
-        <Text style={styles.periodLabel}>{periodLabel}</Text>
+        {/* Period navigation — browse any month or year */}
+        <View style={styles.periodNav}>
+          <TouchableOpacity onPress={() => step(-1)} style={styles.periodNavBtn}>
+            <Ionicons name="chevron-back" size={20} color={colors.gold} />
+          </TouchableOpacity>
+
+          <TouchableOpacity
+            style={styles.periodLabelWrap}
+            onPress={() => setAnchor(new Date())}
+            disabled={isCurrentPeriod}
+          >
+            <Text style={styles.periodLabel}>{periodLabel}</Text>
+            {!isCurrentPeriod && (
+              <Text style={styles.periodToday}>Tornar a l&apos;actual</Text>
+            )}
+          </TouchableOpacity>
+
+          <TouchableOpacity onPress={() => step(1)} style={styles.periodNavBtn}>
+            <Ionicons name="chevron-forward" size={20} color={colors.gold} />
+          </TouchableOpacity>
+        </View>
 
         {/* KPI cards */}
         <View style={styles.kpiRow}>
@@ -419,6 +520,7 @@ export default function ExpensesScreen() {
                 <TouchableOpacity
                   key={e.id}
                   style={styles.expRow}
+                  onPress={() => openEdit(e)}
                   onLongPress={() => handleDelete(e.id)}
                 >
                   <View style={[styles.expIcon, { backgroundColor: meta.color + '20' }]}>
@@ -432,9 +534,21 @@ export default function ExpensesScreen() {
                     <Text style={styles.expDate}>{format(new Date(e.date), 'dd/MM/yyyy')}</Text>
                   </View>
                   {e.invoice_photo_url && (
-                    <Ionicons name="image-outline" size={16} color={colors.textMuted} style={{ marginRight: 4 }} />
+                    <TouchableOpacity
+                      onPress={() => setViewingInvoice(e)}
+                      hitSlop={10}
+                      style={{ marginRight: 8 }}
+                    >
+                      <Ionicons name="document-attach" size={18} color={colors.gold} />
+                    </TouchableOpacity>
                   )}
                   <Text style={styles.expAmount}>€{e.amount.toFixed(2)}</Text>
+                  <Ionicons
+                    name="chevron-forward"
+                    size={14}
+                    color={colors.textMuted}
+                    style={{ marginLeft: 4 }}
+                  />
                 </TouchableOpacity>
               )
             })
@@ -443,11 +557,11 @@ export default function ExpensesScreen() {
       </ScrollView>
 
       {/* FAB */}
-      <TouchableOpacity style={styles.fab} onPress={() => setModalVisible(true)}>
+      <TouchableOpacity style={styles.fab} onPress={openAdd}>
         <Ionicons name="add" size={28} color={colors.black} />
       </TouchableOpacity>
 
-      {/* Add expense modal */}
+      {/* Add / edit expense modal */}
       <Modal visible={modalVisible} animationType="slide" transparent>
         <KeyboardAvoidingView
           behavior={Platform.OS === 'ios' ? 'padding' : undefined}
@@ -456,8 +570,10 @@ export default function ExpensesScreen() {
           <ScrollView>
             <View style={styles.modalSheet}>
               <View style={styles.modalHeader}>
-                <Text style={styles.modalTitle}>Nova despesa</Text>
-                <TouchableOpacity onPress={() => setModalVisible(false)}>
+                <Text style={styles.modalTitle}>
+                  {editingId ? 'Corregir despesa' : 'Nova despesa'}
+                </Text>
+                <TouchableOpacity onPress={() => { setModalVisible(false); resetForm() }}>
                   <Ionicons name="close" size={22} color={colors.textMuted} />
                 </TouchableOpacity>
               </View>
@@ -514,38 +630,147 @@ export default function ExpensesScreen() {
                   <Image source={{ uri: newPhoto }} style={styles.photoPreview} resizeMode="cover" />
                   <TouchableOpacity onPress={() => setNewPhoto(null)} style={styles.removePhotoBtn}>
                     <Ionicons name="trash-outline" size={14} color={colors.error} />
-                    <Text style={styles.removePhotoText}>Eliminar foto</Text>
+                    <Text style={styles.removePhotoText}>Descartar aquesta foto</Text>
                   </TouchableOpacity>
                 </View>
               ) : (
-                <View style={{ flexDirection: 'row', gap: 8, marginBottom: 16 }}>
-                  <TouchableOpacity style={styles.photoBtn} onPress={takePhoto}>
-                    <Ionicons name="camera-outline" size={18} color={colors.gold} />
-                    <Text style={styles.photoBtnText}>Fer foto</Text>
-                  </TouchableOpacity>
-                  <TouchableOpacity style={styles.photoBtn} onPress={pickPhoto}>
-                    <Ionicons name="image-outline" size={18} color={colors.gold} />
-                    <Text style={styles.photoBtnText}>Galeria</Text>
-                  </TouchableOpacity>
-                </View>
+                <>
+                  {existingPhotoUrl && (
+                    <View style={{ marginBottom: 12 }}>
+                      <Image
+                        source={{ uri: existingPhotoUrl }}
+                        style={styles.photoPreview}
+                        resizeMode="cover"
+                      />
+                      <Text style={styles.photoHint}>
+                        Factura ja adjuntada. Fes una foto nova per substituir-la.
+                      </Text>
+                    </View>
+                  )}
+                  <View style={{ flexDirection: 'row', gap: 8, marginBottom: 16 }}>
+                    <TouchableOpacity style={styles.photoBtn} onPress={takePhoto}>
+                      <Ionicons name="camera-outline" size={18} color={colors.gold} />
+                      <Text style={styles.photoBtnText}>Fer foto</Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity style={styles.photoBtn} onPress={pickPhoto}>
+                      <Ionicons name="image-outline" size={18} color={colors.gold} />
+                      <Text style={styles.photoBtnText}>Galeria</Text>
+                    </TouchableOpacity>
+                  </View>
+                </>
               )}
 
               <TouchableOpacity
                 style={[styles.saveBtn, saving && { opacity: 0.6 }]}
-                onPress={handleAdd}
+                onPress={handleSave}
                 disabled={saving}
               >
-                <Text style={styles.saveBtnText}>{saving ? 'Guardant...' : 'Guardar despesa'}</Text>
+                <Text style={styles.saveBtnText}>
+                  {saving ? 'Guardant...' : editingId ? 'Guardar canvis' : 'Guardar despesa'}
+                </Text>
               </TouchableOpacity>
+
+              {editingId && (
+                <TouchableOpacity
+                  style={styles.deleteBtn}
+                  onPress={() => {
+                    setModalVisible(false)
+                    handleDelete(editingId)
+                    resetForm()
+                  }}
+                >
+                  <Ionicons name="trash-outline" size={15} color={colors.error} />
+                  <Text style={styles.deleteBtnText}>Eliminar despesa</Text>
+                </TouchableOpacity>
+              )}
             </View>
           </ScrollView>
         </KeyboardAvoidingView>
+      </Modal>
+
+      {/* Invoice viewer */}
+      <Modal visible={!!viewingInvoice} animationType="fade" transparent>
+        <View style={styles.viewerBackdrop}>
+          <View style={styles.viewerHeader}>
+            <View style={{ flex: 1 }}>
+              <Text style={styles.viewerTitle}>
+                {viewingInvoice
+                  ? (CATEGORY_META[viewingInvoice.category as ExpenseCategory] ?? CATEGORY_META.other).label
+                  : ''}
+              </Text>
+              {viewingInvoice && (
+                <Text style={styles.viewerMeta}>
+                  {format(new Date(viewingInvoice.date), 'dd/MM/yyyy')} · €
+                  {viewingInvoice.amount.toFixed(2)}
+                </Text>
+              )}
+            </View>
+            <TouchableOpacity onPress={() => setViewingInvoice(null)} hitSlop={12}>
+              <Ionicons name="close" size={26} color={colors.textPrimary} />
+            </TouchableOpacity>
+          </View>
+
+          <ScrollView
+            style={{ flex: 1 }}
+            contentContainerStyle={styles.viewerBody}
+            maximumZoomScale={4}
+            minimumZoomScale={1}
+          >
+            {viewingInvoice?.invoice_photo_url && (
+              <Image
+                source={{ uri: viewingInvoice.invoice_photo_url }}
+                style={styles.viewerImage}
+                resizeMode="contain"
+              />
+            )}
+          </ScrollView>
+
+          <TouchableOpacity
+            style={styles.viewerOpenBtn}
+            onPress={() => {
+              if (viewingInvoice?.invoice_photo_url) {
+                Linking.openURL(viewingInvoice.invoice_photo_url)
+              }
+            }}
+          >
+            <Ionicons name="open-outline" size={16} color={colors.gold} />
+            <Text style={styles.viewerOpenText}>Obrir en mida completa</Text>
+          </TouchableOpacity>
+        </View>
       </Modal>
     </View>
   )
 }
 
 const styles = StyleSheet.create({
+  periodNav: {
+    flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between',
+    paddingHorizontal: 8, marginTop: 12,
+  },
+  periodNavBtn: { padding: 10 },
+  periodLabelWrap: { flex: 1, alignItems: 'center' },
+  periodToday: { color: colors.gold, fontSize: 10, marginTop: 2 },
+  photoHint: { color: colors.textMuted, fontSize: 11, marginTop: 6 },
+  deleteBtn: {
+    flexDirection: 'row', alignItems: 'center', justifyContent: 'center',
+    gap: 6, paddingVertical: 14,
+  },
+  deleteBtnText: { color: colors.error, fontSize: 13 },
+  viewerBackdrop: { flex: 1, backgroundColor: 'rgba(0,0,0,0.94)', paddingTop: 48 },
+  viewerHeader: {
+    flexDirection: 'row', alignItems: 'center', gap: 12,
+    paddingHorizontal: 20, paddingBottom: 16,
+    borderBottomWidth: 1, borderBottomColor: colors.border,
+  },
+  viewerTitle: { color: colors.textPrimary, fontSize: 15, fontWeight: '600' },
+  viewerMeta: { color: colors.textMuted, fontSize: 12, marginTop: 2 },
+  viewerBody: { flexGrow: 1, justifyContent: 'center', padding: 12 },
+  viewerImage: { width: '100%', aspectRatio: 0.7, borderRadius: 4 },
+  viewerOpenBtn: {
+    flexDirection: 'row', alignItems: 'center', justifyContent: 'center',
+    gap: 8, paddingVertical: 20,
+  },
+  viewerOpenText: { color: colors.gold, fontSize: 13 },
   header: {
     flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center',
     padding: 20, paddingTop: 12, borderBottomWidth: 1, borderBottomColor: colors.border,
@@ -562,7 +787,7 @@ const styles = StyleSheet.create({
   tabActive: { borderColor: colors.gold, backgroundColor: colors.gold + '15' },
   tabText: { color: colors.textMuted, fontSize: 11, fontWeight: '600', letterSpacing: 1 },
   tabTextActive: { color: colors.gold },
-  periodLabel: { color: colors.textSecondary, fontSize: 12, letterSpacing: 1, textAlign: 'center', marginTop: 12, textTransform: 'uppercase' },
+  periodLabel: { color: colors.textSecondary, fontSize: 12, letterSpacing: 1, textAlign: 'center', textTransform: 'uppercase' },
   kpiRow: { flexDirection: 'row', padding: 16, gap: 8 },
   kpiCard: { flex: 1, backgroundColor: colors.card, borderWidth: 1, borderColor: colors.border, borderRadius: 2, padding: 12, alignItems: 'center' },
   kpiValue: { color: colors.textPrimary, fontSize: 16, fontWeight: '700' },

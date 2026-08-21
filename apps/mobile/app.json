@@ -2,7 +2,7 @@
   "expo": {
     "name": "Taxi Teià Driver",
     "slug": "taxi-teia-driver",
-    "version": "1.0.0",
+    "version": "1.1.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "dark",
@@ -20,7 +20,8 @@
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#0A0A0A"
       },
-      "package": "com.taxiteia.driver"
+      "package": "com.taxiteia.driver",
+      "versionCode": 2
     },
     "plugins": [
       "expo-router",
@@ -42,7 +43,8 @@
       [
         "expo-image-picker",
         {
-          "photosPermission": "Necessitem accés a les fotos per adjuntar factures."
+          "photosPermission": "Necessitem accés a les fotos per adjuntar factures.",
+          "cameraPermission": "Necessitem la càmera per fotografiar les factures."
         }
       ]
     ],

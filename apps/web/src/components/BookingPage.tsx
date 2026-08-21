@@ -7,14 +7,29 @@ import { useTranslations, useLocale } from 'next-intl'
 import { motion, AnimatePresence } from 'framer-motion'
 import {
   Clock, User, Phone, ChevronRight, CheckCircle2, Loader2, AlertTriangle, MapPin,
+  Plane, Users, Briefcase, Minus, Plus,
 } from 'lucide-react'
 import { getSupabase } from '@/lib/supabase'
 import { PlaceInput } from './PlaceInput'
 import { RouteMap } from './RouteMap'
 import { dateLocales } from '@/lib/dateLocale'
-import type { Booking, DriverLocation } from '@/lib/types'
+import { MAX_LUGGAGE, MAX_PASSENGERS, type Booking, type DriverLocation } from '@/lib/types'
 
 const BUFFER_MINUTES = 10
+
+/**
+ * Enough to catch the airports people actually fly from here without matching
+ * ordinary street names — deliberately no bare "BCN" or terminal codes.
+ */
+const AIRPORT_HINTS = [
+  'aeroport',
+  'aeropuerto',
+  'airport',
+  'el prat',
+  'josep tarradellas',
+  'costa brava',
+  'reus',
+]
 
 type FormData = {
   name: string
@@ -117,6 +132,10 @@ export function BookingPage() {
   const [submitting, setSubmitting] = useState(false)
   const [submitted, setSubmitted] = useState(false)
   const [error, setError] = useState('')
+  const [passengers, setPassengers] = useState(1)
+  const [luggage, setLuggage] = useState(0)
+  const [flight, setFlight] = useState('')
+  const [flightRequested, setFlightRequested] = useState(false)
 
   const [form, setForm] = useState<FormData>({
     name: '',
@@ -131,6 +150,14 @@ export function BookingPage() {
     if (!selectedDate || !selectedTime) return null
     return toStart(selectedDate, selectedTime)
   }, [selectedDate, selectedTime])
+
+  const looksLikeAirport = useMemo(() => {
+    const haystack = `${form.pickup} ${form.dropoff}`.toLowerCase()
+    return AIRPORT_HINTS.some((hint) => haystack.includes(hint))
+  }, [form.pickup, form.dropoff])
+
+  const showFlight = looksLikeAirport || flightRequested
+  const tightFit = passengers >= MAX_PASSENGERS && luggage >= 4
 
   const fmtTime = useCallback(
     (d: Date) => format(d, 'HH:mm', { locale: dfLocale }),
@@ -315,6 +342,9 @@ export function BookingPage() {
           locale,
           estimated_minutes: routeInfo?.duration_minutes ?? 30,
           notes: form.notes || null,
+          flight_number: flight.trim() || null,
+          passengers,
+          luggage,
         }),
       })
 
@@ -615,6 +645,56 @@ export function BookingPage() {
                   onChange={(email) => setForm({ ...form, email })}
                   type="email"
                 />
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <Stepper
+                    icon={<Users size={14} />}
+                    label={t('form.passengers')}
+                    value={passengers}
+                    min={1}
+                    max={MAX_PASSENGERS}
+                    onChange={setPassengers}
+                  />
+                  <Stepper
+                    icon={<Briefcase size={14} />}
+                    label={t('form.luggage')}
+                    value={luggage}
+                    min={0}
+                    max={MAX_LUGGAGE}
+                    onChange={setLuggage}
+                  />
+                </div>
+
+                {tightFit && (
+                  <p className="flex items-start gap-2 text-amber-400/90 text-xs font-body leading-relaxed">
+                    <AlertTriangle size={14} className="flex-shrink-0 mt-0.5" />
+                    {t('form.capacityNote')}
+                  </p>
+                )}
+
+                {showFlight ? (
+                  <div>
+                    <InputField
+                      icon={<Plane size={14} />}
+                      label={t('form.flightNumber')}
+                      placeholder={t('form.flightPlaceholder')}
+                      value={flight}
+                      onChange={setFlight}
+                    />
+                    <p className="text-white/35 text-xs font-body mt-2">
+                      {t('form.flightHint')}
+                    </p>
+                  </div>
+                ) : (
+                  <button
+                    type="button"
+                    onClick={() => setFlightRequested(true)}
+                    className="flex items-center gap-2 text-gold/70 hover:text-gold text-xs font-body tracking-widest uppercase transition-colors"
+                  >
+                    <Plane size={14} />
+                    {t('form.airportToggle')}
+                  </button>
+                )}
+
                 <InputField
                   label={t('form.notes')}
                   placeholder={t('form.notesPlaceholder')}
@@ -669,6 +749,13 @@ export function BookingPage() {
                       : []),
                     { label: t('form.name'), value: form.name },
                     { label: t('form.phone'), value: form.phone },
+                    { label: t('form.passengers'), value: String(passengers) },
+                    ...(luggage > 0
+                      ? [{ label: t('form.luggage'), value: String(luggage) }]
+                      : []),
+                    ...(flight.trim()
+                      ? [{ label: t('form.flightNumber'), value: flight.trim().toUpperCase() }]
+                      : []),
                     ...(routeInfo
                       ? [
                           {
@@ -722,6 +809,57 @@ export function BookingPage() {
             )}
           </motion.div>
         </AnimatePresence>
+      </div>
+    </div>
+  )
+}
+
+function Stepper({
+  label,
+  value,
+  min,
+  max,
+  onChange,
+  icon,
+}: {
+  label: string
+  value: number
+  min: number
+  max: number
+  onChange: (v: number) => void
+  icon?: React.ReactNode
+}) {
+  const step = (delta: number) =>
+    onChange(Math.min(max, Math.max(min, value + delta)))
+
+  return (
+    <div>
+      <label className="text-white/40 text-xs font-body tracking-widest uppercase mb-2 flex items-center gap-1.5">
+        {icon && <span className="text-gold/60">{icon}</span>}
+        {label}
+      </label>
+      <div className="flex items-center bg-black/40 border border-white/10 rounded-sm">
+        <button
+          type="button"
+          onClick={() => step(-1)}
+          disabled={value <= min}
+          aria-label={`${label} −`}
+          className="px-4 py-3 text-white/50 hover:text-gold disabled:opacity-25 disabled:hover:text-white/50 transition-colors"
+        >
+          <Minus size={14} />
+        </button>
+        <span className="flex-1 text-center text-white font-body text-sm tabular-nums">
+          {value}
+        </span>
+        <button
+          type="button"
+          onClick={() => step(1)}
+          disabled={value >= max}
+          aria-label={`${label} +`}
+          className="px-4 py-3 text-white/50 hover:text-gold disabled:opacity-25 disabled:hover:text-white/50 transition-colors"
+        >
+          <Plus size={14} />
+        </button>
       </div>
     </div>
   )

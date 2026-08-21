@@ -1,5 +1,6 @@
 import * as Notifications from 'expo-notifications'
 import * as Device from 'expo-device'
+import Constants from 'expo-constants'
 import { Platform } from 'react-native'
 import { supabase } from './supabase'
 
@@ -11,8 +12,23 @@ Notifications.setNotificationHandler({
   }),
 })
 
-export async function registerForPushNotifications(): Promise<string | null> {
-  if (!Device.isDevice) return null
+/** Thrown with a message safe to show the driver directly. */
+export class PushError extends Error {}
+
+function resolveProjectId(): string | undefined {
+  return (
+    Constants.expoConfig?.extra?.eas?.projectId ??
+    // Present in EAS-built binaries even when expoConfig is trimmed.
+    (Constants as unknown as { easConfig?: { projectId?: string } }).easConfig?.projectId
+  )
+}
+
+export async function registerForPushNotifications(): Promise<string> {
+  if (!Device.isDevice) {
+    throw new PushError(
+      'Les notificacions push només funcionen en un mòbil real, no en un emulador.'
+    )
+  }
 
   const { status: existing } = await Notifications.getPermissionsAsync()
   let finalStatus = existing
@@ -22,7 +38,11 @@ export async function registerForPushNotifications(): Promise<string | null> {
     finalStatus = status
   }
 
-  if (finalStatus !== 'granted') return null
+  if (finalStatus !== 'granted') {
+    throw new PushError(
+      'Activa les notificacions per a Taxi Teià als ajustos del telèfon.'
+    )
+  }
 
   if (Platform.OS === 'android') {
     await Notifications.setNotificationChannelAsync('bookings', {
@@ -33,15 +53,53 @@ export async function registerForPushNotifications(): Promise<string | null> {
     })
   }
 
-  const token = (await Notifications.getExpoPushTokenAsync()).data
-  return token
+  // Without an explicit projectId this throws inside standalone/EAS builds.
+  const projectId = resolveProjectId()
+  if (!projectId) {
+    throw new PushError(
+      "No s'ha trobat el projectId d'EAS. Revisa extra.eas.projectId a app.json."
+    )
+  }
+
+  const { data } = await Notifications.getExpoPushTokenAsync({ projectId })
+  return data
 }
 
 export async function savePushToken(token: string) {
   const { data: { user } } = await supabase.auth.getUser()
-  if (!user) return
+  if (!user) throw new PushError('Sessió caducada. Torna a entrar.')
 
-  await supabase
+  const { error } = await supabase
     .from('driver_push_tokens')
     .upsert({ user_id: user.id, token, updated_at: new Date().toISOString() })
+
+  if (error) throw new PushError(error.message)
+}
+
+/** Stops booking pushes for this driver by dropping the stored token. */
+export async function removePushToken() {
+  const { data: { user } } = await supabase.auth.getUser()
+  if (!user) return
+
+  const { error } = await supabase
+    .from('driver_push_tokens')
+    .delete()
+    .eq('user_id', user.id)
+
+  if (error) throw new PushError(error.message)
+}
+
+export async function hasPushToken(): Promise<boolean> {
+  try {
+    const { data: { user } } = await supabase.auth.getUser()
+    if (!user) return false
+    const { data } = await supabase
+      .from('driver_push_tokens')
+      .select('token')
+      .eq('user_id', user.id)
+      .maybeSingle()
+    return !!data
+  } catch {
+    return false
+  }
 }

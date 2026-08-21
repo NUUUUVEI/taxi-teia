@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@supabase/supabase-js'
+import { MAX_LUGGAGE, MAX_PASSENGERS } from '@/lib/types'
 
 export async function POST(req: NextRequest) {
   const url = process.env.NEXT_PUBLIC_SUPABASE_URL
@@ -24,10 +25,19 @@ export async function POST(req: NextRequest) {
     locale,
     estimated_minutes,
     notes,
+    flight_number,
+    passengers,
+    luggage,
   } = body
 
   if (!client_name || !client_phone || !pickup_address || !dropoff_address || !start_time) {
     return NextResponse.json({ error: 'Missing required fields' }, { status: 400 })
+  }
+
+  const clamp = (value: unknown, min: number, max: number, fallback: number) => {
+    const parsed = Number(value)
+    if (!Number.isFinite(parsed)) return fallback
+    return Math.min(max, Math.max(min, Math.round(parsed)))
   }
 
   const { error: insertError } = await supabase.from('bookings').insert({
@@ -43,6 +53,11 @@ export async function POST(req: NextRequest) {
     locale: ['ca', 'es', 'en'].includes(locale) ? locale : 'ca',
     estimated_minutes: estimated_minutes ?? 30,
     notes: notes || null,
+    flight_number: typeof flight_number === 'string' && flight_number.trim()
+      ? flight_number.trim().slice(0, 12)
+      : null,
+    passengers: clamp(passengers, 1, MAX_PASSENGERS, 1),
+    luggage: clamp(luggage, 0, MAX_LUGGAGE, 0),
     status: 'pending',
   })
 

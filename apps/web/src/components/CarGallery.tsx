@@ -3,19 +3,27 @@
 import { useEffect, useRef, useState } from 'react'
 import { useTranslations } from 'next-intl'
 import { motion, AnimatePresence } from 'framer-motion'
+import { Camera } from 'lucide-react'
 
+/**
+ * Drop the four photos into `apps/web/public/images/car/` using these names.
+ * Either .png or .jpg works — the gallery tries .png first, then .jpg.
+ */
 const SECTIONS = [
-  { key: 'overview', image: '/images/car/overview.png' },
-  { key: 'trunk', image: '/images/car/trunk.png' },
-  { key: 'doors', image: '/images/car/doors.png' },
-  { key: 'hood', image: '/images/car/engine.png' },
+  { key: 'overview', file: 'overview' },
+  { key: 'trunk', file: 'trunk' },
+  { key: 'doors', file: 'doors' },
+  { key: 'hood', file: 'engine' },
 ] as const
+
+type Status = 'png' | 'jpg' | 'missing'
 
 export function CarGallery() {
   const t = useTranslations('car.sections')
   const containerRef = useRef<HTMLDivElement>(null)
   const [active, setActive] = useState(0)
   const [progress, setProgress] = useState(0)
+  const [status, setStatus] = useState<Record<string, Status>>({})
 
   useEffect(() => {
     const onScroll = () => {
@@ -35,30 +43,48 @@ export function CarGallery() {
   }, [])
 
   const section = SECTIONS[active]
+  const allMissing = SECTIONS.every(s => status[s.key] === 'missing')
 
   return (
-    <div
-      ref={containerRef}
-      style={{ height: `${SECTIONS.length * 100}vh` }}
-    >
+    <div ref={containerRef} style={{ height: `${SECTIONS.length * 100}vh` }}>
       <div className="sticky top-0 h-screen w-full overflow-hidden bg-black">
         {SECTIONS.map((item, i) => {
-          const isActive = i === active
+          const state = status[item.key] ?? 'png'
+          if (state === 'missing') return null
+
           return (
             <motion.img
               key={item.key}
-              src={item.image}
+              src={`/images/car/${item.file}.${state}`}
               alt=""
               className="absolute inset-0 h-full w-full object-cover"
               initial={false}
               animate={{
-                opacity: isActive ? 1 : 0,
-                scale: isActive ? 1.06 : 1.12,
+                opacity: i === active ? 1 : 0,
+                scale: i === active ? 1.06 : 1.12,
               }}
               transition={{ duration: 0.9, ease: [0.22, 1, 0.36, 1] }}
+              onError={() =>
+                setStatus(prev => ({
+                  ...prev,
+                  [item.key]: prev[item.key] === 'jpg' ? 'missing' : 'jpg',
+                }))
+              }
             />
           )
         })}
+
+        {/* Stand-in backdrop while the real photos aren't in place yet */}
+        {allMissing && (
+          <div className="absolute inset-0 bg-gradient-to-br from-[#141414] via-black to-[#0d0d0d]">
+            <div className="absolute inset-0 flex flex-col items-center justify-center gap-3 text-white/15">
+              <Camera size={40} strokeWidth={1} />
+              <span className="text-xs font-body tracking-[0.25em] uppercase">
+                Toyota Corolla Touring Sports
+              </span>
+            </div>
+          </div>
+        )}
 
         <div className="absolute inset-0 bg-gradient-to-r from-black/70 via-black/20 to-black/50 pointer-events-none" />
         <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-black/30 pointer-events-none" />

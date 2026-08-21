@@ -87,7 +87,11 @@ export default function SignUpScreen() {
             value={email}
             onChangeText={setEmail}
             autoCapitalize="none"
+            autoCorrect={false}
             keyboardType="email-address"
+            autoComplete="email"
+            textContentType="username"
+            importantForAutofill="yes"
           />
 
           <Text style={styles.label}>Phone (optional)</Text>
@@ -108,6 +112,10 @@ export default function SignUpScreen() {
             value={password}
             onChangeText={setPassword}
             secureTextEntry
+            autoCapitalize="none"
+            autoComplete="new-password"
+            textContentType="newPassword"
+            importantForAutofill="yes"
           />
 
           <Text style={styles.label}>Confirm password *</Text>
@@ -118,6 +126,10 @@ export default function SignUpScreen() {
             value={confirm}
             onChangeText={setConfirm}
             secureTextEntry
+            autoCapitalize="none"
+            autoComplete="new-password"
+            textContentType="newPassword"
+            importantForAutofill="yes"
           />
 
           <TouchableOpacity

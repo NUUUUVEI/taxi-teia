@@ -6,6 +6,7 @@ import { useTranslations, useLocale } from 'next-intl'
 import { motion } from 'framer-motion'
 import { ArrowRight, Phone, MessageCircle, ChevronDown } from 'lucide-react'
 import { ParticleCanvas } from './ParticleCanvas'
+import { localePath } from '@/lib/routes'
 
 const fadeUp = {
   hidden: { opacity: 0, y: 30 },
@@ -85,7 +86,7 @@ export function Hero() {
           className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-16"
         >
           <Link
-            href={`/${locale}/book`}
+            href={localePath(locale, '/book')}
             className="group flex items-center gap-3 px-8 py-4 bg-gold text-black font-body font-semibold text-sm tracking-widest uppercase rounded-sm hover:bg-gold-light transition-all duration-300 animate-pulse-gold"
           >
             {t('cta')}
@@ -96,7 +97,7 @@ export function Hero() {
           </Link>
 
           <Link
-            href={`/${locale}/car`}
+            href={localePath(locale, '/car')}
             className="flex items-center gap-3 px-8 py-4 border border-white/20 text-white/80 font-body text-sm tracking-widest uppercase rounded-sm hover:border-gold/50 hover:text-white transition-all duration-300"
           >
             {t('ctaSecondary')}
