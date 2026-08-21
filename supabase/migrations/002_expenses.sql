@@ -12,8 +12,12 @@ create index if not exists idx_expenses_date on public.expenses(date);
 
 alter table public.expenses enable row level security;
 
--- Authenticated users (driver) can do everything
-create policy "Driver full access expenses"
-  on public.expenses
-  using (auth.role() = 'authenticated')
-  with check (auth.role() = 'authenticated');
+-- Authenticated users (driver) can do everything. Guarded so the migration can
+-- replay against a database where this was already applied by hand.
+do $$ begin
+  create policy "Driver full access expenses"
+    on public.expenses
+    using (auth.role() = 'authenticated')
+    with check (auth.role() = 'authenticated');
+exception when duplicate_object then null;
+end $$;
