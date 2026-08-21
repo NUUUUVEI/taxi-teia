@@ -12,7 +12,7 @@ echo.
 robocopy "%SRC%\app" "%DST%\app" /MIR /NFL /NDL /NJH /NJS
 robocopy "%SRC%\src" "%DST%\src" /MIR /NFL /NDL /NJH /NJS
 robocopy "%SRC%\assets" "%DST%\assets" /E /NFL /NDL /NJH /NJS
-robocopy "%SRC%" "%DST%" app.json eas.json babel.config.js tsconfig.json metro.config.js /NFL /NDL /NJH /NJS
+robocopy "%SRC%" "%DST%" app.json eas.json babel.config.js tsconfig.json metro.config.js google-services.json /NFL /NDL /NJH /NJS
 
 echo.
 echo Done. Now build with:

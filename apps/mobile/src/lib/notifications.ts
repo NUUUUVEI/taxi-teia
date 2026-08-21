@@ -61,8 +61,21 @@ export async function registerForPushNotifications(): Promise<string> {
     )
   }
 
-  const { data } = await Notifications.getExpoPushTokenAsync({ projectId })
-  return data
+  try {
+    const { data } = await Notifications.getExpoPushTokenAsync({ projectId })
+    return data
+  } catch (err) {
+    const message = err instanceof Error ? err.message : String(err)
+    // Android push rides on Firebase Cloud Messaging. Without a bundled
+    // google-services.json the native call fails with a raw Java stack trace,
+    // which means nothing to the driver.
+    if (message.includes('FirebaseApp') || message.includes('FirebaseInstallations')) {
+      throw new PushError(
+        'Aquesta versió de l\'app no té la configuració de Firebase per rebre avisos. Cal generar una nova versió amb el fitxer google-services.json.'
+      )
+    }
+    throw new PushError(message)
+  }
 }
 
 export async function savePushToken(token: string) {

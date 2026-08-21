@@ -31,5 +31,9 @@ Thumbs.db
 android/
 ios/
 
+# Firebase service account key used to authorise FCM pushes — private, never commit.
+# google-services.json is safe to commit (it ships inside the APK anyway).
+**/firebase-service-account*.json
+
 # Supabase
 supabase/.temp
