@@ -208,9 +208,9 @@
       "updated": "Les tarifes es revisen cada mes de gener. En aquesta pàgina hi trobaràs sempre les vigents."
     },
     "cta": {
-      "title": "Vols saber què et costarà exactament?",
-      "body": "Posa l'origen i el destí al formulari de reserva i et calculo la ruta real amb el trànsit del moment, amb els quilòmetres i el temps previst. Si ho prefereixes de viva veu, truca'm i t'ho concreto en un minut.",
-      "book": "Calcular el meu trajecte",
+      "title": "Vols una idea de què et costarà?",
+      "body": "Truca'm amb l'origen, el destí i l'hora i et dono una estimació aproximada. El preu exacte el marca el taxímetre en acabar el trajecte, però així saps de quin ordre parlem abans de reservar.",
+      "book": "Reservar el trajecte",
       "call": "Truca'm"
     },
     "disclaimer": "Tarifes vigents del {year}, impostos inclosos. Els imports d'aquesta pàgina són informatius: el preu final del servei és el que marca el taxímetre segons la tarifa oficial aplicable.",

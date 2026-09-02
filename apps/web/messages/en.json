@@ -208,9 +208,9 @@
       "updated": "Rates are revised every January. This page always shows the ones currently in force."
     },
     "cta": {
-      "title": "Want to know exactly what it will cost?",
-      "body": "Enter your pick-up and drop-off in the booking form and I'll work out the real route with live traffic, including distance and expected time. If you'd rather hear it from me, give me a call and I'll tell you in a minute.",
-      "book": "Work out my journey",
+      "title": "Want a rough idea of the cost?",
+      "body": "Call me with your pick-up, drop-off and time and I'll give you an approximate estimate. The exact price is whatever the meter shows at the end of the journey, but at least you'll know the ballpark before you book.",
+      "book": "Book the journey",
       "call": "Call me"
     },
     "disclaimer": "Rates in force for {year}, taxes included. The amounts on this page are for guidance: the final price of the service is the one shown on the meter under the applicable official rate.",

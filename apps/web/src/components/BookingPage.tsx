@@ -435,7 +435,7 @@ export function BookingPage() {
     feasibility.status !== 'checking'
 
   return (
-    <div className="min-h-screen py-12 px-6">
+    <div className="min-h-screen py-12 px-4 sm:px-6">
       <div className="max-w-3xl mx-auto">
         <div className="text-center mb-12">
           <span className="text-gold text-xs font-body tracking-[0.3em] uppercase mb-3 block">
@@ -479,32 +479,38 @@ export function BookingPage() {
           >
             {/* ── STEP 1: Schedule ── */}
             {step === 'schedule' && (
-              <div className="glass rounded-sm p-8">
+              <div className="glass rounded-sm p-5 sm:p-8">
                 <h2 className="font-heading text-2xl text-white mb-6 gold-line">
                   {t('form.schedule')}
                 </h2>
 
-                <div className="flex justify-center mb-8">
+                {/* Not a centring flex wrapper: the day grid divides the table
+                    width between its cells, so the table has to stretch. */}
+                <div className="mb-8">
                   <DayPicker
                     mode="single"
                     selected={selectedDate}
                     onSelect={setSelectedDate}
                     disabled={{ before: startOfDay(new Date()) }}
-                    className="rdp-custom"
+                    className="rdp-custom w-full"
                     classNames={{
-                      root: 'font-body',
-                      month: 'space-y-4',
+                      root: 'font-body w-full',
+                      month: 'space-y-4 w-full',
                       caption: 'flex justify-center relative items-center mb-4',
                       caption_label: 'text-white font-heading text-lg',
-                      nav: 'flex items-center gap-1',
-                      nav_button: 'text-gold/60 hover:text-gold transition-colors p-1',
+                      nav: 'flex items-center gap-2',
+                      nav_button:
+                        'w-11 h-11 flex items-center justify-center text-gold/70 hover:text-gold active:text-gold touch-manipulation transition-colors',
                       table: 'w-full border-collapse',
                       head_row: 'flex',
                       head_cell:
-                        'text-white/30 rounded-sm w-10 font-normal text-xs text-center uppercase tracking-widest',
-                      row: 'flex w-full mt-2',
-                      cell: 'text-center text-sm p-0',
-                      day: 'h-10 w-10 p-0 font-normal text-white/70 hover:bg-gold/10 hover:text-gold rounded-sm transition-colors duration-150 cursor-pointer mx-auto block',
+                        'flex-1 text-white/30 rounded-sm font-normal text-xs text-center uppercase tracking-widest',
+                      row: 'flex w-full mt-1',
+                      cell: 'flex-1 text-center text-sm p-0',
+                      // Fluid width with a fixed 44px height: the row divides the
+                      // available space so the grid never overflows a narrow
+                      // phone, while staying tall enough to tap accurately.
+                      day: 'h-11 w-full max-w-[44px] p-0 font-normal text-white/70 hover:bg-gold/10 hover:text-gold active:bg-gold/20 rounded-sm transition-colors duration-150 cursor-pointer mx-auto block touch-manipulation',
                       day_selected: 'bg-gold text-black font-semibold hover:bg-gold-light',
                       day_today: 'text-gold font-semibold',
                       day_disabled:
@@ -579,7 +585,7 @@ export function BookingPage() {
 
             {/* ── STEP 2: Trip + map ── */}
             {step === 'trip' && (
-              <div className="glass rounded-sm p-8 space-y-5">
+              <div className="glass rounded-sm p-5 sm:p-8 space-y-5">
                 <h2 className="font-heading text-2xl text-white gold-line">{t('form.trip')}</h2>
 
                 <PlaceInput
@@ -673,7 +679,7 @@ export function BookingPage() {
 
             {/* ── STEP 3: Details ── */}
             {step === 'details' && (
-              <div className="glass rounded-sm p-8 space-y-5">
+              <div className="glass rounded-sm p-5 sm:p-8 space-y-5">
                 <h2 className="font-heading text-2xl text-white gold-line">{t('form.details')}</h2>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <InputField
@@ -727,37 +733,32 @@ export function BookingPage() {
 
                 {showFlight ? (
                   <div>
-                    <div className="flex items-end gap-2">
-                      <div className="flex-1">
-                        <InputField
-                          icon={<Plane size={14} />}
-                          label={t('form.flightNumber')}
-                          placeholder={t('form.flightPlaceholder')}
-                          value={flight}
-                          onChange={setFlight}
-                        />
-                      </div>
-                      <button
-                        type="button"
-                        onClick={hideFlight}
-                        aria-label={t('form.flightRemove')}
-                        title={t('form.flightRemove')}
-                        className="p-3 text-white/30 hover:text-white border border-white/10 hover:border-white/25 rounded-sm transition-colors"
-                      >
-                        <X size={16} />
-                      </button>
-                    </div>
+                    <InputField
+                      icon={<Plane size={14} />}
+                      label={t('form.flightNumber')}
+                      placeholder={t('form.flightPlaceholder')}
+                      value={flight}
+                      onChange={setFlight}
+                    />
                     <p className="text-white/35 text-xs font-body mt-2">
                       {t('form.flightHint')}
                     </p>
+                    <button
+                      type="button"
+                      onClick={hideFlight}
+                      className="flex items-center gap-2 min-h-[44px] mt-1 text-white/60 active:text-white text-xs font-body underline decoration-white/25 underline-offset-4 touch-manipulation transition-colors"
+                    >
+                      <X size={14} className="flex-shrink-0" />
+                      {t('form.flightRemove')}
+                    </button>
                   </div>
                 ) : (
                   <button
                     type="button"
                     onClick={() => setFlightOverride(true)}
-                    className="flex items-center gap-2 text-gold/70 hover:text-gold text-xs font-body tracking-widest uppercase transition-colors"
+                    className="flex items-center gap-2 min-h-[44px] text-gold/80 active:text-gold text-xs font-body tracking-widest uppercase touch-manipulation transition-colors"
                   >
-                    <Plane size={14} />
+                    <Plane size={14} className="flex-shrink-0" />
                     {t('form.airportToggle')}
                   </button>
                 )}
@@ -789,7 +790,7 @@ export function BookingPage() {
 
             {/* ── STEP 4: Confirm ── */}
             {step === 'confirm' && (
-              <div className="glass rounded-sm p-8">
+              <div className="glass rounded-sm p-5 sm:p-8">
                 <h2 className="font-heading text-2xl text-white mb-6 gold-line">
                   {t('form.submit')}
                 </h2>

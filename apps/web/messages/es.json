@@ -208,9 +208,9 @@
       "updated": "Las tarifas se revisan cada mes de enero. En esta página encontrarás siempre las vigentes."
     },
     "cta": {
-      "title": "¿Quieres saber qué te costará exactamente?",
-      "body": "Pon el origen y el destino en el formulario de reserva y te calculo la ruta real con el tráfico del momento, con los kilómetros y el tiempo previsto. Si lo prefieres de viva voz, llámame y te lo concreto en un minuto.",
-      "book": "Calcular mi trayecto",
+      "title": "¿Quieres una idea de lo que te costará?",
+      "body": "Llámame con el origen, el destino y la hora y te doy una estimación aproximada. El precio exacto lo marca el taxímetro al terminar el trayecto, pero así sabes de qué orden hablamos antes de reservar.",
+      "book": "Reservar el trayecto",
       "call": "Llámame"
     },
     "disclaimer": "Tarifas vigentes de {year}, impuestos incluidos. Los importes de esta página son informativos: el precio final del servicio es el que marca el taxímetro según la tarifa oficial aplicable.",

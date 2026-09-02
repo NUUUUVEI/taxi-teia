@@ -1,13 +1,14 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import Link from 'next/link'
-import { usePathname, useRouter } from 'next/navigation'
+import { usePathname } from 'next/navigation'
 import { useTranslations, useLocale } from 'next-intl'
 import { motion, AnimatePresence } from 'framer-motion'
 import { Menu, X, Globe, Phone } from 'lucide-react'
 import { locales } from '@/lib/locales'
 import { localePath } from '@/lib/routes'
+import { contact } from '@/lib/site'
 
 const localeLabels: Record<string, string> = {
   ca: 'CA',
@@ -19,10 +20,10 @@ export function Nav() {
   const t = useTranslations('nav')
   const locale = useLocale()
   const pathname = usePathname()
-  const router = useRouter()
   const [scrolled, setScrolled] = useState(false)
   const [mobileOpen, setMobileOpen] = useState(false)
   const [langOpen, setLangOpen] = useState(false)
+  const langRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
     const handleScroll = () => setScrolled(window.scrollY > 40)
@@ -30,13 +31,35 @@ export function Nav() {
     return () => window.removeEventListener('scroll', handleScroll)
   }, [])
 
+  // Without this the dropdown had no way to close except picking a language.
+  useEffect(() => {
+    if (!langOpen) return
+    const onPointerDown = (e: PointerEvent) => {
+      if (!langRef.current?.contains(e.target as Node)) setLangOpen(false)
+    }
+    const onKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') setLangOpen(false)
+    }
+    document.addEventListener('pointerdown', onPointerDown)
+    document.addEventListener('keydown', onKeyDown)
+    return () => {
+      document.removeEventListener('pointerdown', onPointerDown)
+      document.removeEventListener('keydown', onKeyDown)
+    }
+  }, [langOpen])
+
   const switchLocale = (newLocale: string) => {
     // Reduce the current URL to a locale-free path, then re-prefix it the way
     // the middleware expects (no prefix for the default locale).
     const segments = pathname.split('/')
     if ((locales as readonly string[]).includes(segments[1])) segments.splice(1, 1)
-    router.push(localePath(newLocale, segments.join('/') || '/'))
+    const target = localePath(newLocale, segments.join('/') || '/')
     setLangOpen(false)
+    // A full document navigation, not router.push: when only the [locale]
+    // segment changes the App Router serves the already-cached RSC payload, so
+    // the URL and the language silently stayed put. This also lets the server
+    // re-render <html lang> for the new locale.
+    window.location.assign(target)
   }
 
   const bookHref = localePath(locale, '/book')
@@ -83,10 +106,13 @@ export function Nav() {
           ))}
 
           {/* Language switcher */}
-          <div className="relative">
+          <div className="relative" ref={langRef}>
             <button
+              type="button"
               onClick={() => setLangOpen(!langOpen)}
-              className="flex items-center gap-1.5 text-sm text-white/70 hover:text-white transition-colors"
+              aria-expanded={langOpen}
+              aria-haspopup="menu"
+              className="flex items-center gap-1.5 min-h-[44px] px-1 text-sm text-white/70 hover:text-white active:text-white touch-manipulation transition-colors"
             >
               <Globe size={14} />
               <span className="font-body tracking-widest uppercase">
@@ -100,13 +126,16 @@ export function Nav() {
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0, y: -8 }}
                   transition={{ duration: 0.15 }}
-                  className="absolute top-8 right-0 glass rounded-lg overflow-hidden min-w-[80px]"
+                  className="absolute top-11 right-0 glass rounded-lg overflow-hidden min-w-[96px] border border-white/10"
+                  role="menu"
                 >
                   {Object.entries(localeLabels).map(([code, label]) => (
                     <button
                       key={code}
+                      type="button"
+                      role="menuitem"
                       onClick={() => switchLocale(code)}
-                      className={`w-full px-4 py-2 text-sm text-left font-body tracking-widest uppercase hover:bg-gold/10 transition-colors ${
+                      className={`w-full min-h-[44px] px-4 text-sm text-left font-body tracking-widest uppercase hover:bg-gold/10 active:bg-gold/20 touch-manipulation transition-colors ${
                         code === locale ? 'text-gold' : 'text-white/70'
                       }`}
                     >
@@ -127,19 +156,22 @@ export function Nav() {
           </Link>
         </div>
 
-        {/* Mobile: phone + burger */}
-        <div className="flex md:hidden items-center gap-4">
+        {/* Mobile: phone + burger. Both need a 44px box to be reliably tappable,
+            so the icons sit inside padded hit areas rather than standing alone. */}
+        <div className="flex md:hidden items-center -mr-2">
           <a
-            href="tel:+34670254729"
-            className="text-gold"
+            href={`tel:${contact.phoneE164}`}
+            className="w-11 h-11 flex items-center justify-center text-gold active:text-gold-light touch-manipulation"
             aria-label="Call"
           >
             <Phone size={20} />
           </a>
           <button
+            type="button"
             onClick={() => setMobileOpen(!mobileOpen)}
-            className="text-white"
+            className="w-11 h-11 flex items-center justify-center text-white active:text-gold touch-manipulation"
             aria-label="Toggle menu"
+            aria-expanded={mobileOpen}
           >
             {mobileOpen ? <X size={24} /> : <Menu size={24} />}
           </button>
@@ -156,28 +188,32 @@ export function Nav() {
             transition={{ duration: 0.3 }}
             className="md:hidden glass border-t border-gold/10"
           >
-            <div className="px-6 py-6 flex flex-col gap-4">
+            <div className="px-6 py-4 flex flex-col">
               {navItems.map((item) => (
                 <Link
                   key={item.href}
                   href={item.href}
                   onClick={() => setMobileOpen(false)}
-                  className={`text-base font-body tracking-widest uppercase py-2 border-b border-white/5 ${
-                    pathname === item.href ? 'text-gold' : 'text-white/70'
+                  className={`flex items-center min-h-[52px] text-base font-body tracking-widest uppercase border-b border-white/5 touch-manipulation ${
+                    pathname === item.href ? 'text-gold' : 'text-white/70 active:text-white'
                   }`}
                 >
                   {item.label}
                 </Link>
               ))}
-              <div className="flex gap-3 pt-2">
+              {/* Full-width equal thirds: the old pills were 47x34, well under the
+                  44px minimum, which is why taps kept missing on a phone. */}
+              <div className="flex gap-2 pt-5">
                 {Object.entries(localeLabels).map(([code, label]) => (
                   <button
                     key={code}
+                    type="button"
                     onClick={() => { switchLocale(code); setMobileOpen(false) }}
-                    className={`text-sm font-body tracking-widest uppercase px-3 py-1.5 border rounded-sm transition-colors ${
+                    aria-current={code === locale ? 'true' : undefined}
+                    className={`flex-1 min-h-[48px] text-sm font-body tracking-widest uppercase border rounded-sm touch-manipulation transition-colors ${
                       code === locale
-                        ? 'border-gold text-gold'
-                        : 'border-white/20 text-white/50 hover:border-gold/50'
+                        ? 'border-gold text-gold bg-gold/10'
+                        : 'border-white/20 text-white/60 active:border-gold/60 active:text-white'
                     }`}
                   >
                     {label}
@@ -187,7 +223,7 @@ export function Nav() {
               <Link
                 href={bookHref}
                 onClick={() => setMobileOpen(false)}
-                className="mt-2 px-5 py-3 bg-gold text-black text-sm font-body font-semibold tracking-widest uppercase rounded-sm text-center"
+                className="mt-4 min-h-[52px] flex items-center justify-center px-5 bg-gold text-black text-sm font-body font-semibold tracking-widest uppercase rounded-sm text-center touch-manipulation"
               >
                 {t('book')}
               </Link>
