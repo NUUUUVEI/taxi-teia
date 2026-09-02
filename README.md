@@ -41,7 +41,24 @@ canonical URL, `hreflang` alternate and sitemap entry is built from it, so if it
 is wrong Google will index the wrong hostname. Set it in the Vercel project too.
 It falls back to the Vercel preview URL when unset.
 
+`SUPABASE_SERVICE_ROLE_KEY` is server-only and bypasses row level security, so
+it must never gain a `NEXT_PUBLIC_` prefix.
+
 Copy `.env.example` to `.env` in `apps/mobile` similarly.
+
+#### Setting them on Vercel
+
+`.env.local` is gitignored, so Vercel never sees it — every variable above has to
+be added under Settings → Environment Variables, for Production *and* Preview.
+
+Two traps worth knowing. `NEXT_PUBLIC_*` values are baked into the bundle at
+build time, so adding one does nothing to deployments that already exist: you
+have to redeploy afterwards. And a missing anon key fails quietly rather than
+loudly — `getSupabase()` just returns `null`, which leaves the booking form
+looking healthy while every slot reads as free, because the overlap and
+driver-distance checks are skipped. `POST /api/book` is what finally reports
+`Supabase not configured`. If bookings fail but the pages render, check the keys
+before anything else.
 
 ### Before going live
 
