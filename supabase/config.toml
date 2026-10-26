@@ -3,24 +3,26 @@ project_id = "taxi-teia"
 
 [api]
 enabled = true
-port = 54321
+# 553xx rather than the default 543xx so this stack can run next to other
+# local Supabase projects.
+port = 55321
 schemas = ["public", "graphql_public"]
 extra_search_path = ["public", "extensions"]
 max_rows = 1000
 
 [db]
-port = 54322
-shadow_port = 54320
-major_version = 15
+port = 55322
+shadow_port = 55320
+major_version = 17
 
 [studio]
 enabled = true
-port = 54323
+port = 55323
 api_url = "http://127.0.0.1"
 
 [inbucket]
 enabled = true
-port = 54324
+port = 55324
 
 [storage]
 enabled = true
@@ -29,7 +31,7 @@ file_size_limit = "50MiB"
 [auth]
 enabled = true
 site_url = "http://localhost:3000"
-additional_redirect_urls = ["https://taxi-teia.com"]
+additional_redirect_urls = ["https://taxiteia.com", "https://www.taxiteia.com"]
 jwt_expiry = 3600
 enable_refresh_token_rotation = true
 refresh_token_reuse_interval = 10
@@ -42,3 +44,11 @@ enable_signup = true
 double_confirm_changes = true
 enable_confirmations = false
 
+[db.seed]
+enabled = true
+sql_paths = ["./seed.sql"]
+
+# Called by the notify_booking trigger, which authenticates with the
+# x-webhook-secret header rather than a JWT.
+[functions.notify-booking]
+verify_jwt = false

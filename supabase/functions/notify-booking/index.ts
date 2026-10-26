@@ -5,8 +5,13 @@ import { clientEmail, emailForUpdate, esc, formatDate, formatShort, type Booking
 const RESEND_API_KEY = Deno.env.get('RESEND_API_KEY') ?? ''
 const SUPABASE_URL = Deno.env.get('SUPABASE_URL') ?? ''
 const SUPABASE_SERVICE_KEY = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') ?? ''
-const FROM_EMAIL = 'Taxi Teià <reservas@taxiteia.com>'
-const DRIVER_EMAIL = 'marctaxiteia@gmail.com'
+// Resend only sends from reservas@taxiteia.com once the domain is verified.
+// Until then, or when testing, set EMAIL_FROM to 'Taxi Teià <onboarding@resend.dev>'
+// and EMAIL_OVERRIDE_TO to the Resend account's own address: Resend's test
+// sender only delivers there, and no real client gets a test email.
+const FROM_EMAIL = Deno.env.get('EMAIL_FROM') || 'Taxi Teià <reservas@taxiteia.com>'
+const DRIVER_EMAIL = Deno.env.get('DRIVER_EMAIL') || 'marctaxiteia@gmail.com'
+const EMAIL_OVERRIDE_TO = Deno.env.get('EMAIL_OVERRIDE_TO') ?? ''
 
 interface BookingPayload {
   type: 'INSERT' | 'UPDATE'
@@ -15,9 +20,11 @@ interface BookingPayload {
   old_record?: Booking
 }
 
-async function sendEmail(to: string, subject: string, html: string) {
+async function sendEmail(intendedTo: string, subject: string, html: string) {
+  const to = EMAIL_OVERRIDE_TO || intendedTo
+  if (EMAIL_OVERRIDE_TO) subject = `[TEST → ${intendedTo}] ${subject}`
   if (!RESEND_API_KEY) {
-    console.warn('RESEND_API_KEY not set, email skipped:', subject)
+    console.warn('RESEND_API_KEY not set, email skipped:', to, subject)
     return
   }
   const res = await fetch('https://api.resend.com/emails', {

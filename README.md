@@ -53,12 +53,10 @@ be added under Settings → Environment Variables, for Production *and* Preview.
 
 Two traps worth knowing. `NEXT_PUBLIC_*` values are baked into the bundle at
 build time, so adding one does nothing to deployments that already exist: you
-have to redeploy afterwards. And a missing anon key fails quietly rather than
-loudly — `getSupabase()` just returns `null`, which leaves the booking form
-looking healthy while every slot reads as free, because the overlap and
-driver-distance checks are skipped. `POST /api/book` is what finally reports
-`Supabase not configured`. If bookings fail but the pages render, check the keys
-before anything else.
+have to redeploy afterwards. And without `SUPABASE_SERVICE_ROLE_KEY` the pages
+render fine but `POST /api/book` refuses every booking and the availability
+check lets every slot through, because only the server may read bookings. If
+bookings fail but the pages render, check that key before anything else.
 
 ### Before going live
 
@@ -99,8 +97,34 @@ mandatory.
 
 ### Run Dev
 ```bash
-pnpm dev        # starts web on :3000
+pnpm dev        # starts web on :3000, against whatever .env.local points at
 ```
+
+### Testing locally, without touching live data
+
+Needs Docker Desktop running. From the repo root:
+
+```bash
+supabase start                      # local database, migrations and supabase/seed.sql
+cp supabase/functions/.env.example supabase/functions/.env   # once; fill it in
+supabase functions serve --env-file supabase/functions/.env  # notify-booking
+cd apps/web && npm run dev:local    # website on :3000 using the local database
+```
+
+The local stack uses ports 553xx (Studio on http://127.0.0.1:55323), so it can
+run next to other Supabase projects. Every booking made on
+http://localhost:3000 lands in the local database and fires `notify-booking`.
+To play the driver, edit the row in Studio: changing `start_time` sends the
+"time changed" email, setting `status` to `confirmed` or `cancelled` sends
+those emails.
+
+Emails: with `RESEND_API_KEY` empty they are only logged by
+`functions serve`. With a key, `EMAIL_OVERRIDE_TO` sends every email to you
+instead of the client (subject prefixed `[TEST → real recipient]`), and
+`EMAIL_FROM=Taxi Teià <onboarding@resend.dev>` works before taxiteia.com is
+verified in Resend.
+
+`supabase stop` shuts it all down.
 
 For the mobile app:
 ```bash
@@ -141,13 +165,29 @@ booking site.
 supabase login
 supabase link --project-ref your_project_ref
 supabase db push
-supabase functions deploy calculate-duration
-supabase functions deploy notify-booking
+supabase functions deploy notify-booking --no-verify-jwt
 ```
 
-Migration `007_airport_fields.sql` adds `flight_number`, `passengers` and
-`luggage` to `bookings`, so `db push` and a redeploy of `notify-booking` have to
-happen together — the email template reads those columns.
+Function secrets (`supabase secrets set NAME=value`): `RESEND_API_KEY`,
+`WEBHOOK_SECRET`, and optionally `EMAIL_FROM`, `EMAIL_OVERRIDE_TO`,
+`DRIVER_EMAIL` — see `supabase/functions/.env.example`.
+
+The `notify_booking` trigger (migration 009) reads where to call and the shared
+secret from Vault, once per project, in the SQL editor:
+
+```sql
+select vault.create_secret('https://<ref>.supabase.co/functions/v1/notify-booking', 'notify_booking_url');
+select vault.create_secret('<same value as WEBHOOK_SECRET>', 'notify_booking_secret');
+```
+
+Without them bookings still save; they just notify nobody.
+
+Only accounts listed in `public.drivers` can use the driver app. Sign-up is off;
+create the account under Authentication → Users, then
+`insert into public.drivers (user_id) select id from auth.users where email = '...';`
+(`marctaxiteia@gmail.com` is added automatically when created).
+
+Launching on taxiteia.com: see [LAUNCH.md](LAUNCH.md).
 
 ## Project Structure
 
