@@ -1,6 +1,6 @@
 export type BookingStatus = 'pending' | 'confirmed' | 'completed' | 'cancelled'
 
-export interface ServiceType {
+export type ServiceType = {
   id: string
   slug: string
   label_ca: string
@@ -10,7 +10,7 @@ export interface ServiceType {
   estimated_minutes_default: number
 }
 
-export interface Booking {
+export type Booking = {
   id: string
   created_at: string
   client_name: string
@@ -36,14 +36,20 @@ export interface Booking {
 export const MAX_PASSENGERS = 4
 export const MAX_LUGGAGE = 8
 
-export interface DriverLocation {
+export type DriverLocation = {
   user_id: string
   lat: number
   lng: number
   updated_at: string
 }
 
-export interface Database {
+export type BookingAttempt = {
+  id: number
+  ip_hash: string
+  created_at: string
+}
+
+export type Database = {
   public: {
     Tables: {
       bookings: {
@@ -62,6 +68,12 @@ export interface Database {
         Row: DriverLocation
         Insert: DriverLocation
         Update: Partial<Omit<DriverLocation, 'user_id'>>
+        Relationships: []
+      }
+      booking_attempts: {
+        Row: BookingAttempt
+        Insert: { ip_hash: string; created_at?: string }
+        Update: Partial<Omit<BookingAttempt, 'id'>>
         Relationships: []
       }
     }

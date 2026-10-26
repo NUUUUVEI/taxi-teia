@@ -144,12 +144,6 @@ export default function LoginScreen() {
               Android t&apos;oferirà guardar la contrasenya al Gestor de Google
             </Text>
           </View>
-
-          <TouchableOpacity style={styles.signupLink} onPress={() => router.replace('/signup')}>
-            <Text style={styles.signupLinkText}>
-              No tens compte? <Text style={{ color: colors.gold }}>Crea&apos;n un</Text>
-            </Text>
-          </TouchableOpacity>
         </View>
       </View>
     </KeyboardAvoidingView>
@@ -267,6 +261,4 @@ const styles = StyleSheet.create({
     paddingHorizontal: 8,
   },
   autofillHintText: { color: colors.textMuted, fontSize: 11, flexShrink: 1 },
-  signupLink: { alignItems: 'center', marginTop: 20 },
-  signupLinkText: { color: colors.textMuted, fontSize: 13 },
 })

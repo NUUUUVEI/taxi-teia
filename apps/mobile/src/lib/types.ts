@@ -9,7 +9,7 @@ export type ExpenseCategory =
   | 'amortization'
   | 'other'
 
-export interface ServiceType {
+export type ServiceType = {
   id: string
   slug: string
   label_ca: string
@@ -19,7 +19,7 @@ export interface ServiceType {
   estimated_minutes_default: number
 }
 
-export interface Booking {
+export type Booking = {
   id: string
   created_at: string
   client_name: string
@@ -41,7 +41,10 @@ export interface Booking {
   luggage?: number | null
 }
 
-export interface Expense {
+/** Fields the driver may change on a booking. */
+export type BookingUpdate = Partial<Omit<Booking, 'id' | 'created_at'>>
+
+export type Expense = {
   id: string
   created_at: string
   date: string
@@ -51,26 +54,26 @@ export interface Expense {
   invoice_photo_url: string | null
 }
 
-export interface DriverPushToken {
+export type DriverPushToken = {
   user_id: string
   token: string
   updated_at: string
 }
 
-export interface DriverLocation {
+export type DriverLocation = {
   user_id: string
   lat: number
   lng: number
   updated_at: string
 }
 
-export interface Database {
+export type Database = {
   public: {
     Tables: {
       bookings: {
         Row: Booking
         Insert: Omit<Booking, 'id' | 'created_at'>
-        Update: Partial<Omit<Booking, 'id' | 'created_at'>>
+        Update: BookingUpdate
         Relationships: []
       }
       service_types: {

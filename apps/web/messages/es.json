@@ -171,7 +171,8 @@
     "errors": {
       "required": "Este campo es obligatorio",
       "invalidPhone": "Número de teléfono no válido",
-      "generic": "Ha habido un error. Inténtalo de nuevo."
+      "generic": "Ha habido un error. Inténtalo de nuevo.",
+      "tooMany": "Has enviado demasiadas solicitudes en poco tiempo. Vuelve a intentarlo en una hora o llámanos."
     }
   },
   "prices": {

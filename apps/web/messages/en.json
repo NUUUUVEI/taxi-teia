@@ -171,7 +171,8 @@
     "errors": {
       "required": "This field is required",
       "invalidPhone": "Invalid phone number",
-      "generic": "Something went wrong. Please try again."
+      "generic": "Something went wrong. Please try again.",
+      "tooMany": "Too many requests in a short time. Please try again in an hour or give us a call."
     }
   },
   "prices": {

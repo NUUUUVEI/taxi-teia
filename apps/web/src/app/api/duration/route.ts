@@ -1,42 +1,26 @@
 import { NextRequest, NextResponse } from 'next/server'
+import { getDirections } from '@/lib/server/directions'
 
 export async function POST(req: NextRequest) {
   const { origin, destination, departure_time } = await req.json()
-  const key = process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY
 
-  if (!origin || !destination) {
+  if (typeof origin !== 'string' || typeof destination !== 'string' || !origin || !destination) {
     return NextResponse.json({ error: 'origin and destination are required' }, { status: 400 })
   }
 
-  if (!key) {
+  if (!process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY) {
     return NextResponse.json({ error: 'Google Maps API key missing' }, { status: 500 })
   }
 
-  const depTime = departure_time ?? Math.floor(Date.now() / 1000) + 3600
+  const route = await getDirections(
+    origin.slice(0, 300),
+    destination.slice(0, 300),
+    Number.isFinite(departure_time) ? departure_time : undefined
+  )
 
-  const url = new URL('https://maps.googleapis.com/maps/api/directions/json')
-  url.searchParams.set('origin', origin)
-  url.searchParams.set('destination', destination)
-  url.searchParams.set('mode', 'driving')
-  url.searchParams.set('key', key)
-  url.searchParams.set('departure_time', String(depTime))
-  url.searchParams.set('traffic_model', 'best_guess')
-
-  const res = await fetch(url.toString())
-  const data = await res.json()
-
-  if (data.status !== 'OK' || !data.routes?.[0]) {
-    return NextResponse.json(
-      { error: 'Could not calculate route', gmaps_status: data.status },
-      { status: 422 }
-    )
+  if (!route) {
+    return NextResponse.json({ error: 'Could not calculate route' }, { status: 422 })
   }
 
-  const leg = data.routes[0].legs[0]
-  const durationSeconds = leg.duration_in_traffic?.value ?? leg.duration?.value ?? 0
-  const duration_minutes = Math.max(1, Math.ceil(durationSeconds / 60))
-  const distance_km = +((leg.distance?.value ?? 0) / 1000).toFixed(1)
-  const polyline = data.routes[0].overview_polyline?.points ?? null
-
-  return NextResponse.json({ duration_minutes, distance_km, polyline })
+  return NextResponse.json(route)
 }

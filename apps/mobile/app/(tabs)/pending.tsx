@@ -5,7 +5,7 @@ import {
 } from 'react-native'
 import { format, addMinutes, parseISO, isValid } from 'date-fns'
 import { supabase } from '../../src/lib/supabase'
-import type { Booking } from '../../src/lib/types'
+import type { Booking, BookingUpdate } from '../../src/lib/types'
 import { colors } from '../../src/lib/theme'
 import { router } from 'expo-router'
 import { Ionicons } from '@expo/vector-icons'
@@ -90,7 +90,7 @@ export default function PendingScreen() {
     }
 
     setSaving(true)
-    const payload: Partial<Booking> = alsoConfirm
+    const payload: BookingUpdate = alsoConfirm
       ? { start_time: next.toISOString(), status: 'confirmed' }
       : { start_time: next.toISOString() }
 

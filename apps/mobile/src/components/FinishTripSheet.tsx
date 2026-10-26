@@ -5,7 +5,7 @@ import {
 } from 'react-native'
 import { Ionicons } from '@expo/vector-icons'
 import { supabase } from '../lib/supabase'
-import type { Booking } from '../lib/types'
+import type { Booking, BookingUpdate } from '../lib/types'
 import { colors } from '../lib/theme'
 import { clearActiveTrip } from '../lib/activeTrip'
 
@@ -48,7 +48,7 @@ export function FinishTripSheet({
       return
     }
 
-    const payload: Partial<Booking> = markCompleted
+    const payload: BookingUpdate = markCompleted
       ? { fare: value, status: 'completed' }
       : { fare: value }
 

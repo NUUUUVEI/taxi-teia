@@ -9,13 +9,11 @@ import {
   Clock, User, Phone, ChevronRight, CheckCircle2, Loader2, AlertTriangle, MapPin,
   Plane, Users, Briefcase, Minus, Plus, ChevronDown, X,
 } from 'lucide-react'
-import { getSupabase } from '@/lib/supabase'
 import { PlaceInput } from './PlaceInput'
 import { RouteMap } from './RouteMap'
 import { dateLocales } from '@/lib/dateLocale'
-import { MAX_LUGGAGE, MAX_PASSENGERS, type Booking, type DriverLocation } from '@/lib/types'
-
-const BUFFER_MINUTES = 10
+import { MAX_LUGGAGE, MAX_PASSENGERS } from '@/lib/types'
+import type { Availability } from '@/lib/server/availability'
 
 /**
  * Enough to catch the airports people actually fly from here without matching
@@ -139,6 +137,7 @@ export function BookingPage() {
   const [passengers, setPassengers] = useState(1)
   const [luggage, setLuggage] = useState(0)
   const [flight, setFlight] = useState('')
+  const [website, setWebsite] = useState('')
   // null = follow the address sniffing; true/false = the visitor decided.
   const [flightOverride, setFlightOverride] = useState<boolean | null>(null)
 
@@ -240,6 +239,38 @@ export function BookingPage() {
     return () => clearTimeout(timer)
   }, [form.pickup, form.dropoff, requestedTime, timeMode])
 
+  const toFeasibility = useCallback(
+    (a: Availability): Feasibility => {
+      if (a.status !== 'blocked') return { status: 'ok' }
+      switch (a.reason) {
+        case 'past':
+          return { status: 'blocked', reason: t('feasibility.past') }
+        case 'overlap':
+          return {
+            status: 'blocked',
+            reason: t('feasibility.overlap', {
+              start: fmtTime(parseISO(a.start)),
+              end: fmtTime(parseISO(a.end)),
+            }),
+          }
+        case 'transfer':
+          return {
+            status: 'blocked',
+            reason: t('feasibility.transfer', {
+              time: fmtTime(parseISO(a.time)),
+              minutes: a.minutes,
+            }),
+          }
+        case 'driverTooFar':
+          return {
+            status: 'blocked',
+            reason: t('feasibility.driverTooFar', { minutes: a.minutes }),
+          }
+      }
+    },
+    [t, fmtTime]
+  )
+
   const checkFeasibility = useCallback(async () => {
     if (!pickupTime || !routeInfo || !form.pickup || !form.dropoff) {
       setFeasibility({ status: 'idle' })
@@ -252,99 +283,25 @@ export function BookingPage() {
     }
 
     setFeasibility({ status: 'checking' })
-    const newStart = pickupTime
-    const newEnd = addMinutes(newStart, routeInfo.duration_minutes)
 
+    // Other bookings and the driver's position are private, so the server
+    // runs the check and only tells us whether the slot fits.
     try {
-      const day = format(newStart, 'yyyy-MM-dd')
-      let existing: Pick<Booking, 'start_time' | 'estimated_minutes' | 'pickup_address' | 'dropoff_address'>[] = []
-
-      const supabase = getSupabase()
-      if (supabase) {
-        const { data } = await supabase
-          .from('bookings')
-          .select('start_time, estimated_minutes, pickup_address, dropoff_address')
-          .gte('start_time', `${day}T00:00:00`)
-          .lte('start_time', `${day}T23:59:59`)
-          .not('status', 'eq', 'cancelled')
-        existing = (data ?? []) as typeof existing
-      }
-
-      for (const trip of existing) {
-        const tripStart = parseISO(trip.start_time)
-        const tripEnd = addMinutes(tripStart, trip.estimated_minutes)
-
-        if (newStart < tripEnd && tripStart < newEnd) {
-          setFeasibility({
-            status: 'blocked',
-            reason: t('feasibility.overlap', {
-              start: format(tripStart, 'HH:mm'),
-              end: format(tripEnd, 'HH:mm'),
-            }),
-          })
-          return
-        }
-
-        const earlierIsExisting = tripEnd <= newStart
-        const origin = earlierIsExisting ? trip.dropoff_address : form.dropoff
-        const dest = earlierIsExisting ? form.pickup : trip.pickup_address
-        const gapStart = earlierIsExisting ? tripEnd : newEnd
-        const gapEnd = earlierIsExisting ? newStart : tripStart
-
-        const transferRoute = await fetchRoute(origin, dest, Math.floor(gapStart.getTime() / 1000))
-        const transferMin = (transferRoute?.duration_minutes ?? 20) + BUFFER_MINUTES
-        const needed = addMinutes(gapStart, transferMin)
-
-        if (needed > gapEnd) {
-          setFeasibility({
-            status: 'blocked',
-            reason: t('feasibility.transfer', {
-              time: format(tripStart, 'HH:mm'),
-              minutes: transferMin,
-            }),
-          })
-          return
-        }
-      }
-
-      const supabase2 = getSupabase()
-      if (supabase2) {
-        const { data } = await supabase2
-          .from('driver_location')
-          .select('lat, lng, updated_at')
-          .order('updated_at', { ascending: false })
-          .limit(1)
-          .maybeSingle()
-
-        const locData = data as Pick<DriverLocation, 'lat' | 'lng' | 'updated_at'> | null
-
-        if (locData) {
-          const locationAge = (Date.now() - new Date(locData.updated_at).getTime()) / 60000
-          if (locationAge < 60) {
-            const driverCoord = `${locData.lat},${locData.lng}`
-            const minutesUntilTrip = (newStart.getTime() - Date.now()) / 60000
-            const driveRoute = await fetchRoute(
-              driverCoord,
-              form.pickup,
-              Math.floor(newStart.getTime() / 1000)
-            )
-            const driveMin = driveRoute?.duration_minutes ?? 0
-            if (driveMin > minutesUntilTrip) {
-              setFeasibility({
-                status: 'blocked',
-                reason: t('feasibility.driverTooFar', { minutes: Math.ceil(driveMin) }),
-              })
-              return
-            }
-          }
-        }
-      }
-
-      setFeasibility({ status: 'ok' })
+      const res = await fetch('/api/availability', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          pickup: form.pickup,
+          dropoff: form.dropoff,
+          start_time: pickupTime.toISOString(),
+          estimated_minutes: routeInfo.duration_minutes,
+        }),
+      })
+      setFeasibility(res.ok ? toFeasibility(await res.json()) : { status: 'ok' })
     } catch {
       setFeasibility({ status: 'ok' })
     }
-  }, [pickupTime, routeInfo, form.pickup, form.dropoff, t])
+  }, [pickupTime, routeInfo, form.pickup, form.dropoff, t, toFeasibility])
 
   useEffect(() => {
     const timer = setTimeout(() => void checkFeasibility(), 400)
@@ -378,13 +335,29 @@ export function BookingPage() {
           flight_number: flight.trim() || null,
           passengers,
           luggage,
+          website,
         }),
       })
 
       const data = await res.json()
 
       if (!res.ok) {
-        setError(`${t('errors.generic')} (${data.error ?? res.status})`)
+        // Someone else may have taken the slot since the form last checked.
+        const blocked = data.error === 'unavailable' && data.availability
+          ? toFeasibility(data.availability)
+          : null
+        if (blocked?.status === 'blocked') {
+          setFeasibility(blocked)
+          setError(blocked.reason)
+          return
+        }
+        setError(
+          data.error === 'too_many'
+            ? t('errors.tooMany')
+            : data.error === 'invalid_phone'
+              ? t('errors.invalidPhone')
+              : t('errors.generic')
+        )
         return
       }
 
@@ -769,6 +742,17 @@ export function BookingPage() {
                   value={form.notes}
                   onChange={(notes) => setForm({ ...form, notes })}
                   multiline
+                />
+                {/* Honeypot: hidden from people, filled in by bots. */}
+                <input
+                  type="text"
+                  name="website"
+                  tabIndex={-1}
+                  autoComplete="off"
+                  aria-hidden="true"
+                  value={website}
+                  onChange={(e) => setWebsite(e.target.value)}
+                  className="absolute -left-[9999px] h-0 w-0 opacity-0"
                 />
                 <div className="flex justify-between pt-2">
                   <button

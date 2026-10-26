@@ -171,7 +171,8 @@
     "errors": {
       "required": "Aquest camp és obligatori",
       "invalidPhone": "Número de telèfon no vàlid",
-      "generic": "Hi ha hagut un error. Intenta-ho de nou."
+      "generic": "Hi ha hagut un error. Intenta-ho de nou.",
+      "tooMany": "Has enviat massa sol·licituds en poca estona. Torna-ho a provar d'aquí a una hora o truca'ns."
     }
   },
   "prices": {

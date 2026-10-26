@@ -95,7 +95,36 @@ async function sendPushToDriver(title: string, body: string) {
   })
 }
 
+/** Compares secrets without leaking how many leading characters matched. */
+function safeEqual(a: string, b: string) {
+  if (!a || a.length !== b.length) return false
+  let diff = 0
+  for (let i = 0; i < a.length; i++) diff |= a.charCodeAt(i) ^ b.charCodeAt(i)
+  return diff === 0
+}
+
+/**
+ * Only the database webhook may call this: anyone else could otherwise push
+ * fake bookings to the driver's phone or send emails in Taxi Teià's name.
+ * The webhook proves itself with the service role key (the default for
+ * Supabase webhooks that target an Edge Function) or with WEBHOOK_SECRET in an
+ * x-webhook-secret header.
+ */
+function isAuthorised(req: Request) {
+  const bearer = req.headers.get('Authorization')?.replace(/^Bearer\s+/i, '') ?? ''
+  const secret = req.headers.get('x-webhook-secret') ?? ''
+  const webhookSecret = Deno.env.get('WEBHOOK_SECRET') ?? ''
+  return safeEqual(bearer, SUPABASE_SERVICE_KEY) || safeEqual(secret, webhookSecret)
+}
+
 serve(async (req) => {
+  if (!isAuthorised(req)) {
+    return new Response(JSON.stringify({ error: 'Unauthorized' }), {
+      status: 401,
+      headers: { 'Content-Type': 'application/json' },
+    })
+  }
+
   const payload: BookingPayload = await req.json()
   const b = payload.record
   const loc = b.locale ?? 'ca'

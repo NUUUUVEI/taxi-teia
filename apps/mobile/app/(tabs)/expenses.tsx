@@ -11,6 +11,7 @@ import * as ImagePicker from 'expo-image-picker'
 import * as Print from 'expo-print'
 import * as Sharing from 'expo-sharing'
 import { supabase, SUPABASE_URL } from '../../src/lib/supabase'
+import { signedInvoiceUrl } from '../../src/lib/invoices'
 import { colors } from '../../src/lib/theme'
 import { Ionicons } from '@expo/vector-icons'
 
@@ -49,6 +50,7 @@ export default function ExpensesScreen() {
   const [loading, setLoading] = useState(true)
   const [modalVisible, setModalVisible] = useState(false)
   const [viewingInvoice, setViewingInvoice] = useState<Expense | null>(null)
+  const [viewingUrl, setViewingUrl] = useState<string | null>(null)
   const [generatingPdf, setGeneratingPdf] = useState(false)
 
   // Add / edit expense form. `editingId` null means we're adding a new one.
@@ -87,6 +89,17 @@ export default function ExpensesScreen() {
   }, [period, anchor])
 
   useEffect(() => { fetchData() }, [fetchData])
+
+  // Invoices sit in a private bucket, so each view needs a fresh signed URL.
+  useEffect(() => {
+    setViewingUrl(null)
+    if (!viewingInvoice?.invoice_photo_url) return
+    let cancelled = false
+    signedInvoiceUrl(viewingInvoice.invoice_photo_url).then((url) => {
+      if (!cancelled) setViewingUrl(url)
+    })
+    return () => { cancelled = true }
+  }, [viewingInvoice])
 
   const totalExpenses = expenses.reduce((s, e) => s + e.amount, 0)
   const netBenefit = income - totalExpenses
@@ -154,8 +167,8 @@ export default function ExpensesScreen() {
         return null
       }
 
-      const { data: urlData } = supabase.storage.from('expense-invoices').getPublicUrl(path)
-      return urlData.publicUrl
+      // The bucket is private: store the path and sign a URL whenever it is shown.
+      return path
     } catch {
       return null
     }
@@ -184,7 +197,8 @@ export default function ExpensesScreen() {
     setNewDesc(e.description ?? '')
     setNewDate(e.date)
     setNewPhoto(null)
-    setExistingPhotoUrl(e.invoice_photo_url)
+    setExistingPhotoUrl(null)
+    if (e.invoice_photo_url) signedInvoiceUrl(e.invoice_photo_url).then(setExistingPhotoUrl)
     setModalVisible(true)
   }
 
@@ -234,11 +248,11 @@ export default function ExpensesScreen() {
     }
 
     if (newPhoto && expenseId) {
-      const photoUrl = await uploadPhoto(newPhoto, expenseId)
-      if (photoUrl) {
+      const photoPath = await uploadPhoto(newPhoto, expenseId)
+      if (photoPath) {
         await supabase
           .from('expenses')
-          .update({ invoice_photo_url: photoUrl })
+          .update({ invoice_photo_url: photoPath })
           .eq('id', expenseId)
       }
     }
@@ -716,9 +730,9 @@ export default function ExpensesScreen() {
             maximumZoomScale={4}
             minimumZoomScale={1}
           >
-            {viewingInvoice?.invoice_photo_url && (
+            {viewingUrl && (
               <Image
-                source={{ uri: viewingInvoice.invoice_photo_url }}
+                source={{ uri: viewingUrl }}
                 style={styles.viewerImage}
                 resizeMode="contain"
               />
@@ -728,9 +742,7 @@ export default function ExpensesScreen() {
           <TouchableOpacity
             style={styles.viewerOpenBtn}
             onPress={() => {
-              if (viewingInvoice?.invoice_photo_url) {
-                Linking.openURL(viewingInvoice.invoice_photo_url)
-              }
+              if (viewingUrl) Linking.openURL(viewingUrl)
             }}
           >
             <Ionicons name="open-outline" size={16} color={colors.gold} />

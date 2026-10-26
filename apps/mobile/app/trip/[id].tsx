@@ -15,7 +15,7 @@ import {
 import { useLocalSearchParams, router } from 'expo-router'
 import { format, parseISO, isValid } from 'date-fns'
 import { supabase } from '../../src/lib/supabase'
-import type { Booking } from '../../src/lib/types'
+import type { Booking, BookingUpdate } from '../../src/lib/types'
 import { colors } from '../../src/lib/theme'
 import { openWaze, openGoogleMaps } from '../../src/lib/navigation'
 import { useActiveTrip, setActiveTrip, clearActiveTrip } from '../../src/lib/activeTrip'
@@ -121,7 +121,7 @@ export default function TripDetailScreen() {
 
     const minutesNum = parseInt(eMinutes, 10)
 
-    const payload: Partial<Booking> = {
+    const payload: BookingUpdate = {
       start_time: when.toISOString(),
       client_name: eName.trim(),
       client_phone: ePhone.trim(),
