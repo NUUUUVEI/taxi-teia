@@ -9,6 +9,7 @@ import type { Booking, BookingUpdate } from '../../src/lib/types'
 import { colors } from '../../src/lib/theme'
 import { router } from 'expo-router'
 import { Ionicons } from '@expo/vector-icons'
+import { emailNotice, offerCallIfNoEmail } from '../../src/lib/clientNotice'
 
 const NUDGES = [-30, -15, 15, 30]
 
@@ -48,19 +49,26 @@ export default function PendingScreen() {
     return () => { supabase.removeChannel(channel) }
   }, [fetchPending])
 
-  const setStatus = async (id: string, status: 'confirmed' | 'cancelled') => {
-    const { error } = await supabase.from('bookings').update({ status }).eq('id', id)
-    if (error) Alert.alert('Error', error.message)
+  const setStatus = async (b: Booking, status: 'confirmed' | 'cancelled') => {
+    const { error } = await supabase.from('bookings').update({ status }).eq('id', b.id)
     fetchPending()
+    if (error) {
+      Alert.alert('Error', error.message)
+      return
+    }
+    offerCallIfNoEmail(
+      b,
+      status === 'confirmed' ? 'que el viatge està confirmat' : 'que el viatge no es pot fer'
+    )
   }
 
   const handleDecline = (b: Booking) => {
     Alert.alert(
       'Rebutjar viatge',
-      `Segur que vols rebutjar el viatge de ${b.client_name}? El client rebrà un correu.`,
+      `Segur que vols rebutjar el viatge de ${b.client_name}? ${emailNotice(b)}`,
       [
         { text: 'No', style: 'cancel' },
-        { text: 'Rebutjar', style: 'destructive', onPress: () => setStatus(b.id, 'cancelled') },
+        { text: 'Rebutjar', style: 'destructive', onPress: () => setStatus(b, 'cancelled') },
       ]
     )
   }
@@ -101,6 +109,7 @@ export default function PendingScreen() {
       Alert.alert('Error', error.message)
       return
     }
+    offerCallIfNoEmail(editing, "l'hora nova")
     setEditing(null)
     fetchPending()
   }
@@ -161,7 +170,7 @@ export default function PendingScreen() {
             <Ionicons name="close" size={16} color={colors.error} />
             <Text style={styles.cancelBtnText}>Rebutjar</Text>
           </TouchableOpacity>
-          <TouchableOpacity style={styles.confirmBtn} onPress={() => setStatus(b.id, 'confirmed')}>
+          <TouchableOpacity style={styles.confirmBtn} onPress={() => setStatus(b, 'confirmed')}>
             <Ionicons name="checkmark" size={16} color={colors.black} />
             <Text style={styles.confirmBtnText}>Acceptar</Text>
           </TouchableOpacity>
@@ -219,9 +228,12 @@ export default function PendingScreen() {
             </View>
 
             {editing && (
-              <Text style={styles.modalClient}>
-                {editing.client_name} · {editing.pickup_address}
-              </Text>
+              <>
+                <Text style={styles.modalClient}>
+                  {editing.client_name} · {editing.pickup_address}
+                </Text>
+                <Text style={styles.modalNotice}>{emailNotice(editing)}</Text>
+              </>
             )}
 
             <Text style={styles.fieldLabel}>Data</Text>
@@ -350,7 +362,8 @@ const styles = StyleSheet.create({
     alignItems: 'center', marginBottom: 6,
   },
   modalTitle: { color: colors.textPrimary, fontSize: 16, fontWeight: '600', letterSpacing: 0.5 },
-  modalClient: { color: colors.textMuted, fontSize: 12, marginBottom: 18 },
+  modalClient: { color: colors.textMuted, fontSize: 12, marginBottom: 6 },
+  modalNotice: { color: colors.gold, fontSize: 12, marginBottom: 18 },
   fieldLabel: {
     color: colors.textSecondary, fontSize: 11, letterSpacing: 2,
     textTransform: 'uppercase', marginBottom: 6,

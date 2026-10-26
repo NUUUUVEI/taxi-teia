@@ -133,10 +133,10 @@
       "estimatedTime": "Tiempo estimado",
       "estimatedMinutes": "{minutes} minutos aprox.",
       "estimating": "Calculando el tiempo del trayecto...",
-      "submit": "Confirmar reserva",
+      "submit": "Enviar solicitud",
       "submitting": "Enviando...",
       "email": "Correo electrónico (opcional)",
-      "emailPlaceholder": "para recibir confirmación",
+      "emailPlaceholder": "para recibir la confirmación y cualquier cambio",
       "notes": "Notas (opcional)",
       "timeModePickup": "Hora de recogida",
       "timeModeArrival": "Hora de llegada",
@@ -153,7 +153,9 @@
       "flightHint": "Sigo el vuelo: si se retrasa, ajusto la hora de recogida sin que tengas que llamar.",
       "airportToggle": "Voy o vengo del aeropuerto",
       "flightRemove": "No es un trayecto de aeropuerto",
-      "capacityNote": "Con 4 pasajeros y tanto equipaje el espacio puede quedar justo. Llámame y lo confirmamos antes."
+      "capacityNote": "Con 4 pasajeros y tanto equipaje el espacio puede quedar justo. Llámame y lo confirmamos antes.",
+      "emailShort": "Correo",
+      "requestNote": "Esto es una solicitud, no una reserva cerrada. La reviso y te la confirmo. Si hay que cambiar la hora o algún detalle, te contactaré por teléfono o por correo antes del viaje."
     },
     "feasibility": {
       "checking": "Comprobando si esta hora encaja con otros viajes...",
@@ -164,9 +166,11 @@
       "driverTooFar": "El taxista necesita unos {minutes} min para llegar, pero no hay tiempo suficiente. Elige una hora más tarde."
     },
     "success": {
-      "title": "¡Reserva confirmada!",
-      "message": "Hemos recibido tu reserva. Marc se pondrá en contacto contigo para confirmarla. ¡Gracias!",
-      "close": "Cerrar"
+      "title": "¡Solicitud enviada!",
+      "message": "La reviso y te la confirmo por correo o por teléfono. Si hay que cambiar la hora o algún detalle, te contactaré antes del viaje. ¡Gracias!",
+      "close": "Cerrar",
+      "requestedPickup": "Recogida solicitada a las {time}",
+      "requestedArrival": "Llegada solicitada a las {time}"
     },
     "errors": {
       "required": "Este campo es obligatorio",

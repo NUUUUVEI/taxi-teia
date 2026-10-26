@@ -21,6 +21,7 @@ import { openWaze, openGoogleMaps } from '../../src/lib/navigation'
 import { useActiveTrip, setActiveTrip, clearActiveTrip } from '../../src/lib/activeTrip'
 import { FinishTripSheet } from '../../src/components/FinishTripSheet'
 import { Ionicons } from '@expo/vector-icons'
+import { emailNotice, offerCallIfNoEmail } from '../../src/lib/clientNotice'
 
 const STATUS_COLOR: Record<string, string> = {
   pending: colors.warning,
@@ -63,6 +64,8 @@ export default function TripDetailScreen() {
     if (error) { Alert.alert('Error', error.message); return }
     if (status === 'cancelled' && isActive) await clearActiveTrip()
     setBooking({ ...booking, status })
+    if (status === 'cancelled') offerCallIfNoEmail(booking, "que el viatge s'ha cancel·lat")
+    if (status === 'confirmed') offerCallIfNoEmail(booking, 'que el viatge està confirmat')
   }
 
   // ── Journey with Waze ───────────────────────────────────────────────────────
@@ -145,6 +148,11 @@ export default function TripDetailScreen() {
         pickup: payload.pickup_address!,
         dropoff: payload.dropoff_address!,
       })
+    }
+
+    const timeMoved = new Date(booking.start_time).getTime() !== when.getTime()
+    if (timeMoved && (booking.status === 'pending' || booking.status === 'confirmed')) {
+      offerCallIfNoEmail(booking, "l'hora nova")
     }
 
     setEditing(false)
@@ -377,7 +385,7 @@ export default function TripDetailScreen() {
           <TouchableOpacity
             style={[styles.actionBtn, { borderColor: colors.error }]}
             onPress={() => {
-              Alert.alert('Cancel·lar viatge', 'Segur?', [
+              Alert.alert('Cancel·lar viatge', `Segur? ${emailNotice(booking)}`, [
                 { text: 'No', style: 'cancel' },
                 {
                   text: 'Cancel·lar',
@@ -415,6 +423,12 @@ export default function TripDetailScreen() {
                 <Ionicons name="close" size={22} color={colors.textMuted} />
               </TouchableOpacity>
             </View>
+
+            <Text style={{ color: colors.gold, fontSize: 12, marginBottom: 12 }}>
+              {booking.client_email
+                ? "Si canvies l'hora, el client rebrà un correu amb la nova."
+                : "Aquest client no té correu: si canvies l'hora, truca'l."}
+            </Text>
 
             <ScrollView style={{ maxHeight: 420 }} keyboardShouldPersistTaps="handled">
               <Field label="Data" value={eDate} onChange={setEDate} placeholder="aaaa-mm-dd" />

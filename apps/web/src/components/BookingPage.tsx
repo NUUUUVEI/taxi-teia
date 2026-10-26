@@ -383,8 +383,8 @@ export function BookingPage() {
           {pickupTime && (
             <p className="text-gold font-body text-sm mt-4">
               {timeMode === 'pickup'
-                ? t('form.pickupAt', { time: fmtTime(pickupTime) })
-                : t('form.arrivalAt', { time: fmtTime(arrivalTime!) })}
+                ? t('success.requestedPickup', { time: fmtTime(pickupTime) })
+                : t('success.requestedArrival', { time: fmtTime(arrivalTime!) })}
             </p>
           )}
           <a
@@ -801,6 +801,7 @@ export function BookingPage() {
                       : []),
                     { label: t('form.name'), value: form.name },
                     { label: t('form.phone'), value: form.phone },
+                    ...(form.email.trim() ? [{ label: t('form.emailShort'), value: form.email.trim() }] : []),
                     { label: t('form.passengers'), value: String(passengers) },
                     ...(luggage > 0
                       ? [{ label: t('form.luggage'), value: String(luggage) }]
@@ -831,6 +832,14 @@ export function BookingPage() {
                       </span>
                     </div>
                   ))}
+                </div>
+
+                {/* Nothing is booked until Marc accepts, and he may move the time. */}
+                <div className="flex gap-3 mb-6 p-4 rounded-sm border border-gold/25 bg-gold/5">
+                  <AlertTriangle size={16} className="text-gold flex-shrink-0 mt-0.5" />
+                  <p className="text-white/70 text-sm font-body leading-relaxed">
+                    {t('form.requestNote')}
+                  </p>
                 </div>
 
                 {error && <p className="text-red-400 text-sm font-body mb-4">{error}</p>}
