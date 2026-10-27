@@ -133,6 +133,8 @@
       "estimatedTime": "Tiempo estimado",
       "estimatedMinutes": "{minutes} minutos aprox.",
       "estimating": "Calculando el tiempo del trayecto...",
+      "suggestionsUnavailable": "Ahora mismo no puedo sugerir direcciones. Escríbela completa, con el municipio.",
+      "routeUnavailable": "No se ha podido calcular el trayecto: la duración es aproximada y Marc te confirmará la hora.",
       "submit": "Enviar solicitud",
       "submitting": "Enviando...",
       "email": "Correo electrónico (opcional)",

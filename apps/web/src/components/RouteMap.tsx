@@ -1,5 +1,7 @@
 'use client'
 
+import { useState } from 'react'
+
 type RouteMapProps = {
   pickup: string
   dropoff: string
@@ -7,10 +9,11 @@ type RouteMapProps = {
 }
 
 export function RouteMap({ pickup, dropoff, polyline }: RouteMapProps) {
-  if (!pickup.trim() || !dropoff.trim()) return null
+  const [failed, setFailed] = useState(false)
+  if (!pickup.trim() || !dropoff.trim() || failed) return null
 
   const key = process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY
-  if (!key) return null
+  if (!key || key.includes('your-')) return null
 
   const params = new URLSearchParams({
     size: '640x280',
@@ -41,6 +44,7 @@ export function RouteMap({ pickup, dropoff, polyline }: RouteMapProps) {
         alt="Route map"
         className="w-full h-auto block"
         loading="lazy"
+        onError={() => setFailed(true)}
       />
     </div>
   )

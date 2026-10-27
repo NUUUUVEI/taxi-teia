@@ -27,9 +27,11 @@ function loadEnvFile(filePath) {
 }
 
 ;[
+  // Not .env.example: its placeholders would silently stand in for variables
+  // missing on Vercel (that is how the live site ended up calling Google with
+  // "your-google-maps-key").
   resolve(__dirname, '.env.local'),
   resolve(__dirname, '.env'),
-  resolve(__dirname, '.env.example'),
   resolve(__dirname, '../../.env.local'),
   resolve(__dirname, '../../.env'),
 ].forEach(loadEnvFile)

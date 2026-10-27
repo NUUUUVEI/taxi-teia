@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState } from 'react'
 import { MapPin, Loader2 } from 'lucide-react'
-import { useLocale } from 'next-intl'
+import { useLocale, useTranslations } from 'next-intl'
 
 type Suggestion = {
   description: string
@@ -23,14 +23,19 @@ export function PlaceInput({
   onChange: (value: string) => void
 }) {
   const locale = useLocale()
+  const t = useTranslations('booking.form')
   const [open, setOpen] = useState(false)
+  const [unavailable, setUnavailable] = useState(false)
+  // The text a suggestion filled in; searching for it again would just reopen
+  // the list with that same suggestion.
+  const picked = useRef<string | null>(null)
   const [loading, setLoading] = useState(false)
   const [suggestions, setSuggestions] = useState<Suggestion[]>([])
   const wrapRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
     const q = value.trim()
-    if (q.length < 2) {
+    if (q.length < 2 || value === picked.current) {
       setSuggestions([])
       return
     }
@@ -42,9 +47,11 @@ export function PlaceInput({
           `/api/places?q=${encodeURIComponent(q)}&language=${locale}`
         )
         const data = await res.json()
+        setUnavailable(!res.ok)
         setSuggestions(data.predictions ?? [])
         setOpen(true)
       } catch {
+        setUnavailable(true)
         setSuggestions([])
       } finally {
         setLoading(false)
@@ -88,6 +95,10 @@ export function PlaceInput({
         )}
       </div>
 
+      {unavailable && (
+        <p className="text-white/40 text-xs font-body mt-2">{t('suggestionsUnavailable')}</p>
+      )}
+
       {open && suggestions.length > 0 && (
         <ul className="absolute z-30 mt-1 w-full max-h-64 overflow-auto bg-[#141414] border border-gold/20 rounded-sm shadow-2xl">
           {suggestions.map((s) => (
@@ -95,6 +106,7 @@ export function PlaceInput({
               <button
                 type="button"
                 onClick={() => {
+                  picked.current = s.description
                   onChange(s.description)
                   setSuggestions([])
                   setOpen(false)

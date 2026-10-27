@@ -133,6 +133,8 @@
       "estimatedTime": "Temps estimat",
       "estimatedMinutes": "{minutes} minuts aprox.",
       "estimating": "Calculant el temps del trajecte...",
+      "suggestionsUnavailable": "Ara mateix no puc suggerir adreces. Escriu-la sencera, amb el municipi.",
+      "routeUnavailable": "No s'ha pogut calcular el trajecte: la durada és aproximada i el Marc et confirmarà l'hora.",
       "submit": "Envia la sol·licitud",
       "submitting": "Enviant...",
       "email": "Correu electrònic (opcional)",

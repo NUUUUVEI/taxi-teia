@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { getDirections } from '@/lib/server/directions'
+import { mapsServerKey } from '@/lib/server/googleKey'
 
 export async function POST(req: NextRequest) {
   const { origin, destination, departure_time } = await req.json()
@@ -8,7 +9,7 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: 'origin and destination are required' }, { status: 400 })
   }
 
-  if (!process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY) {
+  if (!mapsServerKey()) {
     return NextResponse.json({ error: 'Google Maps API key missing' }, { status: 500 })
   }
 

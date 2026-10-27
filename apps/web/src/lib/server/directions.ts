@@ -1,3 +1,5 @@
+import { mapsServerKey } from './googleKey'
+
 export type Directions = {
   duration_minutes: number
   distance_km: number
@@ -10,7 +12,7 @@ export async function getDirections(
   destination: string,
   departureTime?: number
 ): Promise<Directions | null> {
-  const key = process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY
+  const key = mapsServerKey()
   if (!key) return null
 
   // Google rejects a departure_time in the past.
@@ -28,7 +30,13 @@ export async function getDirections(
   const res = await fetch(url.toString())
   const data = await res.json()
 
-  if (data.status !== 'OK' || !data.routes?.[0]) return null
+  if (data.status !== 'OK' || !data.routes?.[0]) {
+    // NOT_FOUND / ZERO_RESULTS are bad addresses; anything else is configuration.
+    if (data.status !== 'NOT_FOUND' && data.status !== 'ZERO_RESULTS') {
+      console.error('Directions failed:', data.status, data.error_message)
+    }
+    return null
+  }
 
   const leg = data.routes[0].legs[0]
   const durationSeconds = leg.duration_in_traffic?.value ?? leg.duration?.value ?? 0

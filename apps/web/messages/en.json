@@ -133,6 +133,8 @@
       "estimatedTime": "Estimated time",
       "estimatedMinutes": "approx. {minutes} min",
       "estimating": "Calculating trip time...",
+      "suggestionsUnavailable": "Address suggestions are unavailable right now. Type the full address, including the town.",
+      "routeUnavailable": "The route could not be calculated, so the duration is approximate. Marc will confirm the time.",
       "submit": "Send request",
       "submitting": "Sending...",
       "email": "Email (optional)",

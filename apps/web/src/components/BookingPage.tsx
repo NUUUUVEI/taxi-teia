@@ -52,6 +52,9 @@ type RouteInfo = {
   polyline: string | null
 }
 
+/** Used when no route can be calculated; distance 0 marks it as a guess. */
+const FALLBACK_ROUTE: RouteInfo = { duration_minutes: 30, distance_km: 0, polyline: null }
+
 type Feasibility =
   | { status: 'idle' }
   | { status: 'checking' }
@@ -112,7 +115,7 @@ async function solvePickupFromArrival(
   const fallback = await fetchRoute(pickup, dropoff, Math.floor(pickupTime.getTime() / 1000))
   return {
     pickupTime,
-    route: fallback ?? { duration_minutes: minutes, distance_km: 0, polyline: null },
+    route: fallback ?? { ...FALLBACK_ROUTE, duration_minutes: minutes },
   }
 }
 
@@ -215,12 +218,13 @@ export function BookingPage() {
       try {
         if (timeMode === 'pickup') {
           const dep = Math.floor(requestedTime.getTime() / 1000)
-          const route = await fetchRoute(form.pickup, form.dropoff, dep)
-          if (route) {
-            setRouteInfo(route)
-            setPickupTime(requestedTime)
-            setArrivalTime(addMinutes(requestedTime, route.duration_minutes))
-          }
+          // Without a route (Google down, unknown address) fall back to a
+          // rough estimate rather than leaving the visitor stuck: Marc checks
+          // and confirms every request anyway.
+          const route = (await fetchRoute(form.pickup, form.dropoff, dep)) ?? FALLBACK_ROUTE
+          setRouteInfo(route)
+          setPickupTime(requestedTime)
+          setArrivalTime(addMinutes(requestedTime, route.duration_minutes))
         } else {
           const { pickupTime: pt, route } = await solvePickupFromArrival(
             form.pickup,
@@ -593,6 +597,12 @@ export function BookingPage() {
                         </span>
                       ) : routeInfo && pickupTime && arrivalTime ? (
                         <>
+                          {routeInfo.distance_km === 0 && (
+                            <p className="flex items-start gap-2 text-amber-400/90 text-sm font-body">
+                              <AlertTriangle size={14} className="flex-shrink-0 mt-0.5" />
+                              {t('form.routeUnavailable')}
+                            </p>
+                          )}
                           <div className="flex items-center gap-2 text-white/70 text-sm font-body">
                             <Clock size={14} className="text-gold flex-shrink-0" />
                             {t('form.estimatedMinutes', { minutes: routeInfo.duration_minutes })}
