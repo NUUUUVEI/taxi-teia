@@ -103,7 +103,7 @@ export default function HistoryScreen() {
         ListEmptyComponent={
           !loading ? (
             <View style={styles.empty}>
-              <Text style={styles.emptyText}>No completed trips yet</Text>
+              <Text style={styles.emptyText}>Encara no hi ha viatges fets</Text>
             </View>
           ) : null
         }

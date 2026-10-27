@@ -5,6 +5,7 @@ import {
   ActivityIndicator,
 } from 'react-native'
 import { router } from 'expo-router'
+import Constants from 'expo-constants'
 import { Ionicons } from '@expo/vector-icons'
 import { supabase } from '../../src/lib/supabase'
 import { colors } from '../../src/lib/theme'
@@ -33,7 +34,7 @@ export default function SettingsScreen() {
   const [loading, setLoading] = useState(true)
 
   const [pushOn, setPushOn] = useState(false)
-  const [locationOn, setLocationOn] = useState(isLocationSharing())
+  const [locationOn, setLocationOn] = useState(false)
   const [pushBusy, setPushBusy] = useState(false)
   const [locBusy, setLocBusy] = useState(false)
 
@@ -50,6 +51,7 @@ export default function SettingsScreen() {
       setPhone((user.user_metadata?.phone as string) ?? '')
     }
     setPushOn(await hasPushToken())
+    setLocationOn(await isLocationSharing())
     setLoading(false)
   }, [])
 
@@ -84,21 +86,26 @@ export default function SettingsScreen() {
     setLocBusy(true)
     try {
       if (value) {
-        const ok = await startLocationSharing()
-        if (!ok) {
+        const mode = await startLocationSharing()
+        if (!mode) {
           Alert.alert(
             'Permís denegat',
             'La web necessita la teva ubicació per saber si pots arribar a temps a una recollida.'
           )
+        } else if (mode === 'foreground') {
+          Alert.alert(
+            "Només amb l'app oberta",
+            "Per compartir la ubicació mentre fas servir Waze, ves als permisos de l'app i tria «Permet sempre» a Ubicació."
+          )
         }
-        setLocationOn(ok)
+        setLocationOn(!!mode)
       } else {
-        stopLocationSharing()
+        await stopLocationSharing(true)
         setLocationOn(false)
       }
     } catch (err) {
       Alert.alert('Error', err instanceof Error ? err.message : 'Error desconegut.')
-      setLocationOn(isLocationSharing())
+      setLocationOn(await isLocationSharing())
     } finally {
       setLocBusy(false)
     }
@@ -142,7 +149,7 @@ export default function SettingsScreen() {
         text: 'Sortir',
         style: 'destructive',
         onPress: async () => {
-          stopLocationSharing()
+          await stopLocationSharing(false)
           await supabase.auth.signOut()
           router.replace('/login')
         },
@@ -265,7 +272,7 @@ export default function SettingsScreen() {
           <Text style={styles.logoutText}>Tancar sessió</Text>
         </TouchableOpacity>
 
-        <Text style={styles.version}>Taxi Teià Driver v1.0.0</Text>
+        <Text style={styles.version}>Taxi Teià Driver v{Constants.expoConfig?.version ?? '?'}</Text>
       </ScrollView>
 
       {/* Profile sheet */}

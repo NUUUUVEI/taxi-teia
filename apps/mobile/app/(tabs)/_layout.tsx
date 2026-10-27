@@ -80,8 +80,6 @@ export default function TabsLayout() {
         />
 
         {/* Hidden — superseded by pending + expenses */}
-        <Tabs.Screen name="today" options={{ href: null }} />
-        <Tabs.Screen name="earnings" options={{ href: null }} />
       </Tabs>
 
       <ActiveTripBar />

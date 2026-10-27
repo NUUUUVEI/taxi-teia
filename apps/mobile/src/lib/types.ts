@@ -1,5 +1,12 @@
 export type BookingStatus = 'pending' | 'confirmed' | 'completed' | 'cancelled'
 
+export const STATUS_LABEL: Record<BookingStatus, string> = {
+  pending: 'PENDENT',
+  confirmed: 'CONFIRMAT',
+  completed: 'FET',
+  cancelled: 'CANCEL·LAT',
+}
+
 export type ExpenseCategory =
   | 'fuel'
   | 'mechanics'

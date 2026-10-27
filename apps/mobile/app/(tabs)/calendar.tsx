@@ -8,7 +8,7 @@ import {
   startOfDay, endOfDay,
 } from 'date-fns'
 import { supabase } from '../../src/lib/supabase'
-import type { Booking } from '../../src/lib/types'
+import { STATUS_LABEL, type Booking } from '../../src/lib/types'
 import { colors } from '../../src/lib/theme'
 import { Ionicons } from '@expo/vector-icons'
 import { router } from 'expo-router'
@@ -20,7 +20,7 @@ const STATUS_COLORS: Record<string, string> = {
   cancelled: colors.textMuted,
 }
 
-const DAYS_OF_WEEK = ['Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa', 'Su']
+const DAYS_OF_WEEK = ['Dl', 'Dt', 'Dc', 'Dj', 'Dv', 'Ds', 'Dg']
 
 export default function CalendarScreen() {
   const [currentMonth, setCurrentMonth] = useState(new Date())
@@ -150,9 +150,9 @@ export default function CalendarScreen() {
         </Text>
 
         {loadingDay ? (
-          <Text style={styles.emptyText}>Loading...</Text>
+          <Text style={styles.emptyText}>Carregant...</Text>
         ) : dayBookings.length === 0 ? (
-          <Text style={styles.emptyText}>No trips this day</Text>
+          <Text style={styles.emptyText}>Cap viatge aquest dia</Text>
         ) : (
           <FlatList
             data={dayBookings}
@@ -168,7 +168,7 @@ export default function CalendarScreen() {
                     <Text style={styles.tripTime}>{format(new Date(b.start_time), 'HH:mm')}</Text>
                     <View style={[styles.badge, { backgroundColor: (STATUS_COLORS[b.status] ?? colors.border) + '20' }]}>
                       <Text style={[styles.badgeText, { color: STATUS_COLORS[b.status] ?? colors.textMuted }]}>
-                        {b.status.toUpperCase()}
+                        {STATUS_LABEL[b.status] ?? b.status.toUpperCase()}
                       </Text>
                     </View>
                   </View>

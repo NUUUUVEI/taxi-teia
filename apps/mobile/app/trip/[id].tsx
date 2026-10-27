@@ -15,7 +15,7 @@ import {
 import { useLocalSearchParams, router } from 'expo-router'
 import { format, parseISO, isValid } from 'date-fns'
 import { supabase } from '../../src/lib/supabase'
-import type { Booking, BookingUpdate } from '../../src/lib/types'
+import { STATUS_LABEL, type Booking, type BookingUpdate } from '../../src/lib/types'
 import { colors } from '../../src/lib/theme'
 import { openWaze, openGoogleMaps } from '../../src/lib/navigation'
 import { useActiveTrip, setActiveTrip, clearActiveTrip } from '../../src/lib/activeTrip'
@@ -58,12 +58,14 @@ export default function TripDetailScreen() {
 
   useEffect(() => { load() }, [load])
 
-  const updateStatus = async (status: Booking['status']) => {
+  /** @param quiet skip the "call the client" prompt, e.g. while opening Waze. */
+  const updateStatus = async (status: Booking['status'], quiet = false) => {
     if (!booking) return
     const { error } = await supabase.from('bookings').update({ status }).eq('id', id)
     if (error) { Alert.alert('Error', error.message); return }
     if (status === 'cancelled' && isActive) await clearActiveTrip()
     setBooking({ ...booking, status })
+    if (quiet) return
     if (status === 'cancelled') offerCallIfNoEmail(booking, "que el viatge s'ha cancel·lat")
     if (status === 'confirmed') offerCallIfNoEmail(booking, 'que el viatge està confirmat')
   }
@@ -78,7 +80,7 @@ export default function TripDetailScreen() {
       pickup: booking.pickup_address,
       dropoff: booking.dropoff_address,
     })
-    if (booking.status === 'pending') await updateStatus('confirmed')
+    if (booking.status === 'pending') await updateStatus('confirmed', true)
     await openWaze(booking.pickup_address)
   }
 
@@ -182,7 +184,7 @@ export default function TripDetailScreen() {
           </Text>
           <View style={[styles.badge, { backgroundColor: STATUS_COLOR[booking.status] + '20' }]}>
             <Text style={[styles.badgeText, { color: STATUS_COLOR[booking.status] }]}>
-              {booking.status.toUpperCase()}
+              {STATUS_LABEL[booking.status]}
             </Text>
           </View>
         </View>

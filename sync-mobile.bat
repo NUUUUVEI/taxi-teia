@@ -12,8 +12,10 @@ echo.
 robocopy "%SRC%\app" "%DST%\app" /MIR /NFL /NDL /NJH /NJS
 robocopy "%SRC%\src" "%DST%\src" /MIR /NFL /NDL /NJH /NJS
 robocopy "%SRC%\assets" "%DST%\assets" /E /NFL /NDL /NJH /NJS
-robocopy "%SRC%" "%DST%" app.json eas.json babel.config.js tsconfig.json metro.config.js google-services.json /NFL /NDL /NJH /NJS
+robocopy "%SRC%" "%DST%" index.js package.json package-lock.json app.json eas.json babel.config.js tsconfig.json metro.config.js google-services.json /NFL /NDL /NJH /NJS
 
+echo.
+echo If package.json changed, run "npm install" in %DST% before building.
 echo.
 echo Done. Now build with:
 echo   cd /d %DST%

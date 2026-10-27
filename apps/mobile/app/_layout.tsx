@@ -1,10 +1,12 @@
 import { useEffect, useRef } from 'react'
-import { Stack } from 'expo-router'
+import { Stack, router } from 'expo-router'
 import { StatusBar } from 'expo-status-bar'
+import { setDefaultOptions } from 'date-fns'
+import { ca } from 'date-fns/locale'
 import * as Notifications from 'expo-notifications'
 import { supabase } from '../src/lib/supabase'
 import { registerForPushNotifications, savePushToken } from '../src/lib/notifications'
-import { startLocationSharing, stopLocationSharing } from '../src/lib/location'
+import { resumeLocationSharing, stopLocationSharing } from '../src/lib/location'
 import { hydrateActiveTrip } from '../src/lib/activeTrip'
 
 /**
@@ -18,31 +20,35 @@ function registerPushQuietly() {
     .catch(() => {})
 }
 
+// Every date in the app is shown in Catalan ("dimarts, 27 octubre").
+setDefaultOptions({ locale: ca })
+
 export default function RootLayout() {
   const notifListener = useRef<Notifications.Subscription>()
 
   useEffect(() => {
     hydrateActiveTrip()
 
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      if (session) {
+    // INITIAL_SESSION covers an already signed-in launch. Token refreshes
+    // fire this too, every hour, and must not re-register everything.
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
+      if (session && (event === 'INITIAL_SESSION' || event === 'SIGNED_IN')) {
         registerPushQuietly()
-        startLocationSharing()
+        resumeLocationSharing().catch(() => {})
+      } else if (event === 'SIGNED_OUT') {
+        stopLocationSharing(false).catch(() => {})
       }
     })
 
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
-      if (session) {
-        registerPushQuietly()
-        startLocationSharing()
-      } else {
-        stopLocationSharing()
+    // Tapping a new-booking notification opens the list where it can be accepted,
+    // also when the tap is what launched the app.
+    const openPending = (response: Notifications.NotificationResponse | null) => {
+      if (response?.notification.request.content.data?.type === 'new_booking') {
+        router.push('/(tabs)/pending')
       }
-    })
-
-    notifListener.current = Notifications.addNotificationReceivedListener(() => {
-      // Notification received while app is open — could refresh data here
-    })
+    }
+    Notifications.getLastNotificationResponseAsync().then(openPending)
+    notifListener.current = Notifications.addNotificationResponseReceivedListener(openPending)
 
     return () => {
       subscription.unsubscribe()
