@@ -9,6 +9,7 @@ import {
   Platform,
   ActivityIndicator,
   Alert,
+  Image,
 } from 'react-native'
 import { router } from 'expo-router'
 import { Ionicons } from '@expo/vector-icons'
@@ -65,9 +66,7 @@ export default function LoginScreen() {
       <View style={styles.inner}>
         {/* Logo */}
         <View style={styles.logoContainer}>
-          <View style={styles.logoCircle}>
-            <Text style={styles.logoLetter}>T</Text>
-          </View>
+          <Image source={require('../assets/icon.png')} style={styles.logoImage} />
           <Text style={styles.logoText}>
             Taxi <Text style={{ color: colors.gold }}>Teià</Text>
           </Text>
@@ -164,20 +163,11 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginBottom: 48,
   },
-  logoCircle: {
-    width: 56,
-    height: 56,
-    borderRadius: 28,
-    borderWidth: 1,
-    borderColor: colors.gold,
-    alignItems: 'center',
-    justifyContent: 'center',
-    marginBottom: 12,
-  },
-  logoLetter: {
-    color: colors.gold,
-    fontSize: 22,
-    fontWeight: '600',
+  logoImage: {
+    width: 88,
+    height: 88,
+    borderRadius: 20,
+    marginBottom: 16,
   },
   logoText: {
     color: colors.textPrimary,

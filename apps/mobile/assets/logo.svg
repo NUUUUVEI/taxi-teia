@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1024" height="1024" viewBox="0 0 1024 1024"><rect width="1024" height="1024" fill="#A94F35"/>
+    <path d="M-20 850 Q200 700 420 790 Q600 720 760 770 Q900 720 1044 820 V1044 H-20 Z" fill="#8C3F29"/>
+    <rect x="437" y="381" width="150" height="520" fill="#F4EADA"/>
+    <rect x="423" y="389" width="178" height="22" rx="4" fill="#F4EADA"/>
+    <rect x="437" y="610" width="150" height="10" fill="#A94F35" opacity=".35"/>
+    <path d="M482 560 v-78 a30 30 0 0 1 60 0 v78 Z" fill="#A94F35"/>
+    <rect x="494" y="660" width="36" height="52" rx="18" fill="#A94F35" opacity=".55"/>
+    <path d="M293.6 215 H730.4 Q772.9 215 792 385 H232 Q251.10000000000002 215 293.6 215 Z" fill="#F4EADA"/>
+    <text x="512" y="334" font-family="Georgia" font-weight="bold" font-size="98.6" letter-spacing="10.2" text-anchor="middle" fill="#A94F35">TAXI</text>
+    <path d="M-20 900 Q260 790 512 860 Q780 800 1044 880 V1044 H-20 Z" fill="#F4EADA"/></svg>
