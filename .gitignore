@@ -32,7 +32,9 @@ android/
 ios/
 
 # Firebase service account key used to authorise FCM pushes — private, never commit.
-# google-services.json is safe to commit (it ships inside the APK anyway).
+# google-services.json is not secret (it ships inside the APK) but is kept out
+# of git by choice; sync-mobile.bat copies it from the local working copy.
+apps/mobile/google-services.json
 **/firebase-service-account*.json
 
 # Supabase
