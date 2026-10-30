@@ -10,20 +10,17 @@ export function CarPageClient() {
   return (
     <div>
       <div className="relative min-h-[40vh] flex flex-col items-center justify-center pt-24 pb-8 px-6 text-center">
-        <span className="text-gold text-xs font-body tracking-[0.3em] uppercase mb-4 block">
-          Toyota Corolla Touring Sports Hybrid 140
-        </span>
-        <h1 className="font-heading font-light text-5xl md:text-7xl text-white mb-4">
+        <h1 className="font-heading font-bold text-5xl md:text-7xl text-ink mb-4 tracking-tight">
           {t('title')}
         </h1>
-        <div className="w-16 h-px bg-gold mx-auto mb-6" />
-        <p className="text-white/50 text-lg font-body max-w-lg">{t('subtitle')}</p>
+        <p className="text-ink/75 text-lg font-body max-w-lg">{t('subtitle')}</p>
+        <p className="mt-2 text-ink/70 font-body">Toyota Corolla Touring Sports Hybrid 140</p>
 
-        <div className="mt-10 flex flex-col items-center gap-2 text-white/30">
-          <p className="text-xs font-body tracking-widest uppercase">
+        <div className="mt-10 flex flex-col items-center gap-2 text-ink/70">
+          <p className="text-xs font-body">
             {t('scrollHint')}
           </p>
-          <ChevronDown size={16} className="animate-bounce text-gold/40" />
+          <ChevronDown size={16} className="animate-bounce text-taxi-deep" />
         </div>
       </div>
 

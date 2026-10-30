@@ -379,13 +379,13 @@ export function BookingPage() {
         <motion.div
           initial={{ opacity: 0, scale: 0.9 }}
           animate={{ opacity: 1, scale: 1 }}
-          className="glass rounded-sm p-12 max-w-md text-center"
+          className="panel rounded-2xl p-12 max-w-md text-center"
         >
-          <CheckCircle2 size={48} className="text-gold mx-auto mb-6" />
-          <h2 className="font-heading text-3xl text-white mb-3">{t('success.title')}</h2>
-          <p className="text-white/60 font-body text-sm leading-relaxed">{t('success.message')}</p>
+          <CheckCircle2 size={48} className="text-taxi-deep mx-auto mb-6" />
+          <h2 className="font-heading font-bold text-3xl text-ink mb-3">{t('success.title')}</h2>
+          <p className="text-ink/70 font-body text-sm leading-relaxed">{t('success.message')}</p>
           {pickupTime && (
-            <p className="text-gold font-body text-sm mt-4">
+            <p className="text-taxi-deep font-body text-sm mt-4">
               {timeMode === 'pickup'
                 ? t('success.requestedPickup', { time: fmtTime(pickupTime) })
                 : t('success.requestedArrival', { time: fmtTime(arrivalTime!) })}
@@ -393,7 +393,7 @@ export function BookingPage() {
           )}
           <a
             href="tel:+34670254729"
-            className="mt-8 inline-flex items-center gap-2 text-gold text-sm font-body tracking-widest uppercase"
+            className="mt-8 inline-flex items-center gap-2 min-h-[48px] px-6 bg-taxi text-ink font-bold rounded-full"
           >
             670 254 729
           </a>
@@ -415,14 +415,10 @@ export function BookingPage() {
     <div className="min-h-screen py-12 px-4 sm:px-6">
       <div className="max-w-3xl mx-auto">
         <div className="text-center mb-12">
-          <span className="text-gold text-xs font-body tracking-[0.3em] uppercase mb-3 block">
-            Taxi Teià
-          </span>
-          <h1 className="font-heading font-light text-5xl md:text-6xl text-white mb-4">
+          <h1 className="font-heading font-bold text-5xl md:text-6xl text-ink mb-4">
             {t('title')}
           </h1>
-          <div className="w-16 h-px bg-gold mx-auto mb-4" />
-          <p className="text-white/50 font-body text-sm">{t('subtitle')}</p>
+          <p className="text-ink/70 font-body text-sm">{t('subtitle')}</p>
         </div>
 
         <div className="flex items-center justify-center gap-3 mb-12">
@@ -431,16 +427,16 @@ export function BookingPage() {
               <div
                 className={`w-7 h-7 rounded-full flex items-center justify-center text-xs font-body font-semibold transition-all duration-300 ${
                   i < stepIndex
-                    ? 'bg-gold text-black'
+                    ? 'bg-taxi text-ink'
                     : i === stepIndex
-                    ? 'border-2 border-gold text-gold'
-                    : 'border border-white/20 text-white/30'
+                    ? 'border-2 border-taxi-deep text-taxi-deep'
+                    : 'border border-ink/20 text-ink/55'
                 }`}
               >
                 {i < stepIndex ? '✓' : i + 1}
               </div>
               {i < STEPS.length - 1 && (
-                <div className={`w-8 h-px ${i < stepIndex ? 'bg-gold' : 'bg-white/15'}`} />
+                <div className={`w-8 h-px ${i < stepIndex ? 'bg-taxi' : 'bg-ink/15'}`} />
               )}
             </div>
           ))}
@@ -456,8 +452,8 @@ export function BookingPage() {
           >
             {/* ── STEP 1: Schedule ── */}
             {step === 'schedule' && (
-              <div className="glass rounded-sm p-5 sm:p-8">
-                <h2 className="font-heading text-2xl text-white mb-6 gold-line">
+              <div className="panel rounded-2xl p-5 sm:p-8">
+                <h2 className="font-heading font-bold text-2xl text-ink mb-6 taxi-rule">
                   {t('form.schedule')}
                 </h2>
 
@@ -466,6 +462,7 @@ export function BookingPage() {
                 <div className="mb-8">
                   <DayPicker
                     mode="single"
+                    locale={dfLocale}
                     selected={selectedDate}
                     onSelect={setSelectedDate}
                     disabled={{ before: startOfDay(new Date()) }}
@@ -474,32 +471,32 @@ export function BookingPage() {
                       root: 'font-body w-full',
                       month: 'space-y-4 w-full',
                       caption: 'flex justify-center relative items-center mb-4',
-                      caption_label: 'text-white font-heading text-lg',
+                      caption_label: 'text-ink font-heading font-bold text-lg capitalize',
                       nav: 'flex items-center gap-2',
                       nav_button:
-                        'w-11 h-11 flex items-center justify-center text-gold/70 hover:text-gold active:text-gold touch-manipulation transition-colors',
+                        'w-11 h-11 flex items-center justify-center text-taxi-deep hover:text-taxi-deep active:text-taxi-deep touch-manipulation transition-colors',
                       table: 'w-full border-collapse',
                       head_row: 'flex',
                       head_cell:
-                        'flex-1 text-white/30 rounded-sm font-normal text-xs text-center uppercase tracking-widest',
+                        'flex-1 text-ink/55 rounded-sm font-normal text-xs text-center',
                       row: 'flex w-full mt-1',
                       cell: 'flex-1 text-center text-sm p-0',
                       // Fluid width with a fixed 44px height: the row divides the
                       // available space so the grid never overflows a narrow
                       // phone, while staying tall enough to tap accurately.
-                      day: 'h-11 w-full max-w-[44px] p-0 font-normal text-white/70 hover:bg-gold/10 hover:text-gold active:bg-gold/20 rounded-sm transition-colors duration-150 cursor-pointer mx-auto block touch-manipulation',
-                      day_selected: 'bg-gold text-black font-semibold hover:bg-gold-light',
-                      day_today: 'text-gold font-semibold',
+                      day: 'h-11 w-full max-w-[44px] p-0 font-normal text-ink/70 hover:bg-taxi/30 hover:text-ink active:bg-taxi/50 rounded-lg transition-colors duration-150 cursor-pointer mx-auto block touch-manipulation',
+                      day_selected: 'bg-taxi text-ink font-bold hover:bg-taxi-light hover:text-ink',
+                      day_today: 'text-taxi-deep font-semibold',
                       day_disabled:
-                        'text-white/20 cursor-not-allowed hover:bg-transparent hover:text-white/20',
-                      day_outside: 'text-white/15',
+                        'text-ink/20 cursor-not-allowed hover:bg-transparent hover:text-ink/20',
+                      day_outside: 'text-ink/30',
                     }}
                   />
                 </div>
 
                 {/* Reads as a sentence: "I want to be picked up at 08:30" */}
-                <label className="text-white/40 text-xs font-body tracking-widest uppercase mb-3 flex items-center gap-1.5">
-                  <Clock size={14} className="text-gold/60" />
+                <label className="text-ink/80 text-sm font-bold font-body mb-3 flex items-center gap-1.5">
+                  <Clock size={14} className="text-taxi-deep" />
                   {t('form.whenLabel')}
                 </label>
 
@@ -530,7 +527,7 @@ export function BookingPage() {
                         </option>
                       ))}
                     </Select>
-                    <span className="text-gold/50 font-body">:</span>
+                    <span className="text-taxi-deep font-body">:</span>
                     <Select
                       value={minute}
                       onChange={setMinute}
@@ -546,13 +543,13 @@ export function BookingPage() {
                   </div>
                 </div>
 
-                <p className="text-white/35 text-xs font-body mt-3">{t('form.timeHint')}</p>
+                <p className="text-ink/60 text-xs font-body mt-3">{t('form.timeHint')}</p>
 
                 <div className="mt-6 flex justify-end">
                   <button
                     onClick={() => setStep('trip')}
                     disabled={!scheduleReady}
-                    className="flex items-center gap-2 px-6 py-3 bg-gold text-black font-body font-semibold text-sm tracking-widest uppercase rounded-sm disabled:opacity-40 disabled:cursor-not-allowed hover:bg-gold-light transition-colors"
+                    className="flex items-center gap-2 px-6 py-3 bg-taxi text-ink font-body font-bold text-base rounded-full disabled:opacity-40 disabled:cursor-not-allowed hover:bg-taxi-light transition-colors"
                   >
                     {t('form.continueTrip')} <ChevronRight size={14} />
                   </button>
@@ -562,8 +559,8 @@ export function BookingPage() {
 
             {/* ── STEP 2: Trip + map ── */}
             {step === 'trip' && (
-              <div className="glass rounded-sm p-5 sm:p-8 space-y-5">
-                <h2 className="font-heading text-2xl text-white gold-line">{t('form.trip')}</h2>
+              <div className="panel rounded-2xl p-5 sm:p-8 space-y-5">
+                <h2 className="font-heading font-bold text-2xl text-ink taxi-rule">{t('form.trip')}</h2>
 
                 <PlaceInput
                   label={t('form.pickup')}
@@ -588,35 +585,35 @@ export function BookingPage() {
                       initial={{ opacity: 0, height: 0 }}
                       animate={{ opacity: 1, height: 'auto' }}
                       exit={{ opacity: 0, height: 0 }}
-                      className="space-y-2 px-4 py-3 bg-gold/5 border border-gold/20 rounded-sm"
+                      className="space-y-2 px-4 py-3 bg-taxi/20 border border-taxi rounded-xl"
                     >
                       {estimating ? (
-                        <span className="flex items-center gap-2 text-white/70 text-sm font-body">
+                        <span className="flex items-center gap-2 text-ink/70 text-sm font-body">
                           <Loader2 size={12} className="animate-spin" />
                           {t('form.estimating')}
                         </span>
                       ) : routeInfo && pickupTime && arrivalTime ? (
                         <>
                           {routeInfo.distance_km === 0 && (
-                            <p className="flex items-start gap-2 text-amber-400/90 text-sm font-body">
+                            <p className="flex items-start gap-2 text-amber-800 text-sm font-body">
                               <AlertTriangle size={14} className="flex-shrink-0 mt-0.5" />
                               {t('form.routeUnavailable')}
                             </p>
                           )}
-                          <div className="flex items-center gap-2 text-white/70 text-sm font-body">
-                            <Clock size={14} className="text-gold flex-shrink-0" />
+                          <div className="flex items-center gap-2 text-ink/70 text-sm font-body">
+                            <Clock size={14} className="text-taxi-deep flex-shrink-0" />
                             {t('form.estimatedMinutes', { minutes: routeInfo.duration_minutes })}
                             {routeInfo.distance_km > 0 && (
-                              <span className="text-white/40">
+                              <span className="text-ink/65">
                                 · {t('form.distanceKm', { km: routeInfo.distance_km })}
                               </span>
                             )}
                           </div>
-                          <div className="flex items-center gap-2 text-gold text-sm font-body">
+                          <div className="flex items-center gap-2 text-taxi-deep text-sm font-body">
                             <MapPin size={14} className="flex-shrink-0" />
                             {t('form.pickupAt', { time: fmtTime(pickupTime) })}
                           </div>
-                          <div className="flex items-center gap-2 text-white/60 text-sm font-body">
+                          <div className="flex items-center gap-2 text-ink/70 text-sm font-body">
                             <MapPin size={14} className="flex-shrink-0" />
                             {t('form.arrivalAt', { time: fmtTime(arrivalTime) })}
                           </div>
@@ -627,16 +624,16 @@ export function BookingPage() {
                 </AnimatePresence>
 
                 {feasibility.status === 'checking' && (
-                  <p className="flex items-center gap-2 text-white/50 text-sm">
+                  <p className="flex items-center gap-2 text-ink/70 text-sm">
                     <Loader2 size={14} className="animate-spin" />
                     {t('feasibility.checking')}
                   </p>
                 )}
                 {feasibility.status === 'ok' && routeInfo && (
-                  <p className="text-emerald-400 text-sm font-body">{t('feasibility.ok')}</p>
+                  <p className="text-emerald-800 text-sm font-body">{t('feasibility.ok')}</p>
                 )}
                 {feasibility.status === 'blocked' && (
-                  <p className="flex items-start gap-2 text-amber-400 text-sm font-body">
+                  <p className="flex items-start gap-2 text-amber-800 text-sm font-body">
                     <AlertTriangle size={16} className="flex-shrink-0 mt-0.5" />
                     {feasibility.reason}
                   </p>
@@ -645,14 +642,14 @@ export function BookingPage() {
                 <div className="flex justify-between pt-2">
                   <button
                     onClick={() => setStep('schedule')}
-                    className="text-white/40 hover:text-white text-sm font-body tracking-widest uppercase"
+                    className="text-ink/65 hover:text-ink text-sm font-body"
                   >
                     ← {t('form.back')}
                   </button>
                   <button
                     onClick={() => setStep('details')}
                     disabled={!tripReady}
-                    className="flex items-center gap-2 px-6 py-3 bg-gold text-black font-body font-semibold text-sm tracking-widest uppercase rounded-sm disabled:opacity-40 disabled:cursor-not-allowed hover:bg-gold-light transition-colors"
+                    className="flex items-center gap-2 px-6 py-3 bg-taxi text-ink font-body font-bold text-base rounded-full disabled:opacity-40 disabled:cursor-not-allowed hover:bg-taxi-light transition-colors"
                   >
                     {t('form.details')} <ChevronRight size={14} />
                   </button>
@@ -662,8 +659,8 @@ export function BookingPage() {
 
             {/* ── STEP 3: Details ── */}
             {step === 'details' && (
-              <div className="glass rounded-sm p-5 sm:p-8 space-y-5">
-                <h2 className="font-heading text-2xl text-white gold-line">{t('form.details')}</h2>
+              <div className="panel rounded-2xl p-5 sm:p-8 space-y-5">
+                <h2 className="font-heading font-bold text-2xl text-ink taxi-rule">{t('form.details')}</h2>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <InputField
                     icon={<User size={14} />}
@@ -708,7 +705,7 @@ export function BookingPage() {
                 </div>
 
                 {tightFit && (
-                  <p className="flex items-start gap-2 text-amber-400/90 text-xs font-body leading-relaxed">
+                  <p className="flex items-start gap-2 text-amber-800 text-xs font-body leading-relaxed">
                     <AlertTriangle size={14} className="flex-shrink-0 mt-0.5" />
                     {t('form.capacityNote')}
                   </p>
@@ -723,13 +720,13 @@ export function BookingPage() {
                       value={flight}
                       onChange={setFlight}
                     />
-                    <p className="text-white/35 text-xs font-body mt-2">
+                    <p className="text-ink/60 text-xs font-body mt-2">
                       {t('form.flightHint')}
                     </p>
                     <button
                       type="button"
                       onClick={hideFlight}
-                      className="flex items-center gap-2 min-h-[44px] mt-1 text-white/60 active:text-white text-xs font-body underline decoration-white/25 underline-offset-4 touch-manipulation transition-colors"
+                      className="flex items-center gap-2 min-h-[44px] mt-1 text-ink/70 active:text-ink text-xs font-body underline decoration-ink/25 underline-offset-4 touch-manipulation transition-colors"
                     >
                       <X size={14} className="flex-shrink-0" />
                       {t('form.flightRemove')}
@@ -739,7 +736,7 @@ export function BookingPage() {
                   <button
                     type="button"
                     onClick={() => setFlightOverride(true)}
-                    className="flex items-center gap-2 min-h-[44px] text-gold/80 active:text-gold text-xs font-body tracking-widest uppercase touch-manipulation transition-colors"
+                    className="flex items-center gap-2 min-h-[44px] text-taxi-deep active:text-taxi-deep text-xs font-body touch-manipulation transition-colors"
                   >
                     <Plane size={14} className="flex-shrink-0" />
                     {t('form.airportToggle')}
@@ -767,14 +764,14 @@ export function BookingPage() {
                 <div className="flex justify-between pt-2">
                   <button
                     onClick={() => setStep('trip')}
-                    className="text-white/40 hover:text-white text-sm font-body tracking-widest uppercase"
+                    className="text-ink/65 hover:text-ink text-sm font-body"
                   >
                     ← {t('form.back')}
                   </button>
                   <button
                     onClick={() => setStep('confirm')}
                     disabled={!form.name || !form.phone}
-                    className="flex items-center gap-2 px-6 py-3 bg-gold text-black font-body font-semibold text-sm tracking-widest uppercase rounded-sm disabled:opacity-40 disabled:cursor-not-allowed hover:bg-gold-light"
+                    className="flex items-center gap-2 px-6 py-3 bg-taxi text-ink font-body font-bold text-base rounded-full disabled:opacity-40 disabled:cursor-not-allowed hover:bg-taxi-light"
                   >
                     {t('form.review')} <ChevronRight size={14} />
                   </button>
@@ -784,8 +781,8 @@ export function BookingPage() {
 
             {/* ── STEP 4: Confirm ── */}
             {step === 'confirm' && (
-              <div className="glass rounded-sm p-5 sm:p-8">
-                <h2 className="font-heading text-2xl text-white mb-6 gold-line">
+              <div className="panel rounded-2xl p-5 sm:p-8">
+                <h2 className="font-heading font-bold text-2xl text-ink mb-6 taxi-rule">
                   {t('form.submit')}
                 </h2>
 
@@ -835,9 +832,9 @@ export function BookingPage() {
                       : []),
                     ...(form.notes ? [{ label: t('form.notes'), value: form.notes }] : []),
                   ].map(({ label, value }, i) => (
-                    <div key={`${label}-${i}`} className="flex justify-between py-2 border-b border-white/5">
-                      <span className="text-white/40 text-sm font-body">{label}</span>
-                      <span className="text-white text-sm font-body text-right max-w-[60%]">
+                    <div key={`${label}-${i}`} className="flex justify-between py-2 border-b border-ink/5">
+                      <span className="text-ink/65 text-sm font-body">{label}</span>
+                      <span className="text-ink text-sm font-body text-right max-w-[60%]">
                         {value}
                       </span>
                     </div>
@@ -845,26 +842,26 @@ export function BookingPage() {
                 </div>
 
                 {/* Nothing is booked until Marc accepts, and he may move the time. */}
-                <div className="flex gap-3 mb-6 p-4 rounded-sm border border-gold/25 bg-gold/5">
-                  <AlertTriangle size={16} className="text-gold flex-shrink-0 mt-0.5" />
-                  <p className="text-white/70 text-sm font-body leading-relaxed">
+                <div className="flex gap-3 mb-6 p-4 rounded-xl border border-taxi bg-taxi/20">
+                  <AlertTriangle size={16} className="text-taxi-deep flex-shrink-0 mt-0.5" />
+                  <p className="text-ink/70 text-sm font-body leading-relaxed">
                     {t('form.requestNote')}
                   </p>
                 </div>
 
-                {error && <p className="text-red-400 text-sm font-body mb-4">{error}</p>}
+                {error && <p className="text-red-700 text-sm font-body mb-4">{error}</p>}
 
                 <div className="flex justify-between">
                   <button
                     onClick={() => setStep('details')}
-                    className="text-white/40 hover:text-white text-sm font-body tracking-widest uppercase"
+                    className="text-ink/65 hover:text-ink text-sm font-body"
                   >
                     ← {t('form.back')}
                   </button>
                   <button
                     onClick={handleSubmit}
                     disabled={submitting || feasibility.status === 'blocked'}
-                    className="flex items-center gap-2 px-8 py-3 bg-gold text-black font-body font-semibold text-sm tracking-widest uppercase rounded-sm disabled:opacity-60 hover:bg-gold-light"
+                    className="flex items-center gap-2 px-8 py-3 bg-taxi text-ink font-body font-bold text-base rounded-full disabled:opacity-60 hover:bg-taxi-light"
                   >
                     {submitting ? (
                       <>
@@ -904,13 +901,13 @@ function Select({
         value={value}
         onChange={(e) => onChange(e.target.value)}
         aria-label={ariaLabel}
-        className="w-full appearance-none cursor-pointer bg-black/40 border border-white/10 text-white font-body text-sm pl-4 pr-10 py-3 rounded-sm focus:outline-none focus:border-gold/50 transition-colors [&>option]:bg-card [&>option]:text-white"
+        className="w-full appearance-none cursor-pointer bg-field border border-ink/20 text-ink font-body text-sm pl-4 pr-10 py-3 rounded-lg focus:outline-none focus:border-taxi-deep transition-colors [&>option]:bg-field [&>option]:text-ink"
       >
         {children}
       </select>
       <ChevronDown
         size={14}
-        className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-gold/60"
+        className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-taxi-deep"
       />
     </div>
   )
@@ -936,21 +933,21 @@ function Stepper({
 
   return (
     <div>
-      <label className="text-white/40 text-xs font-body tracking-widest uppercase mb-2 flex items-center gap-1.5">
-        {icon && <span className="text-gold/60">{icon}</span>}
+      <label className="text-ink/80 text-sm font-bold font-body mb-2 flex items-center gap-1.5">
+        {icon && <span className="text-taxi-deep">{icon}</span>}
         {label}
       </label>
-      <div className="flex items-center bg-black/40 border border-white/10 rounded-sm">
+      <div className="flex items-center bg-field border border-ink/20 rounded-lg">
         <button
           type="button"
           onClick={() => step(-1)}
           disabled={value <= min}
           aria-label={`${label} −`}
-          className="px-4 py-3 text-white/50 hover:text-gold disabled:opacity-25 disabled:hover:text-white/50 transition-colors"
+          className="px-4 py-3 text-ink/70 hover:text-taxi-deep disabled:opacity-25 disabled:hover:text-ink/70 transition-colors"
         >
           <Minus size={14} />
         </button>
-        <span className="flex-1 text-center text-white font-body text-sm tabular-nums">
+        <span className="flex-1 text-center text-ink font-body text-sm tabular-nums">
           {value}
         </span>
         <button
@@ -958,7 +955,7 @@ function Stepper({
           onClick={() => step(1)}
           disabled={value >= max}
           aria-label={`${label} +`}
-          className="px-4 py-3 text-white/50 hover:text-gold disabled:opacity-25 disabled:hover:text-white/50 transition-colors"
+          className="px-4 py-3 text-ink/70 hover:text-taxi-deep disabled:opacity-25 disabled:hover:text-ink/70 transition-colors"
         >
           <Plus size={14} />
         </button>
@@ -985,12 +982,12 @@ function InputField({
   multiline?: boolean
 }) {
   const base =
-    'w-full bg-black/40 border border-white/10 text-white font-body text-sm px-4 py-3 rounded-sm focus:outline-none focus:border-gold/50 transition-colors placeholder:text-white/25'
+    'w-full bg-field border border-ink/20 text-ink font-body text-sm px-4 py-3 rounded-lg focus:outline-none focus:border-taxi-deep transition-colors placeholder:text-ink/50'
 
   return (
     <div>
-      <label className="text-white/40 text-xs font-body tracking-widest uppercase mb-2 flex items-center gap-1.5">
-        {icon && <span className="text-gold/60">{icon}</span>}
+      <label className="text-ink/80 text-sm font-bold font-body mb-2 flex items-center gap-1.5">
+        {icon && <span className="text-taxi-deep">{icon}</span>}
         {label}
       </label>
       {multiline ? (

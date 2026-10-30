@@ -4,14 +4,16 @@
 
 @layer base {
   :root {
-    --font-cormorant: 'Cormorant Garamond', serif;
-    --font-inter: 'Inter', sans-serif;
-  }
-
-  * {
-    box-sizing: border-box;
-    margin: 0;
-    padding: 0;
+    /* Cream paper, warm ink, Barcelona taxi yellow. Yellow is only ever a
+       fill; text in the yellow family uses taxi-deep, which reads on cream. */
+    --paper: 251 246 236;
+    --panel: 243 234 216;
+    --field: 255 255 255;
+    --ink: 31 27 22;
+    --line: 222 210 186;
+    --taxi: 255 199 44;
+    --taxi-light: 255 214 102;
+    --taxi-deep: 138 90 0;
   }
 
   html {
@@ -19,56 +21,48 @@
   }
 
   body {
-    background-color: #0A0A0A;
-    color: #F5F5F5;
+    background-color: rgb(var(--paper));
+    color: rgb(var(--ink));
     overflow-x: hidden;
   }
 
   ::selection {
-    background-color: rgba(201, 168, 76, 0.3);
-    color: #F5F5F5;
+    background-color: rgb(var(--taxi) / 0.6);
+    color: rgb(var(--ink));
   }
 
-  ::-webkit-scrollbar {
-    width: 6px;
+  :focus-visible {
+    outline: 2px solid rgb(var(--taxi-deep));
+    outline-offset: 2px;
   }
 
-  ::-webkit-scrollbar-track {
-    background: #111111;
-  }
-
-  ::-webkit-scrollbar-thumb {
-    background: #C9A84C;
-    border-radius: 3px;
+  @media (prefers-reduced-motion: reduce) {
+    html {
+      scroll-behavior: auto;
+    }
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+    }
   }
 }
 
 @layer utilities {
-  .text-gold-gradient {
-    background: linear-gradient(135deg, #C9A84C 0%, #E8C96A 50%, #C9A84C 100%);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
+  .panel {
+    background: rgb(var(--panel));
+    border: 1px solid rgb(var(--line));
   }
 
-  .border-gold-glow {
-    border-color: #C9A84C;
-    box-shadow: 0 0 20px rgba(201, 168, 76, 0.2);
-  }
-
-  .glass {
-    background: rgba(26, 26, 26, 0.8);
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
-    border: 1px solid rgba(201, 168, 76, 0.15);
-  }
-
-  .gold-line::after {
+  /* Short yellow bar under section headings, like the stripe on a taxi door. */
+  .taxi-rule::after {
     content: '';
     display: block;
-    width: 60px;
-    height: 2px;
-    background: linear-gradient(90deg, #C9A84C, transparent);
-    margin-top: 12px;
+    width: 48px;
+    height: 4px;
+    background: rgb(var(--taxi));
+    margin-top: 10px;
   }
 }

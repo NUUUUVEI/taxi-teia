@@ -1,6 +1,6 @@
 import type { Metadata } from 'next'
 import { notFound } from 'next/navigation'
-import { Cormorant_Garamond, Inter } from 'next/font/google'
+import { Atkinson_Hyperlegible, Bricolage_Grotesque } from 'next/font/google'
 import { NextIntlClientProvider } from 'next-intl'
 import { getMessages, setRequestLocale } from 'next-intl/server'
 import { locales, type Locale } from '@/i18n'
@@ -8,16 +8,18 @@ import { buildMetadata } from '@/lib/metadata'
 import { StructuredData } from '@/components/StructuredData'
 import '../globals.css'
 
-const cormorant = Cormorant_Garamond({
+// Signage-like headings; body text in a face designed for low-vision
+// readers, since many customers are older village residents.
+const heading = Bricolage_Grotesque({
   subsets: ['latin'],
-  variable: '--font-cormorant',
-  weight: ['300', '400', '500', '600', '700'],
+  variable: '--font-heading',
   display: 'swap',
 })
 
-const inter = Inter({
+const body = Atkinson_Hyperlegible({
   subsets: ['latin'],
-  variable: '--font-inter',
+  variable: '--font-body',
+  weight: ['400', '700'],
   display: 'swap',
 })
 
@@ -49,7 +51,7 @@ export default async function LocaleLayout({
   return (
     <html lang={locale} className="scroll-smooth">
       <body
-        className={`${cormorant.variable} ${inter.variable} bg-black text-white antialiased`}
+        className={`${heading.variable} ${body.variable} bg-paper text-ink font-body antialiased`}
       >
         <StructuredData locale={locale} />
         <NextIntlClientProvider messages={messages}>

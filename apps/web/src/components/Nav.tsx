@@ -9,6 +9,7 @@ import { Menu, X, Globe, Phone } from 'lucide-react'
 import { locales } from '@/lib/locales'
 import { localePath } from '@/lib/routes'
 import { contact } from '@/lib/site'
+import { Logo } from './Logo'
 
 const localeLabels: Record<string, string> = {
   ca: 'CA',
@@ -48,12 +49,16 @@ export function Nav() {
     }
   }, [langOpen])
 
+  // The current URL without its locale. During server rendering the pathname
+  // can be the middleware's rewritten /ca/... form, so this normalises both.
+  const segments = pathname.split('/')
+  if ((locales as readonly string[]).includes(segments[1])) segments.splice(1, 1)
+  const barePath = segments.join('/') || '/'
+  const currentHref = localePath(locale, barePath)
+
   const switchLocale = (newLocale: string) => {
-    // Reduce the current URL to a locale-free path, then re-prefix it the way
-    // the middleware expects (no prefix for the default locale).
-    const segments = pathname.split('/')
-    if ((locales as readonly string[]).includes(segments[1])) segments.splice(1, 1)
-    const target = localePath(newLocale, segments.join('/') || '/')
+    // Re-prefix the way the middleware expects (no prefix for the default locale).
+    const target = localePath(newLocale, barePath)
     setLangOpen(false)
     // A full document navigation, not router.push: when only the [locale]
     // segment changes the App Router serves the already-cached RSC payload, so
@@ -75,30 +80,27 @@ export function Nav() {
   return (
     <nav
       className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${
-        scrolled ? 'glass shadow-lg shadow-black/40' : 'bg-transparent'
+        scrolled || mobileOpen ? 'bg-paper/95 backdrop-blur border-b border-line' : 'bg-transparent border-b border-transparent'
       }`}
     >
       <div className="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
         {/* Logo */}
         <Link href={localePath(locale, '/')} className="flex items-center gap-3 group">
-          <div className="w-9 h-9 rounded-full border border-gold flex items-center justify-center">
-            <span className="text-gold font-heading font-bold text-sm">T</span>
-          </div>
-          <span className="font-heading text-lg font-semibold tracking-wide">
-            Taxi <span className="text-gold">Teià</span>
-          </span>
+          <Logo className="w-9 h-9" />
+          <span className="font-heading text-lg font-bold">Taxi Teià</span>
         </Link>
 
         {/* Desktop nav */}
-        <div className="hidden md:flex items-center gap-5 lg:gap-8">
+        <div className="hidden md:flex items-center gap-1 lg:gap-2">
           {navItems.map((item) => (
             <Link
               key={item.href}
               href={item.href}
-              className={`text-xs lg:text-sm font-body tracking-widest uppercase transition-colors duration-200 whitespace-nowrap ${
-                pathname === item.href
-                  ? 'text-gold'
-                  : 'text-white/70 hover:text-white'
+              aria-current={currentHref === item.href ? 'page' : undefined}
+              className={`px-3 py-1.5 rounded-full text-sm font-body transition-colors duration-200 whitespace-nowrap ${
+                currentHref === item.href
+                  ? 'bg-taxi text-ink font-bold'
+                  : 'text-ink/75 hover:text-ink hover:bg-taxi/25'
               }`}
             >
               {item.label}
@@ -106,16 +108,16 @@ export function Nav() {
           ))}
 
           {/* Language switcher */}
-          <div className="relative" ref={langRef}>
+          <div className="relative ml-2" ref={langRef}>
             <button
               type="button"
               onClick={() => setLangOpen(!langOpen)}
               aria-expanded={langOpen}
               aria-haspopup="menu"
-              className="flex items-center gap-1.5 min-h-[44px] px-1 text-sm text-white/70 hover:text-white active:text-white touch-manipulation transition-colors"
+              className="flex items-center gap-1.5 min-h-[44px] px-1 text-sm text-ink/70 hover:text-ink active:text-ink touch-manipulation transition-colors"
             >
               <Globe size={14} />
-              <span className="font-body tracking-widest uppercase">
+              <span className="font-body">
                 {localeLabels[locale]}
               </span>
             </button>
@@ -126,7 +128,7 @@ export function Nav() {
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0, y: -8 }}
                   transition={{ duration: 0.15 }}
-                  className="absolute top-11 right-0 glass rounded-lg overflow-hidden min-w-[96px] border border-white/10"
+                  className="absolute top-11 right-0 bg-field border border-line shadow-lg shadow-ink/10 rounded-lg overflow-hidden min-w-[96px]"
                   role="menu"
                 >
                   {Object.entries(localeLabels).map(([code, label]) => (
@@ -135,8 +137,8 @@ export function Nav() {
                       type="button"
                       role="menuitem"
                       onClick={() => switchLocale(code)}
-                      className={`w-full min-h-[44px] px-4 text-sm text-left font-body tracking-widest uppercase hover:bg-gold/10 active:bg-gold/20 touch-manipulation transition-colors ${
-                        code === locale ? 'text-gold' : 'text-white/70'
+                      className={`w-full min-h-[44px] px-4 text-sm text-left font-body hover:bg-taxi/25 active:bg-taxi/40 touch-manipulation transition-colors ${
+                        code === locale ? 'text-ink font-bold' : 'text-ink/70'
                       }`}
                     >
                       {label}
@@ -150,7 +152,7 @@ export function Nav() {
           {/* Book CTA */}
           <Link
             href={bookHref}
-            className="px-5 py-2 bg-gold text-black text-sm font-body font-semibold tracking-widest uppercase rounded-sm hover:bg-gold-light transition-colors duration-200"
+            className="ml-2 px-5 py-2 bg-ink text-paper text-sm font-body font-bold rounded-full hover:bg-ink/85 transition-colors duration-200"
           >
             {t('book')}
           </Link>
@@ -161,7 +163,7 @@ export function Nav() {
         <div className="flex md:hidden items-center -mr-2">
           <a
             href={`tel:${contact.phoneE164}`}
-            className="w-11 h-11 flex items-center justify-center text-gold active:text-gold-light touch-manipulation"
+            className="w-11 h-11 flex items-center justify-center text-ink active:text-taxi-deep touch-manipulation"
             aria-label="Call"
           >
             <Phone size={20} />
@@ -169,7 +171,7 @@ export function Nav() {
           <button
             type="button"
             onClick={() => setMobileOpen(!mobileOpen)}
-            className="w-11 h-11 flex items-center justify-center text-white active:text-gold touch-manipulation"
+            className="w-11 h-11 flex items-center justify-center text-ink active:text-taxi-deep touch-manipulation"
             aria-label="Toggle menu"
             aria-expanded={mobileOpen}
           >
@@ -186,7 +188,7 @@ export function Nav() {
             animate={{ opacity: 1, height: 'auto' }}
             exit={{ opacity: 0, height: 0 }}
             transition={{ duration: 0.3 }}
-            className="md:hidden glass border-t border-gold/10"
+            className="md:hidden bg-paper border-b border-line"
           >
             <div className="px-6 py-4 flex flex-col">
               {navItems.map((item) => (
@@ -194,8 +196,8 @@ export function Nav() {
                   key={item.href}
                   href={item.href}
                   onClick={() => setMobileOpen(false)}
-                  className={`flex items-center min-h-[52px] text-base font-body tracking-widest uppercase border-b border-white/5 touch-manipulation ${
-                    pathname === item.href ? 'text-gold' : 'text-white/70 active:text-white'
+                  className={`flex items-center min-h-[52px] text-base font-body border-b border-line touch-manipulation ${
+                    currentHref === item.href ? 'text-ink font-bold' : 'text-ink/75 active:text-ink'
                   }`}
                 >
                   {item.label}
@@ -210,10 +212,10 @@ export function Nav() {
                     type="button"
                     onClick={() => { switchLocale(code); setMobileOpen(false) }}
                     aria-current={code === locale ? 'true' : undefined}
-                    className={`flex-1 min-h-[48px] text-sm font-body tracking-widest uppercase border rounded-sm touch-manipulation transition-colors ${
+                    className={`flex-1 min-h-[48px] text-sm font-body border rounded-full touch-manipulation transition-colors ${
                       code === locale
-                        ? 'border-gold text-gold bg-gold/10'
-                        : 'border-white/20 text-white/60 active:border-gold/60 active:text-white'
+                        ? 'border-ink text-ink font-bold bg-taxi'
+                        : 'border-line text-ink/70 active:border-ink active:text-ink'
                     }`}
                   >
                     {label}
@@ -223,7 +225,7 @@ export function Nav() {
               <Link
                 href={bookHref}
                 onClick={() => setMobileOpen(false)}
-                className="mt-4 min-h-[52px] flex items-center justify-center px-5 bg-gold text-black text-sm font-body font-semibold tracking-widest uppercase rounded-sm text-center touch-manipulation"
+                className="mt-4 min-h-[52px] flex items-center justify-center px-5 bg-taxi text-ink text-base font-body font-bold rounded-full text-center touch-manipulation"
               >
                 {t('book')}
               </Link>

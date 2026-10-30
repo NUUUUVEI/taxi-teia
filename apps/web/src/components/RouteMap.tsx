@@ -22,22 +22,18 @@ export function RouteMap({ pickup, dropoff, polyline }: RouteMapProps) {
     key,
   })
 
-  params.append('markers', `color:0xC9A84C|label:A|${pickup}`)
-  params.append('markers', `color:0xEF4444|label:B|${dropoff}`)
+  params.append('markers', `color:0xFFC72C|label:A|${pickup}`)
+  params.append('markers', `color:0x1F1B16|label:B|${dropoff}`)
 
   if (polyline) {
-    params.append('path', `weight:4|color:0xC9A84C|enc:${polyline}`)
+    params.append('path', `weight:5|color:0x8A5A00|enc:${polyline}`)
   }
 
-  params.append('style', 'feature:all|element:geometry|color:0x1a1a1a')
-  params.append('style', 'feature:road|element:geometry|color:0x2c2c2c')
-  params.append('style', 'feature:water|element:geometry|color:0x0e0e0e')
-  params.append('style', 'feature:all|element:labels.text.fill|color:0x8a8a8a')
 
   const src = `https://maps.googleapis.com/maps/api/staticmap?${params.toString()}`
 
   return (
-    <div className="rounded-sm overflow-hidden border border-white/10">
+    <div className="rounded-sm overflow-hidden border border-line">
       {/* eslint-disable-next-line @next/next/no-img-element */}
       <img
         src={src}
