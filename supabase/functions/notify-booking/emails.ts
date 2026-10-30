@@ -37,9 +37,13 @@ const PHONE_LINK = 'tel:+34670254729'
 const WHATSAPP_LINK = 'https://wa.me/34670254729'
 const CONTACT_EMAIL = 'marctaxiteia@gmail.com'
 
-const GOLD = '#C9A84C'
-const MUTED = '#a0a0a0'
-const TEXT = '#f5f5f5'
+// Same palette as the website: cream paper, warm ink, taxi yellow.
+const PAPER = '#FBF6EC'
+const YELLOW = '#FFC72C'
+const ACCENT = '#8A5A00'
+const MUTED = '#5C5346'
+const TEXT = '#1F1B16'
+const LINE = '#DED2BA'
 
 const LOCALE_TAGS: Record<string, string> = { ca: 'ca-ES', es: 'es-ES', en: 'en-GB' }
 
@@ -192,7 +196,7 @@ const COPY = {
 type Copy = (typeof COPY)['ca']
 
 function row(label: string, value: string, highlight = false) {
-  const color = highlight ? GOLD : TEXT
+  const color = highlight ? ACCENT : TEXT
   return `<tr><td style="padding:8px 0;color:${MUTED};width:160px">${label}</td><td style="color:${color}">${highlight ? `<strong>${value}</strong>` : value}</td></tr>`
 }
 
@@ -216,7 +220,7 @@ function details(b: Booking, L: Copy, loc: string, previousStart?: string) {
 }
 
 function contact(L: Copy) {
-  return `<p style="font-size:14px;color:${MUTED}">${L.contact} <a href="${PHONE_LINK}" style="color:${GOLD}"><strong>${PHONE_DISPLAY}</strong></a> (<a href="${WHATSAPP_LINK}" style="color:${GOLD}">WhatsApp</a>) ${L.or} <a href="mailto:${CONTACT_EMAIL}" style="color:${GOLD}">${CONTACT_EMAIL}</a>.</p>`
+  return `<p style="font-size:14px;color:${MUTED}">${L.contact} <a href="${PHONE_LINK}" style="color:${ACCENT}"><strong>${PHONE_DISPLAY}</strong></a> (<a href="${WHATSAPP_LINK}" style="color:${ACCENT}">WhatsApp</a>) ${L.or} <a href="mailto:${CONTACT_EMAIL}" style="color:${ACCENT}">${CONTACT_EMAIL}</a>.</p>`
 }
 
 /**
@@ -228,19 +232,22 @@ export function clientEmail(kind: ClientEmailKind, b: Booking, previousStart?: s
   const K = L[kind]
   const when = formatShort(b.start_time, loc)
   const negative = kind === 'unavailable' || kind === 'cancelled'
-  const headingColor = negative ? '#EF4444' : kind === 'confirmed' ? '#22C55E' : GOLD
-  const extra = kind === 'confirmed' && previousStart ? `<p style="font-size:14px;color:${GOLD}">${L.confirmed.timeChanged}</p>` : ''
+  const headingColor = negative ? '#B42318' : kind === 'confirmed' ? '#1E7B3C' : TEXT
+  const extra = kind === 'confirmed' && previousStart ? `<p style="font-size:14px;color:${ACCENT}"><strong>${L.confirmed.timeChanged}</strong></p>` : ''
 
   const html = `
-    <div style="font-family:sans-serif;max-width:600px;margin:auto;background:#0a0a0a;color:${TEXT};padding:32px;border-radius:8px">
-      <h2 style="color:${headingColor};margin-bottom:4px">${K.heading}</h2>
-      <p style="color:${MUTED};font-size:14px;margin-top:0">Taxi Teià · ${esc(b.client_name)}</p>
-      <hr style="border-color:#2a2a2a;margin:24px 0"/>
+    <div style="font-family:sans-serif;max-width:600px;margin:auto;background:${PAPER};color:${TEXT};border-radius:12px;overflow:hidden;border:1px solid ${LINE}">
+      <div style="background:${YELLOW};padding:14px 32px;font-weight:bold;font-size:16px;color:${TEXT}">Taxi Teià</div>
+      <div style="padding:32px">
+      <h2 style="color:${headingColor};margin:0 0 4px">${K.heading}</h2>
+      <p style="color:${MUTED};font-size:14px;margin-top:0">${esc(b.client_name)}</p>
+      <hr style="border:0;border-top:1px solid ${LINE};margin:24px 0"/>
       <p style="font-size:14px;color:${TEXT};line-height:1.5">${K.intro}</p>
       ${extra}
       ${details(b, L, loc, previousStart)}
-      <hr style="border-color:#2a2a2a;margin:24px 0"/>
+      <hr style="border:0;border-top:1px solid ${LINE};margin:24px 0"/>
       ${contact(L)}
+      </div>
     </div>
   `
 

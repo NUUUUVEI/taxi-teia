@@ -7,9 +7,10 @@ import { useTranslations, useLocale } from 'next-intl'
 import { motion, AnimatePresence } from 'framer-motion'
 import {
   Clock, User, Phone, ChevronRight, CheckCircle2, Loader2, AlertTriangle, MapPin,
-  Plane, Users, Briefcase, Minus, Plus, ChevronDown, X,
+  Plane, Users, Briefcase, Minus, Plus, X, CarTaxiFront, Flag,
 } from 'lucide-react'
 import { PlaceInput } from './PlaceInput'
+import { TimeClock } from './TimeClock'
 import { RouteMap } from './RouteMap'
 import { dateLocales } from '@/lib/dateLocale'
 import { MAX_LUGGAGE, MAX_PASSENGERS } from '@/lib/types'
@@ -19,9 +20,6 @@ import type { Availability } from '@/lib/server/availability'
  * Enough to catch the airports people actually fly from here without matching
  * ordinary street names — deliberately no bare "BCN" or terminal codes.
  */
-const HOURS = Array.from({ length: 24 }, (_, i) => String(i).padStart(2, '0'))
-const MINUTES = Array.from({ length: 12 }, (_, i) => String(i * 5).padStart(2, '0'))
-
 const AIRPORT_HINTS = [
   'aeroport',
   'aeropuerto',
@@ -41,8 +39,10 @@ type FormData = {
   notes: string
 }
 
-type StepId = 'schedule' | 'trip' | 'details' | 'confirm'
-const STEPS: StepId[] = ['schedule', 'trip', 'details', 'confirm']
+type StepId = 'schedule' | 'time' | 'trip' | 'details' | 'confirm'
+const STEPS: StepId[] = ['schedule', 'time', 'trip', 'details', 'confirm']
+
+const pad = (n: number) => String(n).padStart(2, '0')
 
 type TimeMode = 'pickup' | 'arrival'
 
@@ -127,8 +127,8 @@ export function BookingPage() {
   const [step, setStep] = useState<StepId>('schedule')
   const [timeMode, setTimeMode] = useState<TimeMode>('pickup')
   const [selectedDate, setSelectedDate] = useState<Date | undefined>()
-  const [hour, setHour] = useState('')
-  const [minute, setMinute] = useState('00')
+  const [hour, setHour] = useState<number | null>(null)
+  const [minute, setMinute] = useState(0)
   const [routeInfo, setRouteInfo] = useState<RouteInfo | null>(null)
   const [pickupTime, setPickupTime] = useState<Date | null>(null)
   const [arrivalTime, setArrivalTime] = useState<Date | null>(null)
@@ -153,33 +153,51 @@ export function BookingPage() {
     notes: '',
   })
 
-  const selectedTime = hour === '' ? '' : `${hour}:${minute}`
+  const selectedTime = hour === null ? '' : `${pad(hour)}:${pad(minute)}`
 
   const requestedTime = useMemo(() => {
     if (!selectedDate || !selectedTime) return null
     return toStart(selectedDate, selectedTime)
   }, [selectedDate, selectedTime])
 
-  // Times already gone are greyed out rather than letting someone pick one and
-  // only find out from the feasibility check afterwards.
-  const now = new Date()
-  const isToday = selectedDate ? isSameDay(selectedDate, now) : false
-  const hourDisabled = (h: string) => isToday && Number(h) < now.getHours()
-  const minuteDisabled = (m: string) =>
-    isToday && hour !== '' && Number(hour) === now.getHours() && Number(m) <= now.getMinutes()
+  // Times already gone can't be picked, rather than letting someone choose one
+  // and only find out from the feasibility check afterwards.
+  const slotDisabled = useCallback(
+    (h: number, m: number) =>
+      !selectedDate || toStart(selectedDate, `${pad(h)}:${pad(m)}`) <= new Date(),
+    [selectedDate]
+  )
+  const noTimesLeft = !!selectedDate && slotDisabled(23, 55)
 
-  const pickHour = (h: string) => {
-    setHour(h)
-    if (isToday && Number(h) === now.getHours()) {
-      setMinute(MINUTES.find((m) => Number(m) > now.getMinutes()) ?? '00')
+  // Open the clock with a sensible time already set: 09:00 on another day,
+  // the next free 5-minute slot today.
+  const openTimeStep = () => {
+    if (hour === null || slotDisabled(hour, minute)) {
+      let h = 9
+      let m = 0
+      if (selectedDate && isSameDay(selectedDate, new Date())) {
+        const soon = new Date(Date.now() + 5 * 60_000)
+        h = soon.getHours()
+        m = Math.ceil(soon.getMinutes() / 5) * 5
+        if (m === 60) {
+          h += 1
+          m = 0
+        }
+      }
+      if (h < 24) {
+        setHour(h)
+        setMinute(m)
+      } else {
+        setHour(null)
+      }
     }
+    setStep('time')
   }
 
   // Changing the date can strand a time in the past; drop it if so.
   useEffect(() => {
-    if (!selectedDate || hour === '') return
-    if (toStart(selectedDate, `${hour}:${minute}`) <= new Date()) setHour('')
-  }, [selectedDate, hour, minute])
+    if (hour !== null && slotDisabled(hour, minute)) setHour(null)
+  }, [slotDisabled, hour, minute])
 
   const looksLikeAirport = useMemo(() => {
     const haystack = `${form.pickup} ${form.dropoff}`.toLowerCase()
@@ -403,7 +421,8 @@ export function BookingPage() {
   }
 
   const stepIndex = STEPS.indexOf(step)
-  const scheduleReady = !!selectedDate && !!selectedTime
+  const dateReady = !!selectedDate
+  const timeReady = !!selectedDate && !!selectedTime
   const tripReady =
     !!form.pickup &&
     !!form.dropoff &&
@@ -421,9 +440,9 @@ export function BookingPage() {
           <p className="text-ink/70 font-body text-sm">{t('subtitle')}</p>
         </div>
 
-        <div className="flex items-center justify-center gap-3 mb-12">
+        <div className="flex items-center justify-center gap-2 sm:gap-3 mb-12">
           {STEPS.map((s, i) => (
-            <div key={s} className="flex items-center gap-3">
+            <div key={s} className="flex items-center gap-2 sm:gap-3">
               <div
                 className={`w-7 h-7 rounded-full flex items-center justify-center text-xs font-body font-semibold transition-all duration-300 ${
                   i < stepIndex
@@ -436,7 +455,7 @@ export function BookingPage() {
                 {i < stepIndex ? '✓' : i + 1}
               </div>
               {i < STEPS.length - 1 && (
-                <div className={`w-8 h-px ${i < stepIndex ? 'bg-taxi' : 'bg-ink/15'}`} />
+                <div className={`w-5 sm:w-8 h-px ${i < stepIndex ? 'bg-taxi' : 'bg-ink/15'}`} />
               )}
             </div>
           ))}
@@ -450,105 +469,54 @@ export function BookingPage() {
             exit={{ opacity: 0, x: -20 }}
             transition={{ duration: 0.3 }}
           >
-            {/* ── STEP 1: Schedule ── */}
+            {/* ── STEP 1: Date ── */}
             {step === 'schedule' && (
               <div className="panel rounded-2xl p-5 sm:p-8">
                 <h2 className="font-heading font-bold text-2xl text-ink mb-6 taxi-rule">
-                  {t('form.schedule')}
+                  {t('form.dateStep')}
                 </h2>
 
                 {/* Not a centring flex wrapper: the day grid divides the table
                     width between its cells, so the table has to stretch. */}
-                <div className="mb-8">
-                  <DayPicker
-                    mode="single"
-                    locale={dfLocale}
-                    selected={selectedDate}
-                    onSelect={setSelectedDate}
-                    disabled={{ before: startOfDay(new Date()) }}
-                    className="rdp-custom w-full"
-                    classNames={{
-                      root: 'font-body w-full',
-                      month: 'space-y-4 w-full',
-                      caption: 'flex justify-center relative items-center mb-4',
-                      caption_label: 'text-ink font-heading font-bold text-lg capitalize',
-                      nav: 'flex items-center gap-2',
-                      nav_button:
-                        'w-11 h-11 flex items-center justify-center text-taxi-deep hover:text-taxi-deep active:text-taxi-deep touch-manipulation transition-colors',
-                      table: 'w-full border-collapse',
-                      head_row: 'flex',
-                      head_cell:
-                        'flex-1 text-ink/55 rounded-sm font-normal text-xs text-center',
-                      row: 'flex w-full mt-1',
-                      cell: 'flex-1 text-center text-sm p-0',
-                      // Fluid width with a fixed 44px height: the row divides the
-                      // available space so the grid never overflows a narrow
-                      // phone, while staying tall enough to tap accurately.
-                      day: 'h-11 w-full max-w-[44px] p-0 font-normal text-ink/70 hover:bg-taxi/30 hover:text-ink active:bg-taxi/50 rounded-lg transition-colors duration-150 cursor-pointer mx-auto block touch-manipulation',
-                      day_selected: 'bg-taxi text-ink font-bold hover:bg-taxi-light hover:text-ink',
-                      day_today: 'text-taxi-deep font-semibold',
-                      day_disabled:
-                        'text-ink/20 cursor-not-allowed hover:bg-transparent hover:text-ink/20',
-                      day_outside: 'text-ink/30',
-                    }}
-                  />
-                </div>
+                <DayPicker
+                  mode="single"
+                  locale={dfLocale}
+                  selected={selectedDate}
+                  onSelect={setSelectedDate}
+                  disabled={{ before: startOfDay(new Date()) }}
+                  className="w-full"
+                  classNames={{
+                    root: 'font-body w-full',
+                    month: 'space-y-4 w-full',
+                    caption: 'flex justify-center relative items-center mb-4',
+                    caption_label: 'text-ink font-heading font-bold text-lg capitalize',
+                    nav: 'flex items-center gap-2',
+                    nav_button:
+                      'w-11 h-11 flex items-center justify-center rounded-full text-ink hover:bg-taxi/30 disabled:opacity-25 disabled:hover:bg-transparent touch-manipulation transition-colors',
+                    table: 'w-full border-collapse',
+                    head_row: 'flex',
+                    head_cell: 'flex-1 text-ink/55 font-normal text-xs text-center',
+                    row: 'flex w-full mt-1',
+                    cell: 'flex-1 text-center text-base p-0',
+                    // Fluid width with a fixed 44px height: the row divides the
+                    // available space so the grid never overflows a narrow
+                    // phone, while staying tall enough to tap accurately.
+                    day: 'h-11 w-full max-w-[44px] p-0 font-bold text-ink bg-field border border-line hover:bg-taxi/40 hover:border-taxi active:bg-taxi/60 rounded-lg transition-colors duration-150 cursor-pointer mx-auto block touch-manipulation',
+                    day_selected: '!bg-taxi !border-ink text-ink',
+                    day_today: 'ring-2 ring-taxi-deep ring-offset-1 ring-offset-panel',
+                    // Past days: no box, faded and struck through, so they
+                    // read as unavailable before anyone tries to tap them.
+                    day_disabled:
+                      '!bg-transparent !border-transparent !font-normal text-ink/30 line-through cursor-not-allowed',
+                  }}
+                />
 
-                {/* Reads as a sentence: "I want to be picked up at 08:30" */}
-                <label className="text-ink/80 text-sm font-bold font-body mb-3 flex items-center gap-1.5">
-                  <Clock size={14} className="text-taxi-deep" />
-                  {t('form.whenLabel')}
-                </label>
-
-                <div className="flex flex-col sm:flex-row sm:items-center gap-3">
-                  <Select
-                    value={timeMode}
-                    onChange={(v) => setTimeMode(v as TimeMode)}
-                    ariaLabel={t('form.whenLabel')}
-                    className="sm:flex-1"
-                  >
-                    <option value="pickup">{t('form.modePickupSentence')}</option>
-                    <option value="arrival">{t('form.modeArrivalSentence')}</option>
-                  </Select>
-
-                  <div className="flex items-center gap-2">
-                    <Select
-                      value={hour}
-                      onChange={pickHour}
-                      ariaLabel={t('form.hour')}
-                      className="w-28"
-                    >
-                      <option value="" disabled>
-                        {t('form.hour')}
-                      </option>
-                      {HOURS.map((h) => (
-                        <option key={h} value={h} disabled={hourDisabled(h)}>
-                          {h}
-                        </option>
-                      ))}
-                    </Select>
-                    <span className="text-taxi-deep font-body">:</span>
-                    <Select
-                      value={minute}
-                      onChange={setMinute}
-                      ariaLabel={t('form.minute')}
-                      className="w-28"
-                    >
-                      {MINUTES.map((m) => (
-                        <option key={m} value={m} disabled={minuteDisabled(m)}>
-                          {m}
-                        </option>
-                      ))}
-                    </Select>
-                  </div>
-                </div>
-
-                <p className="text-ink/60 text-xs font-body mt-3">{t('form.timeHint')}</p>
+                <p className="text-ink/65 text-sm font-body mt-4">{t('form.pastDaysHint')}</p>
 
                 <div className="mt-6 flex justify-end">
                   <button
-                    onClick={() => setStep('trip')}
-                    disabled={!scheduleReady}
+                    onClick={openTimeStep}
+                    disabled={!dateReady}
                     className="flex items-center gap-2 px-6 py-3 bg-taxi text-ink font-body font-bold text-base rounded-full disabled:opacity-40 disabled:cursor-not-allowed hover:bg-taxi-light transition-colors"
                   >
                     {t('form.continueTrip')} <ChevronRight size={14} />
@@ -557,7 +525,97 @@ export function BookingPage() {
               </div>
             )}
 
-            {/* ── STEP 2: Trip + map ── */}
+            {/* ── STEP 2: Pickup or arrival, and the time ── */}
+            {step === 'time' && (
+              <div className="panel rounded-2xl p-5 sm:p-8">
+                <h2 className="font-heading font-bold text-2xl text-ink taxi-rule">
+                  {t('form.timeStep')}
+                </h2>
+                {selectedDate && (
+                  <p className="text-ink/70 font-body mt-4 mb-6 first-letter:uppercase">
+                    {fmtDate(selectedDate)}
+                  </p>
+                )}
+
+                <div role="radiogroup" className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-8">
+                  {([
+                    { mode: 'pickup', icon: CarTaxiFront, title: t('form.modePickupTitle'), desc: t('form.modePickupDesc') },
+                    { mode: 'arrival', icon: Flag, title: t('form.modeArrivalTitle'), desc: t('form.modeArrivalDesc') },
+                  ] as const).map(({ mode, icon: Icon, title, desc }) => (
+                    <button
+                      key={mode}
+                      type="button"
+                      role="radio"
+                      aria-checked={timeMode === mode}
+                      onClick={() => setTimeMode(mode)}
+                      className={`flex items-start gap-3 text-left p-4 rounded-xl border-2 touch-manipulation transition-colors ${
+                        timeMode === mode
+                          ? 'bg-taxi border-ink'
+                          : 'bg-field border-line hover:border-ink/40'
+                      }`}
+                    >
+                      <span
+                        className={`w-10 h-10 flex-shrink-0 rounded-full flex items-center justify-center ${
+                          timeMode === mode ? 'bg-ink text-taxi' : 'bg-taxi text-ink'
+                        }`}
+                      >
+                        <Icon size={20} />
+                      </span>
+                      <span>
+                        <span className="block font-heading font-bold text-lg text-ink">{title}</span>
+                        <span className="block text-sm text-ink/75 leading-snug mt-0.5">{desc}</span>
+                      </span>
+                    </button>
+                  ))}
+                </div>
+
+                <p className="text-center font-heading font-bold text-lg text-ink mb-2">
+                  {timeMode === 'pickup' ? t('form.timeModePickup') : t('form.timeModeArrival')}
+                </p>
+
+                {noTimesLeft ? (
+                  <p className="text-center text-amber-800 font-body py-6">{t('form.noTimesLeft')}</p>
+                ) : (
+                  <TimeClock
+                    hour={hour ?? 9}
+                    minute={minute}
+                    isDisabled={slotDisabled}
+                    onChange={(h, m) => {
+                      setHour(h)
+                      setMinute(m)
+                    }}
+                    labels={{
+                      hour: t('form.hour'),
+                      minute: t('form.minute'),
+                      hourUp: t('form.hourUp'),
+                      hourDown: t('form.hourDown'),
+                      minuteUp: t('form.minuteUp'),
+                      minuteDown: t('form.minuteDown'),
+                    }}
+                  />
+                )}
+
+                <p className="text-ink/65 text-sm font-body text-center mt-4">{t('form.timeHint')}</p>
+
+                <div className="mt-6 flex justify-between">
+                  <button
+                    onClick={() => setStep('schedule')}
+                    className="text-ink/65 hover:text-ink text-sm font-body"
+                  >
+                    ← {t('form.back')}
+                  </button>
+                  <button
+                    onClick={() => setStep('trip')}
+                    disabled={!timeReady}
+                    className="flex items-center gap-2 px-6 py-3 bg-taxi text-ink font-body font-bold text-base rounded-full disabled:opacity-40 disabled:cursor-not-allowed hover:bg-taxi-light transition-colors"
+                  >
+                    {t('form.continueTrip')} <ChevronRight size={14} />
+                  </button>
+                </div>
+              </div>
+            )}
+
+            {/* ── STEP 3: Trip + map ── */}
             {step === 'trip' && (
               <div className="panel rounded-2xl p-5 sm:p-8 space-y-5">
                 <h2 className="font-heading font-bold text-2xl text-ink taxi-rule">{t('form.trip')}</h2>
@@ -641,7 +699,7 @@ export function BookingPage() {
 
                 <div className="flex justify-between pt-2">
                   <button
-                    onClick={() => setStep('schedule')}
+                    onClick={() => setStep('time')}
                     className="text-ink/65 hover:text-ink text-sm font-body"
                   >
                     ← {t('form.back')}
@@ -657,7 +715,7 @@ export function BookingPage() {
               </div>
             )}
 
-            {/* ── STEP 3: Details ── */}
+            {/* ── STEP 4: Details ── */}
             {step === 'details' && (
               <div className="panel rounded-2xl p-5 sm:p-8 space-y-5">
                 <h2 className="font-heading font-bold text-2xl text-ink taxi-rule">{t('form.details')}</h2>
@@ -779,7 +837,7 @@ export function BookingPage() {
               </div>
             )}
 
-            {/* ── STEP 4: Confirm ── */}
+            {/* ── STEP 5: Confirm ── */}
             {step === 'confirm' && (
               <div className="panel rounded-2xl p-5 sm:p-8">
                 <h2 className="font-heading font-bold text-2xl text-ink mb-6 taxi-rule">
@@ -878,37 +936,6 @@ export function BookingPage() {
           </motion.div>
         </AnimatePresence>
       </div>
-    </div>
-  )
-}
-
-function Select({
-  value,
-  onChange,
-  children,
-  ariaLabel,
-  className = '',
-}: {
-  value: string
-  onChange: (v: string) => void
-  children: React.ReactNode
-  ariaLabel: string
-  className?: string
-}) {
-  return (
-    <div className={`relative ${className}`}>
-      <select
-        value={value}
-        onChange={(e) => onChange(e.target.value)}
-        aria-label={ariaLabel}
-        className="w-full appearance-none cursor-pointer bg-field border border-ink/20 text-ink font-body text-sm pl-4 pr-10 py-3 rounded-lg focus:outline-none focus:border-taxi-deep transition-colors [&>option]:bg-field [&>option]:text-ink"
-      >
-        {children}
-      </select>
-      <ChevronDown
-        size={14}
-        className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-taxi-deep"
-      />
     </div>
   )
 }
