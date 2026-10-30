@@ -1,17 +1,19 @@
+// Same palette as the website: cream paper, warm ink, Barcelona taxi yellow.
+// Yellow is only ever a fill; text and icons in the yellow family use
+// taxiDeep, which reads on cream.
 export const colors = {
-  black: '#0A0A0A',
-  surface: '#111111',
-  card: '#1A1A1A',
-  gold: '#C9A84C',
-  goldLight: '#E8C96A',
-  goldMuted: '#8B6914',
-  border: '#2A2A2A',
-  textPrimary: '#F5F5F5',
-  textSecondary: '#A0A0A0',
-  textMuted: '#606060',
-  success: '#22C55E',
-  warning: '#F59E0B',
-  error: '#EF4444',
+  paper: '#FBF6EC',
+  panel: '#F3EAD8',
+  card: '#FFFFFF',
+  line: '#DED2BA',
+  ink: '#1F1B16',
+  inkSoft: '#5C5346',
+  inkMuted: '#7A6F60',
+  taxi: '#FFC72C',
+  taxiDeep: '#8A5A00',
+  success: '#1E7B3C',
+  warning: '#B45309',
+  error: '#B42318',
 }
 
 export const spacing = {

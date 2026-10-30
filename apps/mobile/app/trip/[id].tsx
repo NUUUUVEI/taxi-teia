@@ -25,7 +25,7 @@ import { emailNotice, offerCallIfNoEmail } from '../../src/lib/clientNotice'
 
 const STATUS_COLOR: Record<string, string> = {
   pending: colors.warning,
-  confirmed: colors.gold,
+  confirmed: colors.taxiDeep,
   completed: colors.success,
   cancelled: colors.error,
 }
@@ -164,7 +164,7 @@ export default function TripDetailScreen() {
   if (!booking) {
     return (
       <View style={[styles.container, { justifyContent: 'center', alignItems: 'center' }]}>
-        <Text style={{ color: colors.textMuted }}>Carregant...</Text>
+        <Text style={{ color: colors.inkMuted }}>Carregant...</Text>
       </View>
     )
   }
@@ -176,7 +176,7 @@ export default function TripDetailScreen() {
       {/* Header */}
       <View style={styles.header}>
         <TouchableOpacity onPress={() => router.back()} style={styles.back}>
-          <Ionicons name="arrow-back" size={20} color={colors.gold} />
+          <Ionicons name="arrow-back" size={20} color={colors.taxiDeep} />
         </TouchableOpacity>
         <View style={{ flex: 1 }}>
           <Text style={styles.headerTime}>
@@ -189,7 +189,7 @@ export default function TripDetailScreen() {
           </View>
         </View>
         <TouchableOpacity onPress={openEdit} style={styles.editBtn}>
-          <Ionicons name="create-outline" size={18} color={colors.gold} />
+          <Ionicons name="create-outline" size={18} color={colors.taxiDeep} />
           <Text style={styles.editBtnText}>Editar</Text>
         </TouchableOpacity>
       </View>
@@ -201,7 +201,7 @@ export default function TripDetailScreen() {
 
           {!isActive && (
             <TouchableOpacity style={styles.wazeBtn} onPress={startJourney}>
-              <Ionicons name="navigate" size={18} color={colors.black} />
+              <Ionicons name="navigate" size={18} color={colors.ink} />
               <Text style={styles.wazeBtnText}>INICIAR VIATGE</Text>
             </TouchableOpacity>
           )}
@@ -209,11 +209,11 @@ export default function TripDetailScreen() {
           {leg === 'toPickup' && (
             <>
               <View style={styles.legStatus}>
-                <Ionicons name="car-sport-outline" size={15} color={colors.gold} />
+                <Ionicons name="car-sport-outline" size={15} color={colors.taxiDeep} />
                 <Text style={styles.legStatusText}>Camí de la recollida</Text>
               </View>
               <TouchableOpacity style={styles.wazeBtn} onPress={goToDestination}>
-                <Ionicons name="navigate" size={18} color={colors.black} />
+                <Ionicons name="navigate" size={18} color={colors.ink} />
                 <Text style={styles.wazeBtnText}>PASSATGER A BORD → DESTÍ</Text>
               </TouchableOpacity>
               <TouchableOpacity
@@ -228,14 +228,14 @@ export default function TripDetailScreen() {
           {leg === 'toDropoff' && (
             <>
               <View style={styles.legStatus}>
-                <Ionicons name="flag-outline" size={15} color={colors.gold} />
+                <Ionicons name="flag-outline" size={15} color={colors.taxiDeep} />
                 <Text style={styles.legStatusText}>Camí del destí</Text>
               </View>
               <TouchableOpacity
                 style={[styles.wazeBtn, { backgroundColor: colors.success }]}
                 onPress={() => setFinishing(true)}
               >
-                <Ionicons name="cash-outline" size={18} color={colors.black} />
+                <Ionicons name="cash-outline" size={18} color={colors.ink} />
                 <Text style={styles.wazeBtnText}>FINALITZAR I COBRAR</Text>
               </TouchableOpacity>
               <TouchableOpacity
@@ -267,7 +267,7 @@ export default function TripDetailScreen() {
               openGoogleMaps(leg === 'toDropoff' ? booking.dropoff_address : booking.pickup_address)
             }
           >
-            <Ionicons name="map-outline" size={14} color={colors.textMuted} />
+            <Ionicons name="map-outline" size={14} color={colors.inkMuted} />
             <Text style={styles.mapsFallbackText}>Obrir amb Google Maps</Text>
           </TouchableOpacity>
         </View>
@@ -281,7 +281,7 @@ export default function TripDetailScreen() {
           style={styles.callBtn}
           onPress={() => Linking.openURL(`tel:${booking.client_phone}`)}
         >
-          <Ionicons name="call-outline" size={16} color={colors.gold} />
+          <Ionicons name="call-outline" size={16} color={colors.taxiDeep} />
           <Text style={styles.callBtnText}>{booking.client_phone}</Text>
         </TouchableOpacity>
       </View>
@@ -295,7 +295,7 @@ export default function TripDetailScreen() {
         </View>
         <View style={styles.routeLine} />
         <View style={styles.routeRow}>
-          <View style={[styles.routeDot, { backgroundColor: colors.gold }]} />
+          <View style={[styles.routeDot, { backgroundColor: colors.taxi }]} />
           <Text style={styles.fieldValue}>{booking.dropoff_address}</Text>
         </View>
         <Text style={styles.fieldMeta}>
@@ -308,17 +308,17 @@ export default function TripDetailScreen() {
         <Text style={styles.sectionTitle}>PASSATGE</Text>
         <View style={styles.paxRow}>
           <View style={styles.paxChip}>
-            <Ionicons name="people-outline" size={14} color={colors.gold} />
+            <Ionicons name="people-outline" size={14} color={colors.taxiDeep} />
             <Text style={styles.paxChipText}>{booking.passengers ?? 1}</Text>
           </View>
           <View style={styles.paxChip}>
-            <Ionicons name="briefcase-outline" size={14} color={colors.gold} />
+            <Ionicons name="briefcase-outline" size={14} color={colors.taxiDeep} />
             <Text style={styles.paxChipText}>{booking.luggage ?? 0}</Text>
           </View>
           {booking.flight_number ? (
             <View style={[styles.paxChip, styles.flightChip]}>
-              <Ionicons name="airplane-outline" size={14} color={colors.black} />
-              <Text style={[styles.paxChipText, { color: colors.black, fontWeight: '700' }]}>
+              <Ionicons name="airplane-outline" size={14} color={colors.ink} />
+              <Text style={[styles.paxChipText, { color: colors.ink, fontWeight: '700' }]}>
                 {booking.flight_number}
               </Text>
             </View>
@@ -333,7 +333,7 @@ export default function TripDetailScreen() {
               )
             }
           >
-            <Ionicons name="search-outline" size={16} color={colors.gold} />
+            <Ionicons name="search-outline" size={16} color={colors.taxiDeep} />
             <Text style={styles.callBtnText}>Comprovar estat del vol</Text>
           </TouchableOpacity>
         ) : null}
@@ -347,7 +347,7 @@ export default function TripDetailScreen() {
             {booking.fare != null ? `€${Number(booking.fare).toFixed(2)}` : 'Sense cobrar'}
           </Text>
           <TouchableOpacity style={styles.fareBtn} onPress={() => setFinishing(true)}>
-            <Ionicons name="cash-outline" size={15} color={colors.black} />
+            <Ionicons name="cash-outline" size={15} color={colors.ink} />
             <Text style={styles.fareBtnText}>
               {booking.fare != null ? 'CANVIAR' : 'COBRAR'}
             </Text>
@@ -367,18 +367,18 @@ export default function TripDetailScreen() {
       <View style={styles.actions}>
         {booking.status === 'pending' && (
           <TouchableOpacity
-            style={[styles.actionBtn, { borderColor: colors.gold }]}
+            style={[styles.actionBtn, { borderColor: colors.taxiDeep }]}
             onPress={() => updateStatus('confirmed')}
           >
-            <Text style={[styles.actionBtnText, { color: colors.gold }]}>ACCEPTAR VIATGE</Text>
+            <Text style={[styles.actionBtnText, { color: colors.taxiDeep }]}>ACCEPTAR VIATGE</Text>
           </TouchableOpacity>
         )}
         {booking.status === 'completed' && (
           <TouchableOpacity
-            style={[styles.actionBtn, { borderColor: colors.gold }]}
+            style={[styles.actionBtn, { borderColor: colors.taxiDeep }]}
             onPress={() => updateStatus('confirmed')}
           >
-            <Text style={[styles.actionBtnText, { color: colors.gold }]}>
+            <Text style={[styles.actionBtnText, { color: colors.taxiDeep }]}>
               REOBRIR (ERROR)
             </Text>
           </TouchableOpacity>
@@ -422,11 +422,11 @@ export default function TripDetailScreen() {
             <View style={styles.modalHeader}>
               <Text style={styles.modalTitle}>Corregir el viatge</Text>
               <TouchableOpacity onPress={() => setEditing(false)} hitSlop={12}>
-                <Ionicons name="close" size={22} color={colors.textMuted} />
+                <Ionicons name="close" size={22} color={colors.inkMuted} />
               </TouchableOpacity>
             </View>
 
-            <Text style={{ color: colors.gold, fontSize: 12, marginBottom: 12 }}>
+            <Text style={{ color: colors.taxiDeep, fontSize: 12, marginBottom: 12 }}>
               {booking.client_email
                 ? "Si canvies l'hora, el client rebrà un correu amb la nova."
                 : "Aquest client no té correu: si canvies l'hora, truca'l."}
@@ -480,7 +480,7 @@ function Field({
         value={value}
         onChangeText={onChange}
         placeholder={placeholder}
-        placeholderTextColor={colors.textMuted}
+        placeholderTextColor={colors.inkMuted}
         keyboardType={keyboard}
         multiline={multiline}
       />
@@ -489,54 +489,54 @@ function Field({
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: colors.black },
+  container: { flex: 1, backgroundColor: colors.paper },
   header: {
     flexDirection: 'row',
     alignItems: 'center',
     gap: 12,
     padding: 20,
     borderBottomWidth: 1,
-    borderBottomColor: colors.border,
+    borderBottomColor: colors.line,
   },
   back: { padding: 4 },
   headerTime: {
-    color: colors.textPrimary,
+    color: colors.ink,
     fontSize: 16,
     fontWeight: '500',
     marginBottom: 6,
   },
-  badge: { alignSelf: 'flex-start', paddingHorizontal: 8, paddingVertical: 3, borderRadius: 2 },
-  badgeText: { fontSize: 9, letterSpacing: 2, fontWeight: '700' },
+  badge: { alignSelf: 'flex-start', paddingHorizontal: 8, paddingVertical: 3, borderRadius: 12 },
+  badgeText: { fontSize: 9, fontWeight: '700' },
   editBtn: {
     flexDirection: 'row', alignItems: 'center', gap: 5,
     paddingHorizontal: 10, paddingVertical: 8,
-    borderWidth: 1, borderColor: colors.gold + '40', borderRadius: 2,
+    borderWidth: 1, borderColor: colors.taxi, borderRadius: 999,
   },
-  editBtnText: { color: colors.gold, fontSize: 12 },
+  editBtnText: { color: colors.taxiDeep, fontSize: 12 },
 
   navPanel: {
     margin: 16,
     marginBottom: 0,
     padding: 16,
-    backgroundColor: colors.gold + '0D',
+    backgroundColor: colors.taxi + '33',
     borderWidth: 1,
-    borderColor: colors.gold + '33',
-    borderRadius: 2,
+    borderColor: colors.taxi,
+    borderRadius: 12,
   },
   wazeBtn: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
     gap: 8,
-    backgroundColor: colors.gold,
+    backgroundColor: colors.taxi,
     paddingVertical: 16,
-    borderRadius: 2,
+    borderRadius: 999,
   },
-  wazeBtnText: { color: colors.black, fontSize: 12, fontWeight: '700', letterSpacing: 1.5 },
+  wazeBtnText: { color: colors.ink, fontSize: 12, fontWeight: '700' },
   wazeSecondary: { alignItems: 'center', paddingVertical: 12 },
-  wazeSecondaryText: { color: colors.gold, fontSize: 12 },
+  wazeSecondaryText: { color: colors.taxiDeep, fontSize: 12 },
   legStatus: { flexDirection: 'row', alignItems: 'center', gap: 8, marginBottom: 12 },
-  legStatusText: { color: colors.gold, fontSize: 12, letterSpacing: 1 },
+  legStatusText: { color: colors.taxiDeep, fontSize: 12 },
   abortBtn: { alignItems: 'center', paddingVertical: 8 },
   abortText: { color: colors.error, fontSize: 12 },
   mapsFallback: {
@@ -546,7 +546,7 @@ const styles = StyleSheet.create({
     gap: 6,
     paddingTop: 12,
   },
-  mapsFallbackText: { color: colors.textMuted, fontSize: 11 },
+  mapsFallbackText: { color: colors.inkMuted, fontSize: 11 },
 
   section: {
     margin: 16,
@@ -554,88 +554,86 @@ const styles = StyleSheet.create({
     padding: 16,
     backgroundColor: colors.card,
     borderWidth: 1,
-    borderColor: colors.border,
-    borderRadius: 2,
+    borderColor: colors.line,
+    borderRadius: 12,
   },
   sectionTitle: {
-    color: colors.textMuted,
+    color: colors.inkMuted,
     fontSize: 10,
-    letterSpacing: 2,
-    textTransform: 'uppercase',
     marginBottom: 10,
   },
-  fieldValue: { color: colors.textPrimary, fontSize: 14, lineHeight: 20 },
-  fieldMeta: { color: colors.textMuted, fontSize: 12, marginTop: 10 },
+  fieldValue: { color: colors.ink, fontSize: 14, lineHeight: 20 },
+  fieldMeta: { color: colors.inkMuted, fontSize: 12, marginTop: 10 },
   callBtn: {
     flexDirection: 'row',
     alignItems: 'center',
     gap: 8,
     marginTop: 10,
-    backgroundColor: colors.gold + '10',
+    backgroundColor: colors.taxi + '33',
     borderWidth: 1,
-    borderColor: colors.gold + '30',
-    borderRadius: 2,
+    borderColor: colors.taxi,
+    borderRadius: 999,
     paddingHorizontal: 12,
     paddingVertical: 10,
     alignSelf: 'flex-start',
   },
-  callBtnText: { color: colors.gold, fontSize: 14, fontWeight: '500' },
+  callBtnText: { color: colors.taxiDeep, fontSize: 14, fontWeight: '500' },
   routeRow: { flexDirection: 'row', alignItems: 'flex-start', gap: 10 },
-  routeDot: { width: 8, height: 8, borderRadius: 4, backgroundColor: colors.textMuted, marginTop: 5 },
-  routeLine: { width: 1, height: 16, backgroundColor: colors.border, marginLeft: 3.5, marginVertical: 2 },
+  routeDot: { width: 8, height: 8, borderRadius: 12, backgroundColor: colors.inkMuted, marginTop: 5 },
+  routeLine: { width: 1, height: 16, backgroundColor: colors.line, marginLeft: 3.5, marginVertical: 2 },
   paxRow: { flexDirection: 'row', alignItems: 'center', gap: 8, flexWrap: 'wrap' },
   paxChip: {
     flexDirection: 'row', alignItems: 'center', gap: 6,
     paddingHorizontal: 12, paddingVertical: 8,
-    backgroundColor: colors.gold + '10',
-    borderWidth: 1, borderColor: colors.gold + '30', borderRadius: 2,
+    backgroundColor: colors.taxi + '33',
+    borderWidth: 1, borderColor: colors.taxi, borderRadius: 999,
   },
-  paxChipText: { color: colors.textPrimary, fontSize: 14, fontWeight: '600' },
-  flightChip: { backgroundColor: colors.gold, borderColor: colors.gold },
+  paxChipText: { color: colors.ink, fontSize: 14, fontWeight: '600' },
+  flightChip: { backgroundColor: colors.taxi, borderColor: colors.taxiDeep },
   fareRow: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', gap: 12 },
-  fareValue: { color: colors.textPrimary, fontSize: 22, fontWeight: '700' },
+  fareValue: { color: colors.ink, fontSize: 22, fontWeight: '700' },
   fareBtn: {
     flexDirection: 'row', alignItems: 'center', gap: 6,
     paddingHorizontal: 14, paddingVertical: 11,
-    backgroundColor: colors.gold, borderRadius: 2,
+    backgroundColor: colors.taxi, borderRadius: 999,
   },
-  fareBtnText: { color: colors.black, fontSize: 11, fontWeight: '700', letterSpacing: 1.5 },
+  fareBtnText: { color: colors.ink, fontSize: 11, fontWeight: '700' },
   actions: { margin: 16, marginTop: 24, gap: 10 },
   actionBtn: {
     paddingVertical: 14,
     borderWidth: 1,
-    borderRadius: 2,
+    borderRadius: 999,
     alignItems: 'center',
   },
-  actionBtnText: { fontSize: 11, fontWeight: '700', letterSpacing: 3 },
+  actionBtnText: { fontSize: 11, fontWeight: '700' },
 
   modalOverlay: { flex: 1, justifyContent: 'flex-end', backgroundColor: 'rgba(0,0,0,0.65)' },
   modalSheet: {
-    backgroundColor: colors.surface,
+    backgroundColor: colors.panel,
     borderTopLeftRadius: 16,
     borderTopRightRadius: 16,
     padding: 24,
     paddingBottom: 40,
     borderTopWidth: 1,
-    borderTopColor: colors.border,
+    borderTopColor: colors.line,
   },
   modalHeader: {
     flexDirection: 'row', justifyContent: 'space-between',
     alignItems: 'center', marginBottom: 18,
   },
-  modalTitle: { color: colors.textPrimary, fontSize: 16, fontWeight: '600' },
+  modalTitle: { color: colors.ink, fontSize: 16, fontWeight: '600' },
   fieldLabel: {
-    color: colors.textSecondary, fontSize: 11, letterSpacing: 2,
-    textTransform: 'uppercase', marginBottom: 6,
+    color: colors.inkSoft, fontSize: 11,
+marginBottom: 6,
   },
   input: {
-    backgroundColor: colors.card, borderWidth: 1, borderColor: colors.border,
-    borderRadius: 2, paddingHorizontal: 14, paddingVertical: 12,
-    color: colors.textPrimary, fontSize: 14, marginBottom: 14,
+    backgroundColor: colors.card, borderWidth: 1, borderColor: colors.line,
+    borderRadius: 12, paddingHorizontal: 14, paddingVertical: 12,
+    color: colors.ink, fontSize: 14, marginBottom: 14,
   },
   saveBtn: {
-    backgroundColor: colors.gold, paddingVertical: 16,
-    borderRadius: 2, alignItems: 'center', marginTop: 12,
+    backgroundColor: colors.taxi, paddingVertical: 16,
+    borderRadius: 999, alignItems: 'center', marginTop: 12,
   },
-  saveBtnText: { color: colors.black, fontSize: 12, fontWeight: '700', letterSpacing: 2 },
+  saveBtnText: { color: colors.ink, fontSize: 12, fontWeight: '700' },
 })

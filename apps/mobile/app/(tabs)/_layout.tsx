@@ -6,22 +6,25 @@ import { ActiveTripBar } from '../../src/components/ActiveTripBar'
 
 export default function TabsLayout() {
   return (
-    <View style={{ flex: 1, backgroundColor: colors.black }}>
+    <View style={{ flex: 1, backgroundColor: colors.paper }}>
       <Tabs
         initialRouteName="calendar"
         screenOptions={{
           tabBarStyle: {
-            backgroundColor: colors.surface,
-            borderTopColor: colors.border,
-            height: 60,
-            paddingBottom: 8,
+            backgroundColor: colors.panel,
+            borderTopColor: colors.line,
+            height: 64,
+            paddingBottom: 4,
           },
-          tabBarActiveTintColor: colors.gold,
-          tabBarInactiveTintColor: colors.textMuted,
-          tabBarLabelStyle: { fontSize: 10 },
-          headerStyle: { backgroundColor: colors.black },
-          headerTintColor: colors.textPrimary,
-          headerTitleStyle: { fontSize: 18 },
+          tabBarActiveTintColor: colors.ink,
+          tabBarActiveBackgroundColor: colors.taxi,
+          tabBarInactiveTintColor: colors.inkMuted,
+          tabBarLabelStyle: { fontSize: 11, fontWeight: '600' },
+          tabBarItemStyle: { borderRadius: 12, marginHorizontal: 3, marginVertical: 4 },
+          headerStyle: { backgroundColor: colors.paper },
+          headerShadowVisible: false,
+          headerTintColor: colors.ink,
+          headerTitleStyle: { fontSize: 20, fontWeight: '700' },
         }}
       >
         {/* 1 — Calendar */}

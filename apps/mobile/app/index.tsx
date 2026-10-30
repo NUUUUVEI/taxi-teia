@@ -15,8 +15,8 @@ export default function Index() {
 
   if (signedIn === null) {
     return (
-      <View style={{ flex: 1, backgroundColor: colors.black, justifyContent: 'center' }}>
-        <ActivityIndicator color={colors.gold} />
+      <View style={{ flex: 1, backgroundColor: colors.paper, justifyContent: 'center' }}>
+        <ActivityIndicator color={colors.taxiDeep} />
       </View>
     )
   }

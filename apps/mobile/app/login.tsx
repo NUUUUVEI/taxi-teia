@@ -68,7 +68,7 @@ export default function LoginScreen() {
         <View style={styles.logoContainer}>
           <Image source={require('../assets/icon.png')} style={styles.logoImage} />
           <Text style={styles.logoText}>
-            Taxi <Text style={{ color: colors.gold }}>Teià</Text>
+            Taxi <Text style={{ color: colors.taxiDeep }}>Teià</Text>
           </Text>
           <Text style={styles.logoSub}>Driver App</Text>
         </View>
@@ -79,7 +79,7 @@ export default function LoginScreen() {
           <TextInput
             style={styles.input}
             placeholder="marctaxiteia@gmail.com"
-            placeholderTextColor={colors.textMuted}
+            placeholderTextColor={colors.inkMuted}
             value={email}
             onChangeText={setEmail}
             autoCapitalize="none"
@@ -96,7 +96,7 @@ export default function LoginScreen() {
             <TextInput
               style={styles.passwordInput}
               placeholder="••••••••"
-              placeholderTextColor={colors.textMuted}
+              placeholderTextColor={colors.inkMuted}
               value={password}
               onChangeText={setPassword}
               secureTextEntry={!showPassword}
@@ -116,7 +116,7 @@ export default function LoginScreen() {
               <Ionicons
                 name={showPassword ? 'eye-off-outline' : 'eye-outline'}
                 size={20}
-                color={colors.textMuted}
+                color={colors.inkMuted}
               />
             </TouchableOpacity>
           </View>
@@ -138,7 +138,7 @@ export default function LoginScreen() {
           </TouchableOpacity>
 
           <View style={styles.autofillHint}>
-            <Ionicons name="key-outline" size={13} color={colors.textMuted} />
+            <Ionicons name="key-outline" size={13} color={colors.inkMuted} />
             <Text style={styles.autofillHintText}>
               Android t&apos;oferirà guardar la contrasenya al Gestor de Google
             </Text>
@@ -152,7 +152,7 @@ export default function LoginScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: colors.black,
+    backgroundColor: colors.paper,
   },
   inner: {
     flex: 1,
@@ -170,37 +170,32 @@ const styles = StyleSheet.create({
     marginBottom: 16,
   },
   logoText: {
-    color: colors.textPrimary,
+    color: colors.ink,
     fontSize: 28,
     fontWeight: '600',
-    letterSpacing: 1,
   },
   logoSub: {
-    color: colors.textMuted,
+    color: colors.inkMuted,
     fontSize: 12,
-    letterSpacing: 4,
-    textTransform: 'uppercase',
     marginTop: 4,
   },
   form: {
     gap: 8,
   },
   label: {
-    color: colors.textSecondary,
+    color: colors.inkSoft,
     fontSize: 11,
-    letterSpacing: 2,
-    textTransform: 'uppercase',
     marginBottom: 4,
     marginTop: 8,
   },
   input: {
     backgroundColor: colors.card,
     borderWidth: 1,
-    borderColor: colors.border,
-    borderRadius: 2,
+    borderColor: colors.line,
+    borderRadius: 12,
     paddingHorizontal: 16,
     paddingVertical: 14,
-    color: colors.textPrimary,
+    color: colors.ink,
     fontSize: 14,
     marginBottom: 4,
   },
@@ -209,15 +204,15 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     backgroundColor: colors.card,
     borderWidth: 1,
-    borderColor: colors.border,
-    borderRadius: 2,
+    borderColor: colors.line,
+    borderRadius: 12,
     marginBottom: 4,
   },
   passwordInput: {
     flex: 1,
     paddingHorizontal: 16,
     paddingVertical: 14,
-    color: colors.textPrimary,
+    color: colors.ink,
     fontSize: 14,
   },
   eyeBtn: {
@@ -225,11 +220,11 @@ const styles = StyleSheet.create({
     paddingVertical: 14,
   },
   forgotBtn: { alignSelf: 'flex-end', paddingVertical: 6 },
-  forgotText: { color: colors.textMuted, fontSize: 12 },
+  forgotText: { color: colors.inkMuted, fontSize: 12 },
   button: {
-    backgroundColor: colors.gold,
+    backgroundColor: colors.taxi,
     paddingVertical: 16,
-    borderRadius: 2,
+    borderRadius: 999,
     alignItems: 'center',
     marginTop: 12,
   },
@@ -237,10 +232,9 @@ const styles = StyleSheet.create({
     opacity: 0.6,
   },
   buttonText: {
-    color: '#000',
+    color: colors.ink,
     fontSize: 13,
     fontWeight: '700',
-    letterSpacing: 3,
   },
   autofillHint: {
     flexDirection: 'row',
@@ -250,5 +244,5 @@ const styles = StyleSheet.create({
     marginTop: 14,
     paddingHorizontal: 8,
   },
-  autofillHintText: { color: colors.textMuted, fontSize: 11, flexShrink: 1 },
+  autofillHintText: { color: colors.inkMuted, fontSize: 11, flexShrink: 1 },
 })

@@ -11,13 +11,14 @@ import { supabase } from '../../src/lib/supabase'
 import { STATUS_LABEL, type Booking } from '../../src/lib/types'
 import { colors } from '../../src/lib/theme'
 import { Ionicons } from '@expo/vector-icons'
-import { router } from 'expo-router'
+import { router, useNavigation } from 'expo-router'
+import { ExportTripsSheet } from '../../src/components/ExportTripsSheet'
 
 const STATUS_COLORS: Record<string, string> = {
   pending:   colors.warning,
-  confirmed: colors.gold,
+  confirmed: colors.taxiDeep,
   completed: colors.success,
-  cancelled: colors.textMuted,
+  cancelled: colors.inkMuted,
 }
 
 const DAYS_OF_WEEK = ['Dl', 'Dt', 'Dc', 'Dj', 'Dv', 'Ds', 'Dg']
@@ -28,6 +29,23 @@ export default function CalendarScreen() {
   const [allBookings, setAllBookings] = useState<Booking[]>([])
   const [dayBookings, setDayBookings] = useState<Booking[]>([])
   const [loadingDay, setLoadingDay] = useState(false)
+  const [exportOpen, setExportOpen] = useState(false)
+  const navigation = useNavigation()
+
+  useEffect(() => {
+    navigation.setOptions({
+      headerRight: () => (
+        <TouchableOpacity
+          onPress={() => setExportOpen(true)}
+          style={styles.exportBtn}
+          accessibilityLabel="Exportar reserves"
+        >
+          <Ionicons name="share-outline" size={18} color={colors.ink} />
+          <Text style={styles.exportText}>Exportar</Text>
+        </TouchableOpacity>
+      ),
+    })
+  }, [navigation])
 
   // Fetch all bookings for the current month (for dot indicators)
   const fetchMonth = useCallback(async () => {
@@ -81,15 +99,15 @@ export default function CalendarScreen() {
   })
 
   return (
-    <View style={{ flex: 1, backgroundColor: colors.black }}>
+    <View style={{ flex: 1, backgroundColor: colors.paper }}>
       {/* Month nav */}
       <View style={styles.monthNav}>
         <TouchableOpacity onPress={() => setCurrentMonth(m => subMonths(m, 1))} style={styles.navBtn}>
-          <Ionicons name="chevron-back" size={20} color={colors.gold} />
+          <Ionicons name="chevron-back" size={20} color={colors.taxiDeep} />
         </TouchableOpacity>
-        <Text style={styles.monthLabel}>{format(currentMonth, 'MMMM yyyy').toUpperCase()}</Text>
+        <Text style={styles.monthLabel}>{format(currentMonth, 'MMMM yyyy').replace(/^./, c => c.toUpperCase())}</Text>
         <TouchableOpacity onPress={() => setCurrentMonth(m => addMonths(m, 1))} style={styles.navBtn}>
-          <Ionicons name="chevron-forward" size={20} color={colors.gold} />
+          <Ionicons name="chevron-forward" size={20} color={colors.taxiDeep} />
         </TouchableOpacity>
       </View>
 
@@ -131,7 +149,7 @@ export default function CalendarScreen() {
               {hasTrips && (
                 <View style={styles.dotRow}>
                   {Array.from({ length: Math.min(count, 3) }).map((_, di) => (
-                    <View key={di} style={[styles.dot, isSelected && { backgroundColor: colors.black }]} />
+                    <View key={di} style={[styles.dot, isSelected && { backgroundColor: colors.paper }]} />
                   ))}
                 </View>
               )}
@@ -143,9 +161,9 @@ export default function CalendarScreen() {
       {/* Selected day trips */}
       <View style={styles.dayPanel}>
         <Text style={styles.dayPanelTitle}>
-          {format(selectedDay, 'EEEE, d MMMM').toUpperCase()}
+          {format(selectedDay, 'EEEE, d MMMM').replace(/^./, c => c.toUpperCase())}
           {dayBookings.length > 0 && (
-            <Text style={{ color: colors.gold }}> · {dayBookings.length}</Text>
+            <Text style={{ color: colors.taxiDeep }}> · {dayBookings.length}</Text>
           )}
         </Text>
 
@@ -162,12 +180,12 @@ export default function CalendarScreen() {
                 style={styles.tripCard}
                 onPress={() => router.push(`/trip/${b.id}`)}
               >
-                <View style={[styles.statusBar, { backgroundColor: STATUS_COLORS[b.status] ?? colors.border }]} />
+                <View style={[styles.statusBar, { backgroundColor: STATUS_COLORS[b.status] ?? colors.line }]} />
                 <View style={{ flex: 1 }}>
                   <View style={styles.tripTop}>
                     <Text style={styles.tripTime}>{format(new Date(b.start_time), 'HH:mm')}</Text>
-                    <View style={[styles.badge, { backgroundColor: (STATUS_COLORS[b.status] ?? colors.border) + '20' }]}>
-                      <Text style={[styles.badgeText, { color: STATUS_COLORS[b.status] ?? colors.textMuted }]}>
+                    <View style={[styles.badge, { backgroundColor: (STATUS_COLORS[b.status] ?? colors.line) + '20' }]}>
+                      <Text style={[styles.badgeText, { color: STATUS_COLORS[b.status] ?? colors.inkMuted }]}>
                         {STATUS_LABEL[b.status] ?? b.status.toUpperCase()}
                       </Text>
                     </View>
@@ -180,56 +198,62 @@ export default function CalendarScreen() {
                     <Text style={styles.tripFare}>€{Number(b.fare).toFixed(2)}</Text>
                   )}
                 </View>
-                <Ionicons name="chevron-forward" size={16} color={colors.textMuted} style={{ marginLeft: 8 }} />
+                <Ionicons name="chevron-forward" size={16} color={colors.inkMuted} style={{ marginLeft: 8 }} />
               </TouchableOpacity>
             )}
             scrollEnabled={false}
           />
         )}
       </View>
+      <ExportTripsSheet visible={exportOpen} onClose={() => setExportOpen(false)} />
     </View>
   )
 }
 
 const styles = StyleSheet.create({
+  exportBtn: {
+    flexDirection: 'row', alignItems: 'center', gap: 6, marginRight: 12,
+    backgroundColor: colors.taxi, paddingVertical: 8, paddingHorizontal: 14, borderRadius: 999,
+  },
+  exportText: { color: colors.ink, fontSize: 14, fontWeight: '700' },
   monthNav: {
     flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between',
-    paddingHorizontal: 16, paddingVertical: 12, borderBottomWidth: 1, borderBottomColor: colors.border,
+    paddingHorizontal: 16, paddingVertical: 12, borderBottomWidth: 1, borderBottomColor: colors.line,
   },
   navBtn: { padding: 8 },
-  monthLabel: { color: colors.gold, fontSize: 13, fontWeight: '700', letterSpacing: 2 },
+  monthLabel: { color: colors.taxiDeep, fontSize: 13, fontWeight: '700' },
   dayHeaders: { flexDirection: 'row', paddingHorizontal: 8, paddingTop: 8 },
-  dayHeader: { flex: 1, textAlign: 'center', color: colors.textMuted, fontSize: 11, letterSpacing: 1 },
+  dayHeader: { flex: 1, textAlign: 'center', color: colors.inkMuted, fontSize: 11 },
   grid: { flexDirection: 'row', flexWrap: 'wrap', paddingHorizontal: 8, paddingBottom: 8 },
   dayCell: {
     width: '14.28%', aspectRatio: 0.9, alignItems: 'center', justifyContent: 'center',
     borderRadius: 6, paddingVertical: 4,
   },
-  dayCellSelected: { backgroundColor: colors.gold },
-  dayCellToday: { borderWidth: 1, borderColor: colors.gold },
-  dayNum: { color: colors.textPrimary, fontSize: 14, fontWeight: '500' },
-  dayNumFaded: { color: colors.textMuted },
-  dayNumSelected: { color: colors.black, fontWeight: '700' },
-  dayNumToday: { color: colors.gold },
+  dayCellSelected: { backgroundColor: colors.taxi },
+  dayCellToday: { borderWidth: 1, borderColor: colors.taxiDeep },
+  dayNum: { color: colors.ink, fontSize: 14, fontWeight: '500' },
+  dayNumFaded: { color: colors.inkMuted },
+  dayNumSelected: { color: colors.ink, fontWeight: '700' },
+  dayNumToday: { color: colors.taxiDeep },
   dotRow: { flexDirection: 'row', gap: 2, marginTop: 2 },
-  dot: { width: 4, height: 4, borderRadius: 2, backgroundColor: colors.gold },
+  dot: { width: 4, height: 4, borderRadius: 12, backgroundColor: colors.taxi },
   dayPanel: {
-    flex: 1, borderTopWidth: 1, borderTopColor: colors.border,
+    flex: 1, borderTopWidth: 1, borderTopColor: colors.line,
     paddingHorizontal: 16, paddingTop: 12,
   },
-  dayPanelTitle: { color: colors.textSecondary, fontSize: 11, letterSpacing: 2, marginBottom: 12 },
-  emptyText: { color: colors.textMuted, fontSize: 13, textAlign: 'center', marginTop: 24 },
+  dayPanelTitle: { color: colors.inkSoft, fontSize: 11, marginBottom: 12 },
+  emptyText: { color: colors.inkMuted, fontSize: 13, textAlign: 'center', marginTop: 24 },
   tripCard: {
     flexDirection: 'row', alignItems: 'center',
-    backgroundColor: colors.card, borderRadius: 4, marginBottom: 8,
-    borderWidth: 1, borderColor: colors.border, overflow: 'hidden',
+    backgroundColor: colors.card, borderRadius: 12, marginBottom: 8,
+    borderWidth: 1, borderColor: colors.line, overflow: 'hidden',
   },
   statusBar: { width: 4, alignSelf: 'stretch' },
   tripTop: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginBottom: 2, paddingRight: 4 },
-  tripTime: { color: colors.gold, fontSize: 14, fontWeight: '700', padding: 10, paddingRight: 6 },
-  badge: { paddingHorizontal: 8, paddingVertical: 2, borderRadius: 3 },
-  badgeText: { fontSize: 9, fontWeight: '700', letterSpacing: 1 },
-  tripClient: { color: colors.textPrimary, fontSize: 13, paddingHorizontal: 10, fontWeight: '500' },
-  tripRoute: { color: colors.textMuted, fontSize: 11, paddingHorizontal: 10, marginTop: 2 },
+  tripTime: { color: colors.taxiDeep, fontSize: 14, fontWeight: '700', padding: 10, paddingRight: 6 },
+  badge: { paddingHorizontal: 8, paddingVertical: 2, borderRadius: 12 },
+  badgeText: { fontSize: 9, fontWeight: '700' },
+  tripClient: { color: colors.ink, fontSize: 13, paddingHorizontal: 10, fontWeight: '500' },
+  tripRoute: { color: colors.inkMuted, fontSize: 11, paddingHorizontal: 10, marginTop: 2 },
   tripFare: { color: colors.success, fontSize: 12, fontWeight: '600', paddingHorizontal: 10, paddingBottom: 8, marginTop: 2 },
 })

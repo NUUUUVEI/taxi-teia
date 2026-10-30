@@ -77,7 +77,7 @@ export async function startLocationSharing(ask = true): Promise<LocationMode | n
         foregroundService: {
           notificationTitle: 'Taxi Teià',
           notificationBody: 'Compartint la ubicació per a les reserves',
-          notificationColor: '#C9A84C',
+          notificationColor: '#FFC72C',
         },
       })
     }

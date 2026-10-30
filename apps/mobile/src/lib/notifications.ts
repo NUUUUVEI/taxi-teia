@@ -49,7 +49,7 @@ export async function registerForPushNotifications(): Promise<string> {
       name: 'Nova reserva',
       importance: Notifications.AndroidImportance.MAX,
       vibrationPattern: [0, 250, 250, 250],
-      lightColor: '#C9A84C',
+      lightColor: '#FFC72C',
     })
   }
 

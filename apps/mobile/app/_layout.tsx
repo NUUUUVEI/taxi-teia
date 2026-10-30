@@ -8,6 +8,7 @@ import { supabase } from '../src/lib/supabase'
 import { registerForPushNotifications, savePushToken } from '../src/lib/notifications'
 import { resumeLocationSharing, stopLocationSharing } from '../src/lib/location'
 import { hydrateActiveTrip } from '../src/lib/activeTrip'
+import { colors } from '../src/lib/theme'
 
 /**
  * Best-effort at launch. If it fails (no permission, missing projectId, offline)
@@ -58,18 +59,20 @@ export default function RootLayout() {
 
   return (
     <>
-      <StatusBar style="light" />
+      <StatusBar style="dark" />
       <Stack
         screenOptions={{
-          headerStyle: { backgroundColor: '#0A0A0A' },
-          headerTintColor: '#C9A84C',
-          headerTitleStyle: { fontFamily: 'CormorantGaramond_600SemiBold', fontSize: 20 },
-          contentStyle: { backgroundColor: '#0A0A0A' },
+          headerStyle: { backgroundColor: colors.paper },
+          headerTintColor: colors.ink,
+          headerTitleStyle: { fontWeight: '700', fontSize: 18 },
+          headerShadowVisible: false,
+          contentStyle: { backgroundColor: colors.paper },
         }}
       >
         <Stack.Screen name="index" options={{ headerShown: false }} />
         <Stack.Screen name="login" options={{ headerShown: false }} />
         <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+        <Stack.Screen name="trip/[id]" options={{ title: 'Viatge', headerBackTitle: 'Enrere' }} />
       </Stack>
     </>
   )

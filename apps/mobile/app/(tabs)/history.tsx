@@ -97,7 +97,7 @@ export default function HistoryScreen() {
           <RefreshControl
             refreshing={refreshing}
             onRefresh={() => { setRefreshing(true); fetchHistory(0) }}
-            tintColor={colors.gold}
+            tintColor={colors.taxiDeep}
           />
         }
         ListEmptyComponent={
@@ -114,21 +114,19 @@ export default function HistoryScreen() {
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: colors.black },
+  container: { flex: 1, backgroundColor: colors.paper },
   header: {
     padding: 20,
     paddingTop: 12,
     borderBottomWidth: 1,
-    borderBottomColor: colors.border,
+    borderBottomColor: colors.line,
   },
   headerLabel: {
-    color: colors.gold,
+    color: colors.taxiDeep,
     fontSize: 11,
-    letterSpacing: 3,
-    textTransform: 'uppercase',
   },
   headerCount: {
-    color: colors.textMuted,
+    color: colors.inkMuted,
     fontSize: 13,
     marginTop: 4,
   },
@@ -144,32 +142,29 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   dateDay: {
-    color: colors.textPrimary,
+    color: colors.ink,
     fontSize: 20,
     fontWeight: '600',
     lineHeight: 22,
   },
   dateMon: {
-    color: colors.textMuted,
+    color: colors.inkMuted,
     fontSize: 10,
-    textTransform: 'uppercase',
-    letterSpacing: 1,
   },
   rowBody: { flex: 1 },
   rowTime: {
-    color: colors.gold,
+    color: colors.taxiDeep,
     fontSize: 12,
-    letterSpacing: 1,
     marginBottom: 2,
   },
   rowClient: {
-    color: colors.textPrimary,
+    color: colors.ink,
     fontSize: 14,
     fontWeight: '500',
     marginBottom: 2,
   },
   rowRoute: {
-    color: colors.textMuted,
+    color: colors.inkMuted,
     fontSize: 12,
   },
   fareCol: {
@@ -177,22 +172,22 @@ const styles = StyleSheet.create({
     minWidth: 54,
   },
   fare: {
-    color: colors.gold,
+    color: colors.taxiDeep,
     fontSize: 15,
     fontWeight: '600',
   },
   fareEmpty: {
-    color: colors.textMuted,
+    color: colors.inkMuted,
     fontSize: 15,
   },
   mins: {
-    color: colors.textMuted,
+    color: colors.inkMuted,
     fontSize: 11,
     marginTop: 2,
   },
   separator: {
     height: 1,
-    backgroundColor: colors.border,
+    backgroundColor: colors.line,
     marginHorizontal: 16,
   },
   empty: {
@@ -200,7 +195,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   emptyText: {
-    color: colors.textMuted,
+    color: colors.inkMuted,
     fontSize: 15,
   },
 })

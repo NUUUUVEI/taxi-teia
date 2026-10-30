@@ -48,7 +48,7 @@ export function ActiveTripBar() {
         </TouchableOpacity>
 
         <TouchableOpacity style={styles.iconBtn} onPress={() => openWaze(target)}>
-          <Ionicons name="navigate" size={18} color={colors.gold} />
+          <Ionicons name="navigate" size={18} color={colors.taxiDeep} />
         </TouchableOpacity>
 
         <TouchableOpacity style={styles.actionBtn} onPress={advance}>
@@ -80,9 +80,9 @@ const styles = StyleSheet.create({
     paddingLeft: 12,
     paddingRight: 8,
     paddingVertical: 10,
-    backgroundColor: colors.surface,
+    backgroundColor: colors.panel,
     borderWidth: 1,
-    borderColor: colors.gold + '55',
+    borderColor: colors.taxi,
     borderRadius: 6,
     shadowColor: '#000',
     shadowOpacity: 0.5,
@@ -91,20 +91,20 @@ const styles = StyleSheet.create({
     elevation: 8,
   },
   info: { flex: 1, flexDirection: 'row', alignItems: 'center', gap: 10 },
-  pulse: { width: 8, height: 8, borderRadius: 4, backgroundColor: colors.gold },
-  label: { color: colors.gold, fontSize: 9, letterSpacing: 1.5, fontWeight: '700' },
-  client: { color: colors.textSecondary, fontSize: 12, marginTop: 2 },
+  pulse: { width: 8, height: 8, borderRadius: 12, backgroundColor: colors.taxi },
+  label: { color: colors.taxiDeep, fontSize: 9, fontWeight: '700' },
+  client: { color: colors.inkSoft, fontSize: 12, marginTop: 2 },
   iconBtn: {
     padding: 8,
     borderWidth: 1,
-    borderColor: colors.border,
-    borderRadius: 4,
+    borderColor: colors.line,
+    borderRadius: 999,
   },
   actionBtn: {
     paddingHorizontal: 14,
     paddingVertical: 10,
-    backgroundColor: colors.gold,
-    borderRadius: 4,
+    backgroundColor: colors.taxi,
+    borderRadius: 999,
   },
-  actionText: { color: colors.black, fontSize: 11, fontWeight: '700', letterSpacing: 1 },
+  actionText: { color: colors.ink, fontSize: 11, fontWeight: '700' },
 })

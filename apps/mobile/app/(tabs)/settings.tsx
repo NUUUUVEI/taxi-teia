@@ -160,7 +160,7 @@ export default function SettingsScreen() {
   if (loading) {
     return (
       <View style={[styles.container, { justifyContent: 'center', alignItems: 'center' }]}>
-        <ActivityIndicator color={colors.gold} />
+        <ActivityIndicator color={colors.taxiDeep} />
       </View>
     )
   }
@@ -207,40 +207,40 @@ export default function SettingsScreen() {
         <View style={styles.section}>
           <View style={styles.row}>
             <View style={styles.rowLeft}>
-              <Ionicons name="notifications-outline" size={18} color={colors.gold} />
+              <Ionicons name="notifications-outline" size={18} color={colors.taxiDeep} />
               <View>
                 <Text style={styles.rowLabel}>Avisos de noves reserves</Text>
                 <Text style={styles.rowHint}>Notificació push quan entra un viatge</Text>
               </View>
             </View>
             {pushBusy ? (
-              <ActivityIndicator color={colors.gold} />
+              <ActivityIndicator color={colors.taxiDeep} />
             ) : (
               <Switch
                 value={pushOn}
                 onValueChange={togglePush}
-                trackColor={{ false: colors.border, true: colors.gold + '80' }}
-                thumbColor={pushOn ? colors.gold : colors.textMuted}
+                trackColor={{ false: colors.line, true: colors.taxi }}
+                thumbColor={pushOn ? colors.taxiDeep : colors.inkMuted}
               />
             )}
           </View>
 
           <View style={[styles.row, styles.rowLast]}>
             <View style={styles.rowLeft}>
-              <Ionicons name="location-outline" size={18} color={colors.gold} />
+              <Ionicons name="location-outline" size={18} color={colors.taxiDeep} />
               <View>
                 <Text style={styles.rowLabel}>Compartir ubicació</Text>
                 <Text style={styles.rowHint}>La web comprova si arribes a temps</Text>
               </View>
             </View>
             {locBusy ? (
-              <ActivityIndicator color={colors.gold} />
+              <ActivityIndicator color={colors.taxiDeep} />
             ) : (
               <Switch
                 value={locationOn}
                 onValueChange={toggleLocation}
-                trackColor={{ false: colors.border, true: colors.gold + '80' }}
-                thumbColor={locationOn ? colors.gold : colors.textMuted}
+                trackColor={{ false: colors.line, true: colors.taxi }}
+                thumbColor={locationOn ? colors.taxiDeep : colors.inkMuted}
               />
             )}
           </View>
@@ -291,7 +291,7 @@ export default function SettingsScreen() {
               onChangeText={setName}
               autoCapitalize="words"
               placeholder="Marc García"
-              placeholderTextColor={colors.textMuted}
+              placeholderTextColor={colors.inkMuted}
             />
 
             <Text style={styles.fieldLabel}>Telèfon</Text>
@@ -301,7 +301,7 @@ export default function SettingsScreen() {
               onChangeText={setPhone}
               keyboardType="phone-pad"
               placeholder="+34 6XX XXX XXX"
-              placeholderTextColor={colors.textMuted}
+              placeholderTextColor={colors.inkMuted}
             />
 
             <Text style={styles.fieldLabel}>Correu</Text>
@@ -341,7 +341,7 @@ export default function SettingsScreen() {
               autoComplete="new-password"
               textContentType="newPassword"
               placeholder="Mínim 6 caràcters"
-              placeholderTextColor={colors.textMuted}
+              placeholderTextColor={colors.inkMuted}
             />
 
             <Text style={styles.fieldLabel}>Repeteix la contrasenya</Text>
@@ -354,7 +354,7 @@ export default function SettingsScreen() {
               autoComplete="new-password"
               textContentType="newPassword"
               placeholder="••••••••"
-              placeholderTextColor={colors.textMuted}
+              placeholderTextColor={colors.inkMuted}
             />
 
             <TouchableOpacity
@@ -377,10 +377,10 @@ function Row({
   return (
     <TouchableOpacity style={[styles.row, last && styles.rowLast]} onPress={onPress}>
       <View style={styles.rowLeft}>
-        <Ionicons name={icon as any} size={18} color={colors.gold} />
+        <Ionicons name={icon as any} size={18} color={colors.taxiDeep} />
         <Text style={styles.rowLabel}>{label}</Text>
       </View>
-      <Ionicons name="chevron-forward" size={16} color={colors.textMuted} />
+      <Ionicons name="chevron-forward" size={16} color={colors.inkMuted} />
     </TouchableOpacity>
   )
 }
@@ -390,25 +390,23 @@ function SheetHeader({ title, onClose }: { title: string; onClose: () => void })
     <View style={styles.modalHeader}>
       <Text style={styles.modalTitle}>{title}</Text>
       <TouchableOpacity onPress={onClose} hitSlop={12}>
-        <Ionicons name="close" size={22} color={colors.textMuted} />
+        <Ionicons name="close" size={22} color={colors.inkMuted} />
       </TouchableOpacity>
     </View>
   )
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: colors.black },
+  container: { flex: 1, backgroundColor: colors.paper },
   header: {
     padding: 20,
     paddingTop: 12,
     borderBottomWidth: 1,
-    borderBottomColor: colors.border,
+    borderBottomColor: colors.line,
   },
   headerLabel: {
-    color: colors.gold,
+    color: colors.taxiDeep,
     fontSize: 11,
-    letterSpacing: 3,
-    textTransform: 'uppercase',
   },
   accountCard: {
     flexDirection: 'row',
@@ -418,22 +416,21 @@ const styles = StyleSheet.create({
     padding: 16,
     backgroundColor: colors.card,
     borderWidth: 1,
-    borderColor: colors.border,
-    borderRadius: 2,
+    borderColor: colors.line,
+    borderRadius: 12,
   },
   avatar: {
     width: 48, height: 48, borderRadius: 24,
-    borderWidth: 1, borderColor: colors.gold,
+    borderWidth: 1, borderColor: colors.taxiDeep,
     alignItems: 'center', justifyContent: 'center',
   },
-  avatarLetter: { color: colors.gold, fontSize: 20, fontWeight: '600' },
-  accountName: { color: colors.textPrimary, fontSize: 16, fontWeight: '600' },
-  accountEmail: { color: colors.textMuted, fontSize: 12, marginTop: 2 },
-  accountPhone: { color: colors.textMuted, fontSize: 12, marginTop: 1 },
+  avatarLetter: { color: colors.taxiDeep, fontSize: 20, fontWeight: '600' },
+  accountName: { color: colors.ink, fontSize: 16, fontWeight: '600' },
+  accountEmail: { color: colors.inkMuted, fontSize: 12, marginTop: 2 },
+  accountPhone: { color: colors.inkMuted, fontSize: 12, marginTop: 1 },
   groupLabel: {
-    color: colors.textMuted,
+    color: colors.inkMuted,
     fontSize: 10,
-    letterSpacing: 2,
     marginHorizontal: 20,
     marginTop: 16,
     marginBottom: 8,
@@ -442,8 +439,8 @@ const styles = StyleSheet.create({
     marginHorizontal: 16,
     backgroundColor: colors.card,
     borderWidth: 1,
-    borderColor: colors.border,
-    borderRadius: 2,
+    borderColor: colors.line,
+    borderRadius: 12,
     overflow: 'hidden',
   },
   row: {
@@ -453,7 +450,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
     paddingVertical: 14,
     borderBottomWidth: 1,
-    borderBottomColor: colors.border,
+    borderBottomColor: colors.line,
     gap: 12,
   },
   rowLast: { borderBottomWidth: 0 },
@@ -463,8 +460,8 @@ const styles = StyleSheet.create({
     gap: 12,
     flex: 1,
   },
-  rowLabel: { color: colors.textPrimary, fontSize: 14 },
-  rowHint: { color: colors.textMuted, fontSize: 11, marginTop: 2 },
+  rowLabel: { color: colors.ink, fontSize: 14 },
+  rowHint: { color: colors.inkMuted, fontSize: 11, marginTop: 2 },
   logoutBtn: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -475,26 +472,25 @@ const styles = StyleSheet.create({
     backgroundColor: colors.error + '10',
     borderWidth: 1,
     borderColor: colors.error + '30',
-    borderRadius: 2,
+    borderRadius: 999,
   },
   logoutText: { color: colors.error, fontSize: 14, fontWeight: '500' },
   version: {
-    color: colors.textMuted,
+    color: colors.inkMuted,
     fontSize: 11,
     textAlign: 'center',
     marginTop: 8,
-    letterSpacing: 1,
   },
 
   modalOverlay: { flex: 1, justifyContent: 'flex-end', backgroundColor: 'rgba(0,0,0,0.6)' },
   modalSheet: {
-    backgroundColor: colors.surface,
+    backgroundColor: colors.panel,
     borderTopLeftRadius: 16,
     borderTopRightRadius: 16,
     padding: 24,
     paddingBottom: 40,
     borderTopWidth: 1,
-    borderTopColor: colors.border,
+    borderTopColor: colors.line,
   },
   modalHeader: {
     flexDirection: 'row',
@@ -502,32 +498,30 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginBottom: 20,
   },
-  modalTitle: { color: colors.textPrimary, fontSize: 16, fontWeight: '600' },
+  modalTitle: { color: colors.ink, fontSize: 16, fontWeight: '600' },
   fieldLabel: {
-    color: colors.textSecondary,
+    color: colors.inkSoft,
     fontSize: 11,
-    letterSpacing: 2,
-    textTransform: 'uppercase',
     marginBottom: 6,
   },
   input: {
     backgroundColor: colors.card,
     borderWidth: 1,
-    borderColor: colors.border,
-    borderRadius: 2,
+    borderColor: colors.line,
+    borderRadius: 12,
     paddingHorizontal: 14,
     paddingVertical: 12,
-    color: colors.textPrimary,
+    color: colors.ink,
     fontSize: 14,
     marginBottom: 16,
   },
-  inputDisabled: { color: colors.textMuted },
+  inputDisabled: { color: colors.inkMuted },
   saveBtn: {
-    backgroundColor: colors.gold,
+    backgroundColor: colors.taxi,
     paddingVertical: 16,
-    borderRadius: 2,
+    borderRadius: 999,
     alignItems: 'center',
     marginTop: 8,
   },
-  saveBtnText: { color: colors.black, fontSize: 12, fontWeight: '700', letterSpacing: 2 },
+  saveBtnText: { color: colors.ink, fontSize: 12, fontWeight: '700' },
 })

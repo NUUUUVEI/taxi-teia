@@ -79,7 +79,7 @@ export function FinishTripSheet({
               {!!clientName && <Text style={styles.subtitle}>{clientName}</Text>}
             </View>
             <TouchableOpacity onPress={onClose} hitSlop={12}>
-              <Ionicons name="close" size={22} color={colors.textMuted} />
+              <Ionicons name="close" size={22} color={colors.inkMuted} />
             </TouchableOpacity>
           </View>
 
@@ -92,7 +92,7 @@ export function FinishTripSheet({
               onChangeText={setFare}
               keyboardType="decimal-pad"
               placeholder="0.00"
-              placeholderTextColor={colors.textMuted}
+              placeholderTextColor={colors.inkMuted}
               autoFocus
             />
           </View>
@@ -108,7 +108,7 @@ export function FinishTripSheet({
               </TouchableOpacity>
             ))}
             <TouchableOpacity style={styles.quickBtn} onPress={() => setFare('')}>
-              <Ionicons name="backspace-outline" size={15} color={colors.textMuted} />
+              <Ionicons name="backspace-outline" size={15} color={colors.inkMuted} />
             </TouchableOpacity>
           </View>
 
@@ -118,10 +118,10 @@ export function FinishTripSheet({
             disabled={saving}
           >
             {saving ? (
-              <ActivityIndicator color={colors.black} />
+              <ActivityIndicator color={colors.ink} />
             ) : (
               <>
-                <Ionicons name="checkmark-done" size={18} color={colors.black} />
+                <Ionicons name="checkmark-done" size={18} color={colors.ink} />
                 <Text style={styles.primaryText}>GUARDAR I FINALITZAR</Text>
               </>
             )}
@@ -145,42 +145,42 @@ export function FinishTripSheet({
 const styles = StyleSheet.create({
   overlay: { flex: 1, justifyContent: 'flex-end', backgroundColor: 'rgba(0,0,0,0.65)' },
   sheet: {
-    backgroundColor: colors.surface,
+    backgroundColor: colors.panel,
     borderTopLeftRadius: 16,
     borderTopRightRadius: 16,
     padding: 24,
     paddingBottom: 40,
     borderTopWidth: 1,
-    borderTopColor: colors.border,
+    borderTopColor: colors.line,
   },
   header: { flexDirection: 'row', alignItems: 'center', gap: 12, marginBottom: 20 },
-  title: { color: colors.textPrimary, fontSize: 17, fontWeight: '600' },
-  subtitle: { color: colors.textMuted, fontSize: 12, marginTop: 2 },
+  title: { color: colors.ink, fontSize: 17, fontWeight: '600' },
+  subtitle: { color: colors.inkMuted, fontSize: 12, marginTop: 2 },
   label: {
-    color: colors.textSecondary, fontSize: 11, letterSpacing: 2,
-    textTransform: 'uppercase', marginBottom: 8,
+    color: colors.inkSoft, fontSize: 11,
+marginBottom: 8,
   },
   amountRow: {
     flexDirection: 'row', alignItems: 'center',
-    backgroundColor: colors.card, borderWidth: 1, borderColor: colors.gold + '40',
-    borderRadius: 2, paddingHorizontal: 16,
+    backgroundColor: colors.card, borderWidth: 1, borderColor: colors.taxi,
+    borderRadius: 12, paddingHorizontal: 16,
   },
-  currency: { color: colors.gold, fontSize: 24, fontWeight: '600', marginRight: 8 },
+  currency: { color: colors.taxiDeep, fontSize: 24, fontWeight: '600', marginRight: 8 },
   amountInput: {
     flex: 1, paddingVertical: 14,
-    color: colors.textPrimary, fontSize: 28, fontWeight: '700',
+    color: colors.ink, fontSize: 28, fontWeight: '700',
   },
   quickGrid: { flexDirection: 'row', flexWrap: 'wrap', gap: 8, marginTop: 16, marginBottom: 24 },
   quickBtn: {
     minWidth: 58, alignItems: 'center', paddingVertical: 10, paddingHorizontal: 12,
-    borderWidth: 1, borderColor: colors.border, borderRadius: 2,
+    borderWidth: 1, borderColor: colors.line, borderRadius: 999,
   },
-  quickText: { color: colors.textSecondary, fontSize: 13 },
+  quickText: { color: colors.inkSoft, fontSize: 13 },
   primaryBtn: {
     flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 8,
-    backgroundColor: colors.gold, paddingVertical: 16, borderRadius: 2,
+    backgroundColor: colors.taxi, paddingVertical: 16, borderRadius: 999,
   },
-  primaryText: { color: colors.black, fontSize: 12, fontWeight: '700', letterSpacing: 1.5 },
+  primaryText: { color: colors.ink, fontSize: 12, fontWeight: '700' },
   secondaryBtn: { alignItems: 'center', paddingVertical: 14 },
-  secondaryText: { color: colors.textMuted, fontSize: 13 },
+  secondaryText: { color: colors.inkMuted, fontSize: 13 },
 })

@@ -134,7 +134,7 @@ export default function PendingScreen() {
 
           <View style={styles.route}>
             <View style={styles.routeRow}>
-              <View style={[styles.routeDot, { backgroundColor: colors.gold }]} />
+              <View style={[styles.routeDot, { backgroundColor: colors.taxi }]} />
               <Text style={styles.routeText} numberOfLines={1}>{b.pickup_address}</Text>
             </View>
             <View style={styles.routeLine} />
@@ -152,7 +152,7 @@ export default function PendingScreen() {
 
           {b.flight_number ? (
             <View style={styles.flightRow}>
-              <Ionicons name="airplane" size={13} color={colors.gold} />
+              <Ionicons name="airplane" size={13} color={colors.taxiDeep} />
               <Text style={styles.flightText}>Vol {b.flight_number}</Text>
             </View>
           ) : null}
@@ -160,7 +160,7 @@ export default function PendingScreen() {
 
         {/* Reschedule row */}
         <TouchableOpacity style={styles.rescheduleBtn} onPress={() => openReschedule(b)}>
-          <Ionicons name="create-outline" size={15} color={colors.gold} />
+          <Ionicons name="create-outline" size={15} color={colors.taxiDeep} />
           <Text style={styles.rescheduleText}>Canviar l&apos;hora</Text>
         </TouchableOpacity>
 
@@ -171,7 +171,7 @@ export default function PendingScreen() {
             <Text style={styles.cancelBtnText}>Rebutjar</Text>
           </TouchableOpacity>
           <TouchableOpacity style={styles.confirmBtn} onPress={() => setStatus(b, 'confirmed')}>
-            <Ionicons name="checkmark" size={16} color={colors.black} />
+            <Ionicons name="checkmark" size={16} color={colors.ink} />
             <Text style={styles.confirmBtnText}>Acceptar</Text>
           </TouchableOpacity>
         </View>
@@ -180,7 +180,7 @@ export default function PendingScreen() {
   }
 
   return (
-    <View style={{ flex: 1, backgroundColor: colors.black }}>
+    <View style={{ flex: 1, backgroundColor: colors.paper }}>
       <View style={styles.header}>
         <Text style={styles.headerLabel}>VIATGES PENDENTS</Text>
         {bookings.length > 0 && (
@@ -198,14 +198,14 @@ export default function PendingScreen() {
           <RefreshControl
             refreshing={refreshing}
             onRefresh={() => { setRefreshing(true); fetchPending() }}
-            tintColor={colors.gold}
+            tintColor={colors.taxiDeep}
           />
         }
         contentContainerStyle={{ padding: 16, paddingBottom: 40 }}
         ListEmptyComponent={
           !loading ? (
             <View style={styles.empty}>
-              <Ionicons name="checkmark-circle-outline" size={48} color={colors.textMuted} />
+              <Ionicons name="checkmark-circle-outline" size={48} color={colors.inkMuted} />
               <Text style={styles.emptyText}>Cap viatge pendent</Text>
               <Text style={styles.emptySubtext}>Les noves reserves apareixeran aquí</Text>
             </View>
@@ -223,7 +223,7 @@ export default function PendingScreen() {
             <View style={styles.modalHeader}>
               <Text style={styles.modalTitle}>Canviar l&apos;hora</Text>
               <TouchableOpacity onPress={() => setEditing(null)}>
-                <Ionicons name="close" size={22} color={colors.textMuted} />
+                <Ionicons name="close" size={22} color={colors.inkMuted} />
               </TouchableOpacity>
             </View>
 
@@ -242,7 +242,7 @@ export default function PendingScreen() {
               value={editDate}
               onChangeText={setEditDate}
               placeholder="aaaa-mm-dd"
-              placeholderTextColor={colors.textMuted}
+              placeholderTextColor={colors.inkMuted}
             />
 
             <Text style={styles.fieldLabel}>Hora de recollida</Text>
@@ -251,7 +251,7 @@ export default function PendingScreen() {
               value={editTime}
               onChangeText={setEditTime}
               placeholder="hh:mm"
-              placeholderTextColor={colors.textMuted}
+              placeholderTextColor={colors.inkMuted}
               keyboardType="numbers-and-punctuation"
             />
 
@@ -291,99 +291,99 @@ export default function PendingScreen() {
 const styles = StyleSheet.create({
   header: {
     flexDirection: 'row', alignItems: 'center', gap: 10,
-    padding: 20, paddingTop: 12, borderBottomWidth: 1, borderBottomColor: colors.border,
+    padding: 20, paddingTop: 12, borderBottomWidth: 1, borderBottomColor: colors.line,
   },
-  headerLabel: { color: colors.gold, fontSize: 11, letterSpacing: 3 },
+  headerLabel: { color: colors.taxiDeep, fontSize: 11 },
   countBadge: {
     backgroundColor: colors.warning, borderRadius: 10,
     paddingHorizontal: 8, paddingVertical: 2,
   },
-  countText: { color: colors.black, fontSize: 11, fontWeight: '700' },
+  countText: { color: colors.ink, fontSize: 11, fontWeight: '700' },
   card: {
     backgroundColor: colors.card, borderRadius: 6, borderWidth: 1,
-    borderColor: colors.border, marginBottom: 12, overflow: 'hidden',
+    borderColor: colors.line, marginBottom: 12, overflow: 'hidden',
   },
   cardTop: {
     flexDirection: 'row', justifyContent: 'space-between',
     alignItems: 'flex-start', padding: 14, paddingBottom: 10, gap: 10,
   },
-  time: { color: colors.gold, fontSize: 13, fontWeight: '700', marginBottom: 2 },
-  client: { color: colors.textPrimary, fontSize: 15, fontWeight: '600' },
-  phone: { color: colors.textMuted, fontSize: 12, marginTop: 1 },
+  time: { color: colors.taxiDeep, fontSize: 13, fontWeight: '700', marginBottom: 2 },
+  client: { color: colors.ink, fontSize: 15, fontWeight: '600' },
+  phone: { color: colors.inkMuted, fontSize: 12, marginTop: 1 },
   pendingBadge: {
-    backgroundColor: colors.warning + '20', borderRadius: 4,
+    backgroundColor: colors.warning + '20', borderRadius: 12,
     paddingHorizontal: 8, paddingVertical: 4,
     borderWidth: 1, borderColor: colors.warning + '40',
   },
-  pendingBadgeText: { color: colors.warning, fontSize: 9, fontWeight: '700', letterSpacing: 1 },
+  pendingBadgeText: { color: colors.warning, fontSize: 9, fontWeight: '700' },
   route: { paddingHorizontal: 14, paddingBottom: 10 },
   routeRow: { flexDirection: 'row', alignItems: 'center', gap: 10 },
-  routeDot: { width: 8, height: 8, borderRadius: 4, flexShrink: 0 },
-  routeLine: { width: 1, height: 12, backgroundColor: colors.border, marginLeft: 3.5, marginVertical: 2 },
-  routeText: { color: colors.textSecondary, fontSize: 12, flex: 1 },
-  duration: { color: colors.textMuted, fontSize: 11, paddingHorizontal: 14, paddingBottom: 12 },
+  routeDot: { width: 8, height: 8, borderRadius: 12, flexShrink: 0 },
+  routeLine: { width: 1, height: 12, backgroundColor: colors.line, marginLeft: 3.5, marginVertical: 2 },
+  routeText: { color: colors.inkSoft, fontSize: 12, flex: 1 },
+  duration: { color: colors.inkMuted, fontSize: 11, paddingHorizontal: 14, paddingBottom: 12 },
   flightRow: {
     flexDirection: 'row', alignItems: 'center', gap: 6,
     marginHorizontal: 14, marginBottom: 12,
     paddingHorizontal: 10, paddingVertical: 6,
     alignSelf: 'flex-start',
-    backgroundColor: colors.gold + '12',
-    borderWidth: 1, borderColor: colors.gold + '35', borderRadius: 2,
+    backgroundColor: colors.taxi + '33',
+    borderWidth: 1, borderColor: colors.taxi, borderRadius: 12,
   },
-  flightText: { color: colors.gold, fontSize: 12, fontWeight: '600' },
+  flightText: { color: colors.taxiDeep, fontSize: 12, fontWeight: '600' },
   rescheduleBtn: {
     flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 6,
-    paddingVertical: 11, borderTopWidth: 1, borderTopColor: colors.border,
-    backgroundColor: colors.gold + '0D',
+    paddingVertical: 11, borderTopWidth: 1, borderTopColor: colors.line,
+    backgroundColor: colors.taxi + '33',
   },
-  rescheduleText: { color: colors.gold, fontSize: 12, fontWeight: '600' },
-  actions: { flexDirection: 'row', borderTopWidth: 1, borderTopColor: colors.border },
+  rescheduleText: { color: colors.taxiDeep, fontSize: 12, fontWeight: '600' },
+  actions: { flexDirection: 'row', borderTopWidth: 1, borderTopColor: colors.line },
   cancelBtn: {
     flex: 1, flexDirection: 'row', alignItems: 'center', justifyContent: 'center',
-    gap: 6, padding: 14, borderRightWidth: 1, borderRightColor: colors.border,
+    gap: 6, padding: 14, borderRightWidth: 1, borderRightColor: colors.line,
   },
   cancelBtnText: { color: colors.error, fontSize: 13, fontWeight: '600' },
   confirmBtn: {
     flex: 1, flexDirection: 'row', alignItems: 'center', justifyContent: 'center',
-    gap: 6, padding: 14, backgroundColor: colors.gold,
+    gap: 6, padding: 14, backgroundColor: colors.taxi,
   },
-  confirmBtnText: { color: colors.black, fontSize: 13, fontWeight: '700' },
+  confirmBtnText: { color: colors.ink, fontSize: 13, fontWeight: '700' },
   empty: { alignItems: 'center', paddingTop: 80 },
-  emptyText: { color: colors.textSecondary, fontSize: 16, fontWeight: '500', marginTop: 16 },
-  emptySubtext: { color: colors.textMuted, fontSize: 13, marginTop: 6 },
+  emptyText: { color: colors.inkSoft, fontSize: 16, fontWeight: '500', marginTop: 16 },
+  emptySubtext: { color: colors.inkMuted, fontSize: 13, marginTop: 6 },
 
   modalOverlay: { flex: 1, justifyContent: 'flex-end', backgroundColor: 'rgba(0,0,0,0.6)' },
   modalSheet: {
-    backgroundColor: colors.surface, borderTopLeftRadius: 16, borderTopRightRadius: 16,
-    padding: 24, paddingBottom: 40, borderTopWidth: 1, borderTopColor: colors.border,
+    backgroundColor: colors.panel, borderTopLeftRadius: 16, borderTopRightRadius: 16,
+    padding: 24, paddingBottom: 40, borderTopWidth: 1, borderTopColor: colors.line,
   },
   modalHeader: {
     flexDirection: 'row', justifyContent: 'space-between',
     alignItems: 'center', marginBottom: 6,
   },
-  modalTitle: { color: colors.textPrimary, fontSize: 16, fontWeight: '600', letterSpacing: 0.5 },
-  modalClient: { color: colors.textMuted, fontSize: 12, marginBottom: 6 },
-  modalNotice: { color: colors.gold, fontSize: 12, marginBottom: 18 },
+  modalTitle: { color: colors.ink, fontSize: 16, fontWeight: '600', letterSpacing: 0.5 },
+  modalClient: { color: colors.inkMuted, fontSize: 12, marginBottom: 6 },
+  modalNotice: { color: colors.taxiDeep, fontSize: 12, marginBottom: 18 },
   fieldLabel: {
-    color: colors.textSecondary, fontSize: 11, letterSpacing: 2,
-    textTransform: 'uppercase', marginBottom: 6,
+    color: colors.inkSoft, fontSize: 11,
+marginBottom: 6,
   },
   input: {
-    backgroundColor: colors.card, borderWidth: 1, borderColor: colors.border,
-    borderRadius: 2, paddingHorizontal: 14, paddingVertical: 12,
-    color: colors.textPrimary, fontSize: 14, marginBottom: 16,
+    backgroundColor: colors.card, borderWidth: 1, borderColor: colors.line,
+    borderRadius: 12, paddingHorizontal: 14, paddingVertical: 12,
+    color: colors.ink, fontSize: 14, marginBottom: 16,
   },
   nudgeRow: { flexDirection: 'row', gap: 8, marginBottom: 20 },
   nudgeBtn: {
     flex: 1, alignItems: 'center', paddingVertical: 10,
-    borderWidth: 1, borderColor: colors.border, borderRadius: 2,
+    borderWidth: 1, borderColor: colors.line, borderRadius: 999,
   },
-  nudgeText: { color: colors.textSecondary, fontSize: 12 },
+  nudgeText: { color: colors.inkSoft, fontSize: 12 },
   saveBtn: {
-    backgroundColor: colors.gold, paddingVertical: 16,
-    borderRadius: 2, alignItems: 'center',
+    backgroundColor: colors.taxi, paddingVertical: 16,
+    borderRadius: 999, alignItems: 'center',
   },
-  saveBtnText: { color: colors.black, fontSize: 12, fontWeight: '700', letterSpacing: 2 },
+  saveBtnText: { color: colors.ink, fontSize: 12, fontWeight: '700' },
   saveOnlyBtn: { alignItems: 'center', paddingVertical: 14 },
-  saveOnlyText: { color: colors.textMuted, fontSize: 13 },
+  saveOnlyText: { color: colors.inkMuted, fontSize: 13 },
 })

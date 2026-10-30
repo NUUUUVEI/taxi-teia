@@ -417,7 +417,7 @@ export default function ExpensesScreen() {
     : getYear(anchor) === getYear(new Date())
 
   return (
-    <View style={{ flex: 1, backgroundColor: colors.black }}>
+    <View style={{ flex: 1, backgroundColor: colors.paper }}>
       <ScrollView contentContainerStyle={{ paddingBottom: 100 }}>
         {/* Header */}
         <View style={styles.header}>
@@ -428,7 +428,7 @@ export default function ExpensesScreen() {
               onPress={generatePdf}
               disabled={generatingPdf}
             >
-              <Ionicons name="document-text-outline" size={14} color={colors.gold} />
+              <Ionicons name="document-text-outline" size={14} color={colors.taxiDeep} />
               <Text style={styles.pdfBtnText}>{generatingPdf ? '...' : 'PDF'}</Text>
             </TouchableOpacity>
             <View style={styles.periodTabs}>
@@ -450,7 +450,7 @@ export default function ExpensesScreen() {
         {/* Period navigation — browse any month or year */}
         <View style={styles.periodNav}>
           <TouchableOpacity onPress={() => step(-1)} style={styles.periodNavBtn}>
-            <Ionicons name="chevron-back" size={20} color={colors.gold} />
+            <Ionicons name="chevron-back" size={20} color={colors.taxiDeep} />
           </TouchableOpacity>
 
           <TouchableOpacity
@@ -465,7 +465,7 @@ export default function ExpensesScreen() {
           </TouchableOpacity>
 
           <TouchableOpacity onPress={() => step(1)} style={styles.periodNavBtn}>
-            <Ionicons name="chevron-forward" size={20} color={colors.gold} />
+            <Ionicons name="chevron-forward" size={20} color={colors.taxiDeep} />
           </TouchableOpacity>
         </View>
 
@@ -516,7 +516,7 @@ export default function ExpensesScreen() {
 
         {/* Tax reminder */}
         <View style={styles.taxBox}>
-          <Ionicons name="information-circle-outline" size={16} color={colors.gold} />
+          <Ionicons name="information-circle-outline" size={16} color={colors.taxiDeep} />
           <Text style={styles.taxText}>
             Recorda guardar tots els justificants per a la declaració de la renda. Prem PDF per generar el resum anual per a la gestoria.
           </Text>
@@ -553,14 +553,14 @@ export default function ExpensesScreen() {
                       hitSlop={10}
                       style={{ marginRight: 8 }}
                     >
-                      <Ionicons name="document-attach" size={18} color={colors.gold} />
+                      <Ionicons name="document-attach" size={18} color={colors.taxiDeep} />
                     </TouchableOpacity>
                   )}
                   <Text style={styles.expAmount}>€{e.amount.toFixed(2)}</Text>
                   <Ionicons
                     name="chevron-forward"
                     size={14}
-                    color={colors.textMuted}
+                    color={colors.inkMuted}
                     style={{ marginLeft: 4 }}
                   />
                 </TouchableOpacity>
@@ -572,7 +572,7 @@ export default function ExpensesScreen() {
 
       {/* FAB */}
       <TouchableOpacity style={styles.fab} onPress={openAdd}>
-        <Ionicons name="add" size={28} color={colors.black} />
+        <Ionicons name="add" size={28} color={colors.ink} />
       </TouchableOpacity>
 
       {/* Add / edit expense modal */}
@@ -588,7 +588,7 @@ export default function ExpensesScreen() {
                   {editingId ? 'Corregir despesa' : 'Nova despesa'}
                 </Text>
                 <TouchableOpacity onPress={() => { setModalVisible(false); resetForm() }}>
-                  <Ionicons name="close" size={22} color={colors.textMuted} />
+                  <Ionicons name="close" size={22} color={colors.inkMuted} />
                 </TouchableOpacity>
               </View>
 
@@ -602,7 +602,7 @@ export default function ExpensesScreen() {
                       style={[styles.catChip, newCategory === cat && { borderColor: meta.color, backgroundColor: meta.color + '20' }]}
                       onPress={() => setNewCategory(cat)}
                     >
-                      <Ionicons name={meta.icon as any} size={14} color={newCategory === cat ? meta.color : colors.textMuted} />
+                      <Ionicons name={meta.icon as any} size={14} color={newCategory === cat ? meta.color : colors.inkMuted} />
                       <Text style={[styles.catChipText, newCategory === cat && { color: meta.color }]}>{meta.label}</Text>
                     </TouchableOpacity>
                   ))}
@@ -615,7 +615,7 @@ export default function ExpensesScreen() {
                 value={newAmount}
                 onChangeText={setNewAmount}
                 placeholder="0.00"
-                placeholderTextColor={colors.textMuted}
+                placeholderTextColor={colors.inkMuted}
                 keyboardType="decimal-pad"
               />
 
@@ -625,7 +625,7 @@ export default function ExpensesScreen() {
                 value={newDate}
                 onChangeText={setNewDate}
                 placeholder="yyyy-mm-dd"
-                placeholderTextColor={colors.textMuted}
+                placeholderTextColor={colors.inkMuted}
               />
 
               <Text style={styles.fieldLabel}>Descripció (opcional)</Text>
@@ -634,7 +634,7 @@ export default function ExpensesScreen() {
                 value={newDesc}
                 onChangeText={setNewDesc}
                 placeholder="p. ex. Repsol Teià, canvi d'oli..."
-                placeholderTextColor={colors.textMuted}
+                placeholderTextColor={colors.inkMuted}
               />
 
               {/* Photo invoice */}
@@ -663,11 +663,11 @@ export default function ExpensesScreen() {
                   )}
                   <View style={{ flexDirection: 'row', gap: 8, marginBottom: 16 }}>
                     <TouchableOpacity style={styles.photoBtn} onPress={takePhoto}>
-                      <Ionicons name="camera-outline" size={18} color={colors.gold} />
+                      <Ionicons name="camera-outline" size={18} color={colors.taxiDeep} />
                       <Text style={styles.photoBtnText}>Fer foto</Text>
                     </TouchableOpacity>
                     <TouchableOpacity style={styles.photoBtn} onPress={pickPhoto}>
-                      <Ionicons name="image-outline" size={18} color={colors.gold} />
+                      <Ionicons name="image-outline" size={18} color={colors.taxiDeep} />
                       <Text style={styles.photoBtnText}>Galeria</Text>
                     </TouchableOpacity>
                   </View>
@@ -720,7 +720,7 @@ export default function ExpensesScreen() {
               )}
             </View>
             <TouchableOpacity onPress={() => setViewingInvoice(null)} hitSlop={12}>
-              <Ionicons name="close" size={26} color={colors.textPrimary} />
+              <Ionicons name="close" size={26} color={colors.ink} />
             </TouchableOpacity>
           </View>
 
@@ -745,7 +745,7 @@ export default function ExpensesScreen() {
               if (viewingUrl) Linking.openURL(viewingUrl)
             }}
           >
-            <Ionicons name="open-outline" size={16} color={colors.gold} />
+            <Ionicons name="open-outline" size={16} color={colors.taxiDeep} />
             <Text style={styles.viewerOpenText}>Obrir en mida completa</Text>
           </TouchableOpacity>
         </View>
@@ -761,8 +761,8 @@ const styles = StyleSheet.create({
   },
   periodNavBtn: { padding: 10 },
   periodLabelWrap: { flex: 1, alignItems: 'center' },
-  periodToday: { color: colors.gold, fontSize: 10, marginTop: 2 },
-  photoHint: { color: colors.textMuted, fontSize: 11, marginTop: 6 },
+  periodToday: { color: colors.taxiDeep, fontSize: 10, marginTop: 2 },
+  photoHint: { color: colors.inkMuted, fontSize: 11, marginTop: 6 },
   deleteBtn: {
     flexDirection: 'row', alignItems: 'center', justifyContent: 'center',
     gap: 6, paddingVertical: 14,
@@ -772,106 +772,106 @@ const styles = StyleSheet.create({
   viewerHeader: {
     flexDirection: 'row', alignItems: 'center', gap: 12,
     paddingHorizontal: 20, paddingBottom: 16,
-    borderBottomWidth: 1, borderBottomColor: colors.border,
+    borderBottomWidth: 1, borderBottomColor: colors.line,
   },
-  viewerTitle: { color: colors.textPrimary, fontSize: 15, fontWeight: '600' },
-  viewerMeta: { color: colors.textMuted, fontSize: 12, marginTop: 2 },
+  viewerTitle: { color: colors.ink, fontSize: 15, fontWeight: '600' },
+  viewerMeta: { color: colors.inkMuted, fontSize: 12, marginTop: 2 },
   viewerBody: { flexGrow: 1, justifyContent: 'center', padding: 12 },
-  viewerImage: { width: '100%', aspectRatio: 0.7, borderRadius: 4 },
+  viewerImage: { width: '100%', aspectRatio: 0.7, borderRadius: 12 },
   viewerOpenBtn: {
     flexDirection: 'row', alignItems: 'center', justifyContent: 'center',
     gap: 8, paddingVertical: 20,
   },
-  viewerOpenText: { color: colors.gold, fontSize: 13 },
+  viewerOpenText: { color: colors.taxiDeep, fontSize: 13 },
   header: {
     flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center',
-    padding: 20, paddingTop: 12, borderBottomWidth: 1, borderBottomColor: colors.border,
+    padding: 20, paddingTop: 12, borderBottomWidth: 1, borderBottomColor: colors.line,
   },
-  headerLabel: { color: colors.gold, fontSize: 11, letterSpacing: 3 },
+  headerLabel: { color: colors.taxiDeep, fontSize: 11 },
   pdfBtn: {
     flexDirection: 'row', alignItems: 'center', gap: 4,
-    borderWidth: 1, borderColor: colors.gold + '50', borderRadius: 2,
+    borderWidth: 1, borderColor: colors.taxi, borderRadius: 999,
     paddingHorizontal: 10, paddingVertical: 5,
   },
-  pdfBtnText: { color: colors.gold, fontSize: 11, fontWeight: '600' },
+  pdfBtnText: { color: colors.taxiDeep, fontSize: 11, fontWeight: '600' },
   periodTabs: { flexDirection: 'row', gap: 4 },
-  tab: { paddingHorizontal: 10, paddingVertical: 5, borderWidth: 1, borderColor: colors.border, borderRadius: 2 },
-  tabActive: { borderColor: colors.gold, backgroundColor: colors.gold + '15' },
-  tabText: { color: colors.textMuted, fontSize: 11, fontWeight: '600', letterSpacing: 1 },
-  tabTextActive: { color: colors.gold },
-  periodLabel: { color: colors.textSecondary, fontSize: 12, letterSpacing: 1, textAlign: 'center', textTransform: 'uppercase' },
+  tab: { paddingHorizontal: 10, paddingVertical: 5, borderWidth: 1, borderColor: colors.line, borderRadius: 12 },
+  tabActive: { borderColor: colors.taxiDeep, backgroundColor: colors.taxi + '33' },
+  tabText: { color: colors.inkMuted, fontSize: 11, fontWeight: '600' },
+  tabTextActive: { color: colors.taxiDeep },
+  periodLabel: { color: colors.inkSoft, fontSize: 12, textAlign: 'center' },
   kpiRow: { flexDirection: 'row', padding: 16, gap: 8 },
-  kpiCard: { flex: 1, backgroundColor: colors.card, borderWidth: 1, borderColor: colors.border, borderRadius: 2, padding: 12, alignItems: 'center' },
-  kpiValue: { color: colors.textPrimary, fontSize: 16, fontWeight: '700' },
-  kpiLabel: { color: colors.textMuted, fontSize: 10, marginTop: 2, letterSpacing: 1, textTransform: 'uppercase' },
+  kpiCard: { flex: 1, backgroundColor: colors.card, borderWidth: 1, borderColor: colors.line, borderRadius: 12, padding: 12, alignItems: 'center' },
+  kpiValue: { color: colors.ink, fontSize: 16, fontWeight: '700' },
+  kpiLabel: { color: colors.inkMuted, fontSize: 10, marginTop: 2 },
   section: { paddingHorizontal: 16, marginTop: 8 },
-  sectionTitle: { color: colors.textSecondary, fontSize: 11, letterSpacing: 2, textTransform: 'uppercase', marginBottom: 12, marginTop: 8 },
+  sectionTitle: { color: colors.inkSoft, fontSize: 11, marginBottom: 12, marginTop: 8 },
   catRow: { flexDirection: 'row', alignItems: 'center', marginBottom: 10, gap: 12 },
   catLeft: { flexDirection: 'row', alignItems: 'center', gap: 8, width: 110 },
-  catDot: { width: 8, height: 8, borderRadius: 4 },
-  catLabel: { color: colors.textSecondary, fontSize: 12 },
+  catDot: { width: 8, height: 8, borderRadius: 12 },
+  catLabel: { color: colors.inkSoft, fontSize: 12 },
   catRight: { flex: 1, flexDirection: 'row', alignItems: 'center', gap: 8 },
-  catBarBg: { flex: 1, height: 6, backgroundColor: colors.border, borderRadius: 3, overflow: 'hidden' },
-  catBarFill: { height: 6, borderRadius: 3 },
-  catAmount: { color: colors.textPrimary, fontSize: 12, fontWeight: '600', width: 64, textAlign: 'right' },
+  catBarBg: { flex: 1, height: 6, backgroundColor: colors.line, borderRadius: 12, overflow: 'hidden' },
+  catBarFill: { height: 6, borderRadius: 12 },
+  catAmount: { color: colors.ink, fontSize: 12, fontWeight: '600', width: 64, textAlign: 'right' },
   taxBox: {
     flexDirection: 'row', gap: 10, margin: 16,
-    backgroundColor: colors.gold + '10', borderWidth: 1, borderColor: colors.gold + '30',
-    borderRadius: 4, padding: 12,
+    backgroundColor: colors.taxi + '33', borderWidth: 1, borderColor: colors.taxi,
+    borderRadius: 12, padding: 12,
   },
-  taxText: { color: colors.textSecondary, fontSize: 11, lineHeight: 16, flex: 1 },
-  empty: { color: colors.textMuted, textAlign: 'center', padding: 24, fontSize: 13 },
+  taxText: { color: colors.inkSoft, fontSize: 11, lineHeight: 16, flex: 1 },
+  empty: { color: colors.inkMuted, textAlign: 'center', padding: 24, fontSize: 13 },
   expRow: {
     flexDirection: 'row', alignItems: 'center', gap: 12,
-    paddingVertical: 12, borderBottomWidth: 1, borderBottomColor: colors.border,
+    paddingVertical: 12, borderBottomWidth: 1, borderBottomColor: colors.line,
   },
   expIcon: { width: 38, height: 38, borderRadius: 6, alignItems: 'center', justifyContent: 'center' },
-  expCategory: { color: colors.textPrimary, fontSize: 13, fontWeight: '500' },
-  expDesc: { color: colors.textMuted, fontSize: 11, marginTop: 1 },
-  expDate: { color: colors.textMuted, fontSize: 11, marginTop: 2 },
+  expCategory: { color: colors.ink, fontSize: 13, fontWeight: '500' },
+  expDesc: { color: colors.inkMuted, fontSize: 11, marginTop: 1 },
+  expDate: { color: colors.inkMuted, fontSize: 11, marginTop: 2 },
   expAmount: { color: colors.error, fontSize: 14, fontWeight: '600' },
   fab: {
     position: 'absolute', bottom: 24, right: 24,
     width: 56, height: 56, borderRadius: 28,
-    backgroundColor: colors.gold, alignItems: 'center', justifyContent: 'center',
-    shadowColor: colors.gold, shadowOpacity: 0.4, shadowRadius: 12, elevation: 8,
+    backgroundColor: colors.taxi, alignItems: 'center', justifyContent: 'center',
+    shadowColor: colors.taxiDeep, shadowOpacity: 0.4, shadowRadius: 12, elevation: 8,
   },
   modalOverlay: { flex: 1, justifyContent: 'flex-end', backgroundColor: 'rgba(0,0,0,0.6)' },
   modalSheet: {
-    backgroundColor: colors.surface, borderTopLeftRadius: 16, borderTopRightRadius: 16,
-    padding: 24, paddingBottom: 40, borderTopWidth: 1, borderTopColor: colors.border,
+    backgroundColor: colors.panel, borderTopLeftRadius: 16, borderTopRightRadius: 16,
+    padding: 24, paddingBottom: 40, borderTopWidth: 1, borderTopColor: colors.line,
   },
   modalHeader: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 20 },
-  modalTitle: { color: colors.textPrimary, fontSize: 16, fontWeight: '600', letterSpacing: 0.5 },
-  fieldLabel: { color: colors.textSecondary, fontSize: 11, letterSpacing: 2, textTransform: 'uppercase', marginBottom: 6 },
+  modalTitle: { color: colors.ink, fontSize: 16, fontWeight: '600', letterSpacing: 0.5 },
+  fieldLabel: { color: colors.inkSoft, fontSize: 11, marginBottom: 6 },
   input: {
-    backgroundColor: colors.card, borderWidth: 1, borderColor: colors.border,
-    borderRadius: 2, paddingHorizontal: 14, paddingVertical: 12,
-    color: colors.textPrimary, fontSize: 14, marginBottom: 16,
+    backgroundColor: colors.card, borderWidth: 1, borderColor: colors.line,
+    borderRadius: 12, paddingHorizontal: 14, paddingVertical: 12,
+    color: colors.ink, fontSize: 14, marginBottom: 16,
   },
   catChip: {
     flexDirection: 'row', alignItems: 'center', gap: 6,
     paddingHorizontal: 12, paddingVertical: 8, borderWidth: 1,
-    borderColor: colors.border, borderRadius: 20,
+    borderColor: colors.line, borderRadius: 20,
   },
-  catChipText: { color: colors.textMuted, fontSize: 12 },
+  catChipText: { color: colors.inkMuted, fontSize: 12 },
   photoBtn: {
     flex: 1, flexDirection: 'row', alignItems: 'center', justifyContent: 'center',
-    gap: 8, padding: 12, borderWidth: 1, borderColor: colors.gold + '50',
-    borderRadius: 2, borderStyle: 'dashed',
+    gap: 8, padding: 12, borderWidth: 1, borderColor: colors.taxi,
+    borderRadius: 999, borderStyle: 'dashed',
   },
-  photoBtnText: { color: colors.gold, fontSize: 12 },
+  photoBtnText: { color: colors.taxiDeep, fontSize: 12 },
   photoPreview: {
-    width: '100%', height: 160, borderRadius: 4,
-    borderWidth: 1, borderColor: colors.border, marginBottom: 8,
+    width: '100%', height: 160, borderRadius: 12,
+    borderWidth: 1, borderColor: colors.line, marginBottom: 8,
   },
   removePhotoBtn: {
     flexDirection: 'row', alignItems: 'center', gap: 6, alignSelf: 'flex-start',
   },
   removePhotoText: { color: colors.error, fontSize: 12 },
   saveBtn: {
-    backgroundColor: colors.gold, paddingVertical: 16,
-    borderRadius: 2, alignItems: 'center', marginTop: 8,
+    backgroundColor: colors.taxi, paddingVertical: 16,
+    borderRadius: 999, alignItems: 'center', marginTop: 8,
   },
-  saveBtnText: { color: colors.black, fontSize: 13, fontWeight: '700', letterSpacing: 2 },
+  saveBtnText: { color: colors.ink, fontSize: 13, fontWeight: '700' },
 })
