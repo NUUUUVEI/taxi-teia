@@ -132,7 +132,7 @@
       "routeUnavailable": "No se ha podido calcular el trayecto: la duración es aproximada y Marc te confirmará la hora.",
       "submit": "Enviar solicitud",
       "submitting": "Enviando...",
-      "email": "Correo electrónico (opcional)",
+      "email": "Correo electrónico",
       "emailPlaceholder": "para recibir la confirmación y cualquier cambio",
       "notes": "Notas (opcional)",
       "timeModePickup": "Hora de recogida",
@@ -184,6 +184,7 @@
     },
     "errors": {
       "required": "Este campo es obligatorio",
+      "invalidEmail": "Escribe un correo válido, por ejemplo nombre@gmail.com",
       "invalidPhone": "Número de teléfono no válido",
       "generic": "Ha habido un error. Inténtalo de nuevo.",
       "tooMany": "Has enviado demasiadas solicitudes en poco tiempo. Vuelve a intentarlo en una hora o llámanos."

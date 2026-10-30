@@ -51,7 +51,7 @@ export async function POST(req: NextRequest) {
 
   const client_name = text(body.client_name, 100)
   const client_phone = text(body.client_phone, 30)
-  const client_email = body.client_email ? text(body.client_email, 254) : null
+  const client_email = text(body.client_email, 254)
   const pickup_address = text(body.pickup_address, 300)
   const dropoff_address = text(body.dropoff_address, 300)
   const notes = body.notes ? text(body.notes, 1000) : null
@@ -61,7 +61,7 @@ export async function POST(req: NextRequest) {
   if (
     !client_name || !client_phone || !pickup_address || !dropoff_address ||
     Number.isNaN(start.getTime()) || Number.isNaN(requested.getTime()) ||
-    (body.client_email && (!client_email || !EMAIL_RE.test(client_email))) ||
+    !client_email || !EMAIL_RE.test(client_email) ||
     (body.notes && !notes)
   ) {
     return NextResponse.json({ error: 'invalid' }, { status: 400 })

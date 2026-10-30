@@ -132,7 +132,7 @@
       "routeUnavailable": "The route could not be calculated, so the duration is approximate. Marc will confirm the time.",
       "submit": "Send request",
       "submitting": "Sending...",
-      "email": "Email (optional)",
+      "email": "Email",
       "emailPlaceholder": "to get the confirmation and any changes",
       "notes": "Notes (optional)",
       "timeModePickup": "Pick-up time",
@@ -184,6 +184,7 @@
     },
     "errors": {
       "required": "This field is required",
+      "invalidEmail": "Enter a valid email, for example name@gmail.com",
       "invalidPhone": "Invalid phone number",
       "generic": "Something went wrong. Please try again.",
       "tooMany": "Too many requests in a short time. Please try again in an hour or give us a call."

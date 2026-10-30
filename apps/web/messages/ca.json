@@ -132,7 +132,7 @@
       "routeUnavailable": "No s'ha pogut calcular el trajecte: la durada és aproximada i el Marc et confirmarà l'hora.",
       "submit": "Envia la sol·licitud",
       "submitting": "Enviant...",
-      "email": "Correu electrònic (opcional)",
+      "email": "Correu electrònic",
       "emailPlaceholder": "per rebre la confirmació i qualsevol canvi",
       "notes": "Notes (opcional)",
       "timeModePickup": "Hora de recollida",
@@ -184,6 +184,7 @@
     },
     "errors": {
       "required": "Aquest camp és obligatori",
+      "invalidEmail": "Escriu un correu vàlid, per exemple nom@gmail.com",
       "invalidPhone": "Número de telèfon no vàlid",
       "generic": "Hi ha hagut un error. Intenta-ho de nou.",
       "tooMany": "Has enviat massa sol·licituds en poca estona. Torna-ho a provar d'aquí a una hora o truca'ns."

@@ -44,6 +44,9 @@ const STEPS: StepId[] = ['schedule', 'time', 'trip', 'details', 'confirm']
 
 const pad = (n: number) => String(n).padStart(2, '0')
 
+/** Same check as the booking API. */
+const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+
 type TimeMode = 'pickup' | 'arrival'
 
 type RouteInfo = {
@@ -345,7 +348,7 @@ export function BookingPage() {
         body: JSON.stringify({
           client_name: form.name,
           client_phone: form.phone,
-          client_email: form.email || null,
+          client_email: form.email.trim(),
           pickup_address: form.pickup,
           dropoff_address: form.dropoff,
           start_time: startTime,
@@ -421,6 +424,9 @@ export function BookingPage() {
   }
 
   const stepIndex = STEPS.indexOf(step)
+  // Email is required: it is how the client hears that Marc accepted, moved
+  // or turned down the request.
+  const emailValid = EMAIL_RE.test(form.email.trim())
   const dateReady = !!selectedDate
   const timeReady = !!selectedDate && !!selectedTime
   const tripReady =
@@ -736,13 +742,18 @@ export function BookingPage() {
                     type="tel"
                   />
                 </div>
-                <InputField
-                  label={t('form.email')}
-                  placeholder={t('form.emailPlaceholder')}
-                  value={form.email}
-                  onChange={(email) => setForm({ ...form, email })}
-                  type="email"
-                />
+                <div>
+                  <InputField
+                    label={t('form.email')}
+                    placeholder={t('form.emailPlaceholder')}
+                    value={form.email}
+                    onChange={(email) => setForm({ ...form, email })}
+                    type="email"
+                  />
+                  {form.email.trim() !== '' && !emailValid && (
+                    <p className="text-amber-800 text-sm font-body mt-2">{t('errors.invalidEmail')}</p>
+                  )}
+                </div>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <Stepper
                     icon={<Users size={14} />}
@@ -828,7 +839,7 @@ export function BookingPage() {
                   </button>
                   <button
                     onClick={() => setStep('confirm')}
-                    disabled={!form.name || !form.phone}
+                    disabled={!form.name || !form.phone || !emailValid}
                     className="flex items-center gap-2 px-6 py-3 bg-taxi text-ink font-body font-bold text-base rounded-full disabled:opacity-40 disabled:cursor-not-allowed hover:bg-taxi-light"
                   >
                     {t('form.review')} <ChevronRight size={14} />
@@ -866,7 +877,7 @@ export function BookingPage() {
                       : []),
                     { label: t('form.name'), value: form.name },
                     { label: t('form.phone'), value: form.phone },
-                    ...(form.email.trim() ? [{ label: t('form.emailShort'), value: form.email.trim() }] : []),
+                    { label: t('form.emailShort'), value: form.email.trim() },
                     { label: t('form.passengers'), value: String(passengers) },
                     ...(luggage > 0
                       ? [{ label: t('form.luggage'), value: String(luggage) }]
