@@ -25,8 +25,8 @@ export default function OpengraphImage() {
           flexDirection: 'column',
           alignItems: 'center',
           justifyContent: 'center',
-          background: '#FBF6EC',
-          color: '#1F1B16',
+          background: '#F5F8FB',
+          color: '#14212F',
         }}
       >
         <div
@@ -34,7 +34,7 @@ export default function OpengraphImage() {
             display: 'flex',
             fontSize: 32,
             letterSpacing: 14,
-            color: '#8A5A00',
+            color: '#164580',
           }}
         >
           TEIÀ · MARESME
@@ -56,10 +56,10 @@ export default function OpengraphImage() {
             height: 12,
             marginTop: 32,
             marginBottom: 32,
-            background: '#FFC72C',
+            background: '#1E5AA8',
           }}
         />
-        <div style={{ display: 'flex', fontSize: 42, color: '#5C5346' }}>
+        <div style={{ display: 'flex', fontSize: 42, color: '#4A5869' }}>
           Aeroport · Hospitals · Llarg recorregut
         </div>
         <div
@@ -69,7 +69,8 @@ export default function OpengraphImage() {
             marginTop: 28,
             padding: '12px 40px',
             borderRadius: 999,
-            background: '#FFC72C',
+            background: '#1E5AA8',
+            color: '#FFFFFF',
             fontWeight: 600,
           }}
         >

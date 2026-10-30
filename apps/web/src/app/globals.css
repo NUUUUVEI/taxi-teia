@@ -4,16 +4,17 @@
 
 @layer base {
   :root {
-    /* Cream paper, warm ink, Barcelona taxi yellow. Yellow is only ever a
-       fill; text in the yellow family uses taxi-deep, which reads on cream. */
-    --paper: 251 246 236;
-    --panel: 243 234 216;
+    /* Sea-light paper, navy ink, Mediterranean blue. Solid blue carries
+       white text (on-taxi); blue text on paper uses taxi-deep. */
+    --paper: 245 248 251;
+    --panel: 233 239 246;
     --field: 255 255 255;
-    --ink: 31 27 22;
-    --line: 222 210 186;
-    --taxi: 255 199 44;
-    --taxi-light: 255 214 102;
-    --taxi-deep: 138 90 0;
+    --ink: 20 33 47;
+    --line: 211 221 232;
+    --taxi: 30 90 168;
+    --taxi-light: 42 108 192;
+    --taxi-deep: 22 69 128;
+    --on-taxi: 255 255 255;
   }
 
   html {
@@ -27,7 +28,7 @@
   }
 
   ::selection {
-    background-color: rgb(var(--taxi) / 0.6);
+    background-color: rgb(var(--taxi) / 0.25);
     color: rgb(var(--ink));
   }
 
@@ -56,7 +57,7 @@
     border: 1px solid rgb(var(--line));
   }
 
-  /* Short yellow bar under section headings, like the stripe on a taxi door. */
+  /* Short blue bar under section headings, like the stripe on a taxi door. */
   .taxi-rule::after {
     content: '';
     display: block;

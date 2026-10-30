@@ -22,11 +22,11 @@ export function RouteMap({ pickup, dropoff, polyline }: RouteMapProps) {
     key,
   })
 
-  params.append('markers', `color:0xFFC72C|label:A|${pickup}`)
-  params.append('markers', `color:0x1F1B16|label:B|${dropoff}`)
+  params.append('markers', `color:0x1E5AA8|label:A|${pickup}`)
+  params.append('markers', `color:0x14212F|label:B|${dropoff}`)
 
   if (polyline) {
-    params.append('path', `weight:5|color:0x8A5A00|enc:${polyline}`)
+    params.append('path', `weight:5|color:0x164580|enc:${polyline}`)
   }
 
 

@@ -41,7 +41,7 @@ export function Services() {
             return (
               <div key={key} className="panel rounded-2xl p-7 h-full">
                 <div className="w-11 h-11 rounded-full bg-taxi flex items-center justify-center mb-5">
-                  <Icon size={20} className="text-ink" />
+                  <Icon size={20} className="text-on-taxi" />
                 </div>
                 <h3 className="font-heading text-xl font-bold text-ink mb-2">
                   {t(`items.${key}.title`)}
@@ -58,7 +58,7 @@ export function Services() {
         <div className="text-center mt-14">
           <Link
             href={localePath(locale, '/book')}
-            className="inline-flex items-center gap-3 px-8 py-4 bg-taxi text-ink text-lg font-body font-bold rounded-full hover:bg-taxi-light transition-colors duration-200"
+            className="inline-flex items-center gap-3 px-8 py-4 bg-taxi text-on-taxi text-lg font-body font-bold rounded-full hover:bg-taxi-light transition-colors duration-200"
           >
             {tNav('book')}
           </Link>

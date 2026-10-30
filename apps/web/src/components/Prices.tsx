@@ -152,7 +152,7 @@ export function Prices() {
         <div className="flex flex-col sm:flex-row gap-3 justify-center">
           <Link
             href={localePath(locale, '/book')}
-            className="inline-flex items-center justify-center gap-2 px-7 py-3 bg-taxi text-ink font-body font-bold text-base rounded-full hover:bg-taxi-light transition-colors"
+            className="inline-flex items-center justify-center gap-2 px-7 py-3 bg-taxi text-on-taxi font-body font-bold text-base rounded-full hover:bg-taxi-light transition-colors"
           >
             {t('cta.book')} <ArrowRight size={14} />
           </Link>

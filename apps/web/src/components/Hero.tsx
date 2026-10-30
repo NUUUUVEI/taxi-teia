@@ -23,7 +23,7 @@ export function Hero() {
           <div className="mt-10 flex flex-col sm:flex-row gap-3">
             <Link
               href={localePath(locale, '/book')}
-              className="inline-flex items-center justify-center min-h-[56px] px-8 bg-taxi text-ink text-lg font-bold rounded-full hover:bg-taxi-light transition-colors"
+              className="inline-flex items-center justify-center min-h-[56px] px-8 bg-taxi text-on-taxi text-lg font-bold rounded-full hover:bg-taxi-light transition-colors"
             >
               {t('cta')}
             </Link>
@@ -39,32 +39,32 @@ export function Hero() {
         {/* The roof sign: calling is what most visitors come here to do. */}
         <div className="animate-fade-in flex flex-col items-center">
           <div
-            className="w-44 h-11 bg-ink text-taxi font-heading font-bold text-xl tracking-[0.35em] pl-[0.35em] flex items-center justify-center"
+            className="w-44 h-11 bg-ink text-paper font-heading font-bold text-xl tracking-[0.35em] pl-[0.35em] flex items-center justify-center"
             style={{ clipPath: 'polygon(10% 0, 90% 0, 100% 100%, 0 100%)' }}
             aria-hidden="true"
           >
             TAXI
           </div>
           <div className="w-full bg-taxi rounded-[28px] p-6 sm:p-10 shadow-[0_24px_48px_-24px_rgb(var(--taxi-deep)/0.5)]">
-            <p className="text-ink/75 text-lg">{t('callUs')}</p>
+            <p className="text-on-taxi/80 text-lg">{t('callUs')}</p>
             <a
               href={`tel:${contact.phoneE164}`}
-              className="mt-1 flex items-center gap-3 font-heading font-bold text-4xl sm:text-5xl xl:text-6xl tabular-nums tracking-tight hover:underline decoration-4 underline-offset-8"
+              className="mt-1 flex items-center gap-3 text-on-taxi font-heading font-bold text-4xl sm:text-5xl xl:text-6xl tabular-nums tracking-tight hover:underline decoration-4 underline-offset-8"
             >
               <Phone strokeWidth={2.5} className="w-8 h-8 sm:w-10 sm:h-10 flex-shrink-0" aria-hidden="true" />
               {contact.phone}
             </a>
-            <div className="mt-8 pt-6 border-t-2 border-ink/15 flex flex-wrap items-center justify-between gap-4">
+            <div className="mt-8 pt-6 border-t-2 border-on-taxi/20 flex flex-wrap items-center justify-between gap-4">
               <a
                 href={`https://wa.me/${contact.phoneE164.replace('+', '')}`}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex items-center gap-2 min-h-[48px] px-6 bg-ink text-paper font-bold rounded-full hover:bg-ink/85 transition-colors"
+                className="inline-flex items-center gap-2 min-h-[48px] px-6 bg-paper text-ink font-bold rounded-full hover:bg-paper/85 transition-colors"
               >
                 <MessageCircle size={18} aria-hidden="true" />
                 WhatsApp
               </a>
-              <span className="text-ink/70">
+              <span className="text-on-taxi/80">
                 {contact.town}, {contact.region}
               </span>
             </div>

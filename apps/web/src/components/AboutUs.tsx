@@ -52,7 +52,7 @@ export function AboutUs() {
 
             <Link
               href={localePath(locale, '/book')}
-              className="inline-flex items-center gap-3 px-8 py-4 bg-taxi text-ink text-lg font-body font-bold rounded-full hover:bg-taxi-light transition-colors duration-200"
+              className="inline-flex items-center gap-3 px-8 py-4 bg-taxi text-on-taxi text-lg font-body font-bold rounded-full hover:bg-taxi-light transition-colors duration-200"
             >
               {tNav('book')}
             </Link>
@@ -63,7 +63,7 @@ export function AboutUs() {
             {REASONS.map(({ icon: Icon, key }) => (
               <div key={key} className="panel rounded-2xl p-5">
                 <div className="w-9 h-9 rounded-full bg-taxi flex items-center justify-center mb-3">
-                  <Icon size={16} className="text-ink" />
+                  <Icon size={16} className="text-on-taxi" />
                 </div>
                 <h3 className="font-heading text-lg font-bold text-ink mb-1">
                   {t(`reasons.${key}.title`)}

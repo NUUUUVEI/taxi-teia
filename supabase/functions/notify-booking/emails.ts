@@ -37,13 +37,13 @@ const PHONE_LINK = 'tel:+34670254729'
 const WHATSAPP_LINK = 'https://wa.me/34670254729'
 const CONTACT_EMAIL = 'marctaxiteia@gmail.com'
 
-// Same palette as the website: cream paper, warm ink, taxi yellow.
-const PAPER = '#FBF6EC'
-const YELLOW = '#FFC72C'
-const ACCENT = '#8A5A00'
-const MUTED = '#5C5346'
-const TEXT = '#1F1B16'
-const LINE = '#DED2BA'
+// Same palette as the website: sea-light paper, navy ink, Mediterranean blue.
+const PAPER = '#F5F8FB'
+const BLUE = '#1E5AA8'
+const ACCENT = '#164580'
+const MUTED = '#4A5869'
+const TEXT = '#14212F'
+const LINE = '#D3DDE8'
 
 const LOCALE_TAGS: Record<string, string> = { ca: 'ca-ES', es: 'es-ES', en: 'en-GB' }
 
@@ -237,7 +237,7 @@ export function clientEmail(kind: ClientEmailKind, b: Booking, previousStart?: s
 
   const html = `
     <div style="font-family:sans-serif;max-width:600px;margin:auto;background:${PAPER};color:${TEXT};border-radius:12px;overflow:hidden;border:1px solid ${LINE}">
-      <div style="background:${YELLOW};padding:14px 32px;font-weight:bold;font-size:16px;color:${TEXT}">Taxi Teià</div>
+      <div style="background:${BLUE};padding:14px 32px;font-weight:bold;font-size:16px;color:#FFFFFF">Taxi Teià</div>
       <div style="padding:32px">
       <h2 style="color:${headingColor};margin:0 0 4px">${K.heading}</h2>
       <p style="color:${MUTED};font-size:14px;margin-top:0">${esc(b.client_name)}</p>

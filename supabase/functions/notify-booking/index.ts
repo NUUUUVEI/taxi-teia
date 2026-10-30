@@ -88,28 +88,28 @@ async function notifyDriverOfNewBooking(b: Booking) {
     DRIVER_EMAIL,
     `Nova reserva de ${b.client_name}`,
     `
-    <div style="font-family:sans-serif;max-width:600px;margin:auto;background:#FBF6EC;color:#1F1B16;border-radius:12px;overflow:hidden;border:1px solid #DED2BA">
-      <div style="background:#FFC72C;padding:14px 32px;font-weight:bold;font-size:16px">Taxi Teià</div>
+    <div style="font-family:sans-serif;max-width:600px;margin:auto;background:#F5F8FB;color:#14212F;border-radius:12px;overflow:hidden;border:1px solid #D3DDE8">
+      <div style="background:#1E5AA8;padding:14px 32px;font-weight:bold;font-size:16px;color:#FFFFFF">Taxi Teià</div>
       <div style="padding:32px">
       <h2 style="margin:0 0 4px">Nova reserva</h2>
-      <p style="color:#5C5346;font-size:14px;margin-top:0">Sistema de reserves</p>
-      <hr style="border:0;border-top:1px solid #DED2BA;margin:24px 0"/>
+      <p style="color:#4A5869;font-size:14px;margin-top:0">Sistema de reserves</p>
+      <hr style="border:0;border-top:1px solid #D3DDE8;margin:24px 0"/>
       <table style="width:100%;font-size:14px;border-collapse:collapse">
-        <tr><td style="padding:8px 0;color:#5C5346;width:140px">Client</td><td style="color:#1F1B16"><strong>${esc(b.client_name)}</strong></td></tr>
-        <tr><td style="padding:8px 0;color:#5C5346">Telèfon</td><td style="color:#1F1B16">${esc(b.client_phone)}</td></tr>
-        ${b.client_email ? `<tr><td style="padding:8px 0;color:#5C5346">Email</td><td style="color:#1F1B16">${esc(b.client_email)}</td></tr>` : `<tr><td style="padding:8px 0;color:#5C5346">Email</td><td style="color:#B42318">Sense correu: avisa'l per telèfon si canvies res</td></tr>`}
-        <tr><td style="padding:8px 0;color:#5C5346">Recollida</td><td style="color:#8A5A00"><strong>${formatDate(b.start_time, 'ca')}</strong></td></tr>
-        ${b.time_mode === 'arrival' && b.requested_time ? `<tr><td style="padding:8px 0;color:#5C5346">Arribada sol·licitada</td><td style="color:#1F1B16">${formatDate(b.requested_time, 'ca')}</td></tr>` : ''}
-        <tr><td style="padding:8px 0;color:#5C5346">Origen</td><td style="color:#1F1B16">${esc(b.pickup_address)}</td></tr>
-        <tr><td style="padding:8px 0;color:#5C5346">Destí</td><td style="color:#1F1B16">${esc(b.dropoff_address)}</td></tr>
-        <tr><td style="padding:8px 0;color:#5C5346">Passatgers</td><td style="color:#1F1B16">${esc(pax)}</td></tr>
-        <tr><td style="padding:8px 0;color:#5C5346">Maletes</td><td style="color:#1F1B16">${esc(bags)}</td></tr>
-        ${b.flight_number ? `<tr><td style="padding:8px 0;color:#5C5346">Vol</td><td style="color:#8A5A00"><strong>${esc(b.flight_number)}</strong></td></tr>` : ''}
-        <tr><td style="padding:8px 0;color:#5C5346">Temps estimat</td><td style="color:#1F1B16">${esc(b.estimated_minutes)} min</td></tr>
-        ${b.notes ? `<tr><td style="padding:8px 0;color:#5C5346">Notes</td><td style="color:#1F1B16">${esc(b.notes)}</td></tr>` : ''}
+        <tr><td style="padding:8px 0;color:#4A5869;width:140px">Client</td><td style="color:#14212F"><strong>${esc(b.client_name)}</strong></td></tr>
+        <tr><td style="padding:8px 0;color:#4A5869">Telèfon</td><td style="color:#14212F">${esc(b.client_phone)}</td></tr>
+        ${b.client_email ? `<tr><td style="padding:8px 0;color:#4A5869">Email</td><td style="color:#14212F">${esc(b.client_email)}</td></tr>` : `<tr><td style="padding:8px 0;color:#4A5869">Email</td><td style="color:#B42318">Sense correu: avisa'l per telèfon si canvies res</td></tr>`}
+        <tr><td style="padding:8px 0;color:#4A5869">Recollida</td><td style="color:#164580"><strong>${formatDate(b.start_time, 'ca')}</strong></td></tr>
+        ${b.time_mode === 'arrival' && b.requested_time ? `<tr><td style="padding:8px 0;color:#4A5869">Arribada sol·licitada</td><td style="color:#14212F">${formatDate(b.requested_time, 'ca')}</td></tr>` : ''}
+        <tr><td style="padding:8px 0;color:#4A5869">Origen</td><td style="color:#14212F">${esc(b.pickup_address)}</td></tr>
+        <tr><td style="padding:8px 0;color:#4A5869">Destí</td><td style="color:#14212F">${esc(b.dropoff_address)}</td></tr>
+        <tr><td style="padding:8px 0;color:#4A5869">Passatgers</td><td style="color:#14212F">${esc(pax)}</td></tr>
+        <tr><td style="padding:8px 0;color:#4A5869">Maletes</td><td style="color:#14212F">${esc(bags)}</td></tr>
+        ${b.flight_number ? `<tr><td style="padding:8px 0;color:#4A5869">Vol</td><td style="color:#164580"><strong>${esc(b.flight_number)}</strong></td></tr>` : ''}
+        <tr><td style="padding:8px 0;color:#4A5869">Temps estimat</td><td style="color:#14212F">${esc(b.estimated_minutes)} min</td></tr>
+        ${b.notes ? `<tr><td style="padding:8px 0;color:#4A5869">Notes</td><td style="color:#14212F">${esc(b.notes)}</td></tr>` : ''}
       </table>
-      <hr style="border:0;border-top:1px solid #DED2BA;margin:24px 0"/>
-      <p style="font-size:12px;color:#5C5346">Obre l'app per confirmar, canviar l'hora o rebutjar el viatge.</p>
+      <hr style="border:0;border-top:1px solid #D3DDE8;margin:24px 0"/>
+      <p style="font-size:12px;color:#4A5869">Obre l'app per confirmar, canviar l'hora o rebutjar el viatge.</p>
       </div>
     </div>
     `

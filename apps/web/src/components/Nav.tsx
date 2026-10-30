@@ -99,7 +99,7 @@ export function Nav() {
               aria-current={currentHref === item.href ? 'page' : undefined}
               className={`px-3 py-1.5 rounded-full text-sm font-body transition-colors duration-200 whitespace-nowrap ${
                 currentHref === item.href
-                  ? 'bg-taxi text-ink font-bold'
+                  ? 'bg-taxi text-on-taxi font-bold'
                   : 'text-ink/75 hover:text-ink hover:bg-taxi/25'
               }`}
             >
@@ -214,7 +214,7 @@ export function Nav() {
                     aria-current={code === locale ? 'true' : undefined}
                     className={`flex-1 min-h-[48px] text-sm font-body border rounded-full touch-manipulation transition-colors ${
                       code === locale
-                        ? 'border-ink text-ink font-bold bg-taxi'
+                        ? 'border-taxi text-on-taxi font-bold bg-taxi'
                         : 'border-line text-ink/70 active:border-ink active:text-ink'
                     }`}
                   >
@@ -225,7 +225,7 @@ export function Nav() {
               <Link
                 href={bookHref}
                 onClick={() => setMobileOpen(false)}
-                className="mt-4 min-h-[52px] flex items-center justify-center px-5 bg-taxi text-ink text-base font-body font-bold rounded-full text-center touch-manipulation"
+                className="mt-4 min-h-[52px] flex items-center justify-center px-5 bg-taxi text-on-taxi text-base font-body font-bold rounded-full text-center touch-manipulation"
               >
                 {t('book')}
               </Link>

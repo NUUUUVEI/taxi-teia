@@ -17,6 +17,7 @@ const config: Config = {
         panel: token('panel'),
         field: token('field'),
         ink: token('ink'),
+        'on-taxi': token('on-taxi'),
         line: token('line'),
         taxi: {
           DEFAULT: token('taxi'),

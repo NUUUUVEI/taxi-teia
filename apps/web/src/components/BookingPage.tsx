@@ -414,7 +414,7 @@ export function BookingPage() {
           )}
           <a
             href="tel:+34670254729"
-            className="mt-8 inline-flex items-center gap-2 min-h-[48px] px-6 bg-taxi text-ink font-bold rounded-full"
+            className="mt-8 inline-flex items-center gap-2 min-h-[48px] px-6 bg-taxi text-on-taxi font-bold rounded-full"
           >
             670 254 729
           </a>
@@ -452,7 +452,7 @@ export function BookingPage() {
               <div
                 className={`w-7 h-7 rounded-full flex items-center justify-center text-xs font-body font-semibold transition-all duration-300 ${
                   i < stepIndex
-                    ? 'bg-taxi text-ink'
+                    ? 'bg-taxi text-on-taxi'
                     : i === stepIndex
                     ? 'border-2 border-taxi-deep text-taxi-deep'
                     : 'border border-ink/20 text-ink/55'
@@ -508,7 +508,7 @@ export function BookingPage() {
                     // available space so the grid never overflows a narrow
                     // phone, while staying tall enough to tap accurately.
                     day: 'h-11 w-full max-w-[44px] p-0 font-bold text-ink bg-field border border-line hover:bg-taxi/40 hover:border-taxi active:bg-taxi/60 rounded-lg transition-colors duration-150 cursor-pointer mx-auto block touch-manipulation',
-                    day_selected: '!bg-taxi !border-ink text-ink',
+                    day_selected: '!bg-taxi !border-taxi-deep !text-on-taxi',
                     day_today: 'ring-2 ring-taxi-deep ring-offset-1 ring-offset-panel',
                     // Past days: no box, faded and struck through, so they
                     // read as unavailable before anyone tries to tap them.
@@ -523,7 +523,7 @@ export function BookingPage() {
                   <button
                     onClick={openTimeStep}
                     disabled={!dateReady}
-                    className="flex items-center gap-2 px-6 py-3 bg-taxi text-ink font-body font-bold text-base rounded-full disabled:opacity-40 disabled:cursor-not-allowed hover:bg-taxi-light transition-colors"
+                    className="flex items-center gap-2 px-6 py-3 bg-taxi text-on-taxi font-body font-bold text-base rounded-full disabled:opacity-40 disabled:cursor-not-allowed hover:bg-taxi-light transition-colors"
                   >
                     {t('form.continueTrip')} <ChevronRight size={14} />
                   </button>
@@ -556,13 +556,13 @@ export function BookingPage() {
                       onClick={() => setTimeMode(mode)}
                       className={`flex items-start gap-3 text-left p-4 rounded-xl border-2 touch-manipulation transition-colors ${
                         timeMode === mode
-                          ? 'bg-taxi border-ink'
+                          ? 'bg-taxi/15 border-taxi-deep'
                           : 'bg-field border-line hover:border-ink/40'
                       }`}
                     >
                       <span
                         className={`w-10 h-10 flex-shrink-0 rounded-full flex items-center justify-center ${
-                          timeMode === mode ? 'bg-ink text-taxi' : 'bg-taxi text-ink'
+                          timeMode === mode ? 'bg-taxi text-on-taxi' : 'bg-taxi/15 text-taxi-deep'
                         }`}
                       >
                         <Icon size={20} />
@@ -613,7 +613,7 @@ export function BookingPage() {
                   <button
                     onClick={() => setStep('trip')}
                     disabled={!timeReady}
-                    className="flex items-center gap-2 px-6 py-3 bg-taxi text-ink font-body font-bold text-base rounded-full disabled:opacity-40 disabled:cursor-not-allowed hover:bg-taxi-light transition-colors"
+                    className="flex items-center gap-2 px-6 py-3 bg-taxi text-on-taxi font-body font-bold text-base rounded-full disabled:opacity-40 disabled:cursor-not-allowed hover:bg-taxi-light transition-colors"
                   >
                     {t('form.continueTrip')} <ChevronRight size={14} />
                   </button>
@@ -713,7 +713,7 @@ export function BookingPage() {
                   <button
                     onClick={() => setStep('details')}
                     disabled={!tripReady}
-                    className="flex items-center gap-2 px-6 py-3 bg-taxi text-ink font-body font-bold text-base rounded-full disabled:opacity-40 disabled:cursor-not-allowed hover:bg-taxi-light transition-colors"
+                    className="flex items-center gap-2 px-6 py-3 bg-taxi text-on-taxi font-body font-bold text-base rounded-full disabled:opacity-40 disabled:cursor-not-allowed hover:bg-taxi-light transition-colors"
                   >
                     {t('form.details')} <ChevronRight size={14} />
                   </button>
@@ -840,7 +840,7 @@ export function BookingPage() {
                   <button
                     onClick={() => setStep('confirm')}
                     disabled={!form.name || !form.phone || !emailValid}
-                    className="flex items-center gap-2 px-6 py-3 bg-taxi text-ink font-body font-bold text-base rounded-full disabled:opacity-40 disabled:cursor-not-allowed hover:bg-taxi-light"
+                    className="flex items-center gap-2 px-6 py-3 bg-taxi text-on-taxi font-body font-bold text-base rounded-full disabled:opacity-40 disabled:cursor-not-allowed hover:bg-taxi-light"
                   >
                     {t('form.review')} <ChevronRight size={14} />
                   </button>
@@ -930,7 +930,7 @@ export function BookingPage() {
                   <button
                     onClick={handleSubmit}
                     disabled={submitting || feasibility.status === 'blocked'}
-                    className="flex items-center gap-2 px-8 py-3 bg-taxi text-ink font-body font-bold text-base rounded-full disabled:opacity-60 hover:bg-taxi-light"
+                    className="flex items-center gap-2 px-8 py-3 bg-taxi text-on-taxi font-body font-bold text-base rounded-full disabled:opacity-60 hover:bg-taxi-light"
                   >
                     {submitting ? (
                       <>
