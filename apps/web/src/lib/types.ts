@@ -30,11 +30,15 @@ export type Booking = {
   flight_number?: string | null
   passengers?: number | null
   luggage?: number | null
+  /** One age in years per child (0 = under one); null when no children. */
+  child_ages?: number[] | null
 }
 
 /** The Corolla Touring Sports seats four passengers besides the driver. */
 export const MAX_PASSENGERS = 4
 export const MAX_LUGGAGE = 8
+/** Children past this age no longer need a child seat. */
+export const MAX_CHILD_AGE = 12
 
 export type DriverLocation = {
   user_id: string

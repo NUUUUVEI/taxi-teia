@@ -15,7 +15,7 @@ import {
 import { useLocalSearchParams, router } from 'expo-router'
 import { format, parseISO, isValid } from 'date-fns'
 import { supabase } from '../../src/lib/supabase'
-import { STATUS_LABEL, type Booking, type BookingUpdate } from '../../src/lib/types'
+import { STATUS_LABEL, childAgesLabel, type Booking, type BookingUpdate } from '../../src/lib/types'
 import { colors } from '../../src/lib/theme'
 import { openWaze, openGoogleMaps } from '../../src/lib/navigation'
 import { useActiveTrip, setActiveTrip, clearActiveTrip } from '../../src/lib/activeTrip'
@@ -324,6 +324,16 @@ export default function TripDetailScreen() {
             </View>
           ) : null}
         </View>
+        {booking.child_ages?.length ? (
+          <View style={styles.childRow}>
+            <Ionicons name="happy-outline" size={16} color={colors.taxiDeep} />
+            <Text style={styles.childText}>
+              {booking.child_ages.length === 1 ? '1 nen' : `${booking.child_ages.length} nens`}
+              {' · '}
+              {childAgesLabel(booking.child_ages)} · cal cadireta
+            </Text>
+          </View>
+        ) : null}
         {booking.flight_number ? (
           <TouchableOpacity
             style={styles.callBtn}
@@ -589,6 +599,8 @@ const styles = StyleSheet.create({
     borderWidth: 1, borderColor: colors.taxi, borderRadius: 999,
   },
   paxChipText: { color: colors.ink, fontSize: 14, fontWeight: '600' },
+  childRow: { flexDirection: 'row', alignItems: 'center', gap: 8, marginTop: 10 },
+  childText: { flex: 1, fontSize: 14, fontWeight: '600', color: colors.ink },
   flightChip: { backgroundColor: colors.taxi, borderColor: colors.taxiDeep },
   fareRow: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', gap: 12 },
   fareValue: { color: colors.ink, fontSize: 22, fontWeight: '700' },

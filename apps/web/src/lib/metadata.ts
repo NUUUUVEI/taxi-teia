@@ -38,6 +38,9 @@ export async function buildMetadata(
     metadataBase: new URL(siteUrl),
     title,
     description,
+    // Served from public/ under a versioned name: Vercel's build cache kept
+    // serving the old yellow app/icon.svg after it was recoloured.
+    icons: { icon: { url: '/icon-blue.svg', type: 'image/svg+xml' } },
     alternates: {
       canonical: url,
       languages: languageAlternates(path),

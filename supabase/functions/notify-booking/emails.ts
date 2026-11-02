@@ -22,6 +22,8 @@ export interface Booking {
   flight_number: string | null
   passengers: number | null
   luggage: number | null
+  /** One age in years per child (0 = under one); null when no children. */
+  child_ages: number[] | null
 }
 
 export type ClientEmailKind =
@@ -81,6 +83,8 @@ const COPY = {
     dropoff: 'Destí',
     passengers: 'Passatgers',
     luggage: 'maletes',
+    children: 'Nens',
+    age: (a: number) => (a === 0 ? "menys d'1 any" : a >= 12 ? '12 anys o més' : a === 1 ? '1 any' : `${a} anys`),
     flight: 'Vol',
     before: 'Abans',
     now: 'Ara',
@@ -120,6 +124,8 @@ const COPY = {
     dropoff: 'Destino',
     passengers: 'Pasajeros',
     luggage: 'maletas',
+    children: 'Niños',
+    age: (a: number) => (a === 0 ? 'menos de 1 año' : a >= 12 ? '12 años o más' : a === 1 ? '1 año' : `${a} años`),
     flight: 'Vuelo',
     before: 'Antes',
     now: 'Ahora',
@@ -159,6 +165,8 @@ const COPY = {
     dropoff: 'Drop-off',
     passengers: 'Passengers',
     luggage: 'suitcases',
+    children: 'Children',
+    age: (a: number) => (a === 0 ? 'under 1' : a >= 12 ? '12 or older' : a === 1 ? '1 year' : `${a} years`),
     flight: 'Flight',
     before: 'Before',
     now: 'Now',
@@ -200,6 +208,11 @@ function row(label: string, value: string, highlight = false) {
   return `<tr><td style="padding:8px 0;color:${MUTED};width:160px">${label}</td><td style="color:${color}">${highlight ? `<strong>${value}</strong>` : value}</td></tr>`
 }
 
+/** "2 anys, menys d'1 any" in the given language; Catalan by default (the driver's). */
+export function childAges(ages: number[], L: Copy = COPY.ca) {
+  return ages.map(L.age).join(', ')
+}
+
 function details(b: Booking, L: Copy, loc: string, previousStart?: string) {
   const pax = b.passengers ?? 1
   const bags = b.luggage ?? 0
@@ -214,6 +227,7 @@ function details(b: Booking, L: Copy, loc: string, previousStart?: string) {
     row(L.pickup, esc(b.pickup_address)),
     row(L.dropoff, esc(b.dropoff_address)),
     row(L.passengers, `${esc(pax)}${bags > 0 ? ` · ${esc(bags)} ${L.luggage}` : ''}`),
+    b.child_ages?.length ? row(L.children, childAges(b.child_ages, L)) : '',
     b.flight_number ? row(L.flight, esc(b.flight_number), true) : '',
   ]
   return `<table style="width:100%;font-size:14px;border-collapse:collapse">${rows.join('')}</table>`

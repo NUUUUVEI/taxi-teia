@@ -7,13 +7,13 @@ import { useTranslations, useLocale } from 'next-intl'
 import { motion, AnimatePresence } from 'framer-motion'
 import {
   Clock, User, Phone, ChevronRight, CheckCircle2, Loader2, AlertTriangle, MapPin,
-  Plane, Users, Briefcase, Minus, Plus, X, CarTaxiFront, Flag,
+  Plane, Users, Briefcase, Minus, Plus, X, CarTaxiFront, Flag, Baby,
 } from 'lucide-react'
 import { PlaceInput } from './PlaceInput'
 import { TimeClock } from './TimeClock'
 import { RouteMap } from './RouteMap'
 import { dateLocales } from '@/lib/dateLocale'
-import { MAX_LUGGAGE, MAX_PASSENGERS } from '@/lib/types'
+import { MAX_CHILD_AGE, MAX_LUGGAGE, MAX_PASSENGERS } from '@/lib/types'
 import type { Availability } from '@/lib/server/availability'
 
 /**
@@ -142,6 +142,10 @@ export function BookingPage() {
   const [error, setError] = useState('')
   const [passengers, setPassengers] = useState(1)
   const [luggage, setLuggage] = useState(0)
+  // Asked so Marc can bring the right child seat. null = not answered yet;
+  // one entry per child, null until its age is picked.
+  const [hasChildren, setHasChildren] = useState<boolean | null>(null)
+  const [childAges, setChildAges] = useState<(number | null)[]>([])
   const [flight, setFlight] = useState('')
   const [website, setWebsite] = useState('')
   // null = follow the address sniffing; true/false = the visitor decided.
@@ -209,6 +213,27 @@ export function BookingPage() {
 
   const showFlight = flightOverride ?? looksLikeAirport
   const tightFit = passengers >= MAX_PASSENGERS && luggage >= 4
+
+  const setChildCount = (n: number) =>
+    setChildAges((prev) =>
+      n > prev.length ? [...prev, ...Array<null>(n - prev.length).fill(null)] : prev.slice(0, n)
+    )
+
+  // Fewer passengers can't hold more children than before.
+  useEffect(() => {
+    if (childAges.length > passengers) setChildAges((prev) => prev.slice(0, passengers))
+  }, [passengers, childAges.length])
+
+  const answerChildren = (yes: boolean) => {
+    setHasChildren(yes)
+    if (yes && childAges.length === 0) setChildAges([null])
+  }
+
+  const childrenReady =
+    hasChildren === false || (hasChildren === true && childAges.every((a) => a !== null))
+  const childSummary = hasChildren
+    ? childAges.map((age) => t('form.childAgeValue', { age: age ?? 0 })).join(', ')
+    : ''
 
   const hideFlight = () => {
     setFlightOverride(false)
@@ -360,6 +385,7 @@ export function BookingPage() {
           flight_number: flight.trim() || null,
           passengers,
           luggage,
+          child_ages: hasChildren ? childAges : null,
           website,
         }),
       })
@@ -773,6 +799,73 @@ export function BookingPage() {
                   />
                 </div>
 
+                <fieldset>
+                  <legend className="text-ink/80 text-sm font-bold font-body mb-2 flex items-center gap-1.5">
+                    <span className="text-taxi-deep"><Baby size={14} /></span>
+                    {t('form.childrenQuestion')}
+                  </legend>
+                  <div role="radiogroup" className="grid grid-cols-2 gap-3 sm:max-w-xs">
+                    {[true, false].map((yes) => (
+                      <button
+                        key={String(yes)}
+                        type="button"
+                        role="radio"
+                        aria-checked={hasChildren === yes}
+                        onClick={() => answerChildren(yes)}
+                        className={`min-h-[44px] rounded-lg border-2 font-body font-bold text-sm touch-manipulation transition-colors ${
+                          hasChildren === yes
+                            ? 'bg-taxi border-taxi text-on-taxi'
+                            : 'bg-field border-line text-ink hover:border-ink/40'
+                        }`}
+                      >
+                        {yes ? t('form.yes') : t('form.no')}
+                      </button>
+                    ))}
+                  </div>
+                  <p className="text-ink/60 text-xs font-body mt-2">{t('form.childrenHint')}</p>
+
+                  {hasChildren && (
+                    <div className="mt-4 grid grid-cols-1 sm:grid-cols-2 gap-4">
+                      <Stepper
+                        label={t('form.childrenCount')}
+                        value={childAges.length}
+                        min={1}
+                        max={passengers}
+                        onChange={setChildCount}
+                      />
+                      {childAges.map((age, i) => (
+                        <div key={i}>
+                          <label
+                            htmlFor={`child-age-${i}`}
+                            className="text-ink/80 text-sm font-bold font-body mb-2 block"
+                          >
+                            {t('form.childAge', { n: i + 1 })}
+                          </label>
+                          <select
+                            id={`child-age-${i}`}
+                            value={age ?? ''}
+                            onChange={(e) =>
+                              setChildAges((prev) =>
+                                prev.map((a, j) => (j === i ? Number(e.target.value) : a))
+                              )
+                            }
+                            className="w-full bg-field border border-ink/20 text-ink font-body text-sm px-4 py-3 rounded-lg focus:outline-none focus:border-taxi-deep transition-colors"
+                          >
+                            <option value="" disabled>
+                              {t('form.childAgePlaceholder')}
+                            </option>
+                            {Array.from({ length: MAX_CHILD_AGE + 1 }, (_, a) => (
+                              <option key={a} value={a}>
+                                {t('form.childAgeValue', { age: a })}
+                              </option>
+                            ))}
+                          </select>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </fieldset>
+
                 {tightFit && (
                   <p className="flex items-start gap-2 text-amber-800 text-xs font-body leading-relaxed">
                     <AlertTriangle size={14} className="flex-shrink-0 mt-0.5" />
@@ -839,7 +932,7 @@ export function BookingPage() {
                   </button>
                   <button
                     onClick={() => setStep('confirm')}
-                    disabled={!form.name || !form.phone || !emailValid}
+                    disabled={!form.name || !form.phone || !emailValid || !childrenReady}
                     className="flex items-center gap-2 px-6 py-3 bg-taxi text-on-taxi font-body font-bold text-base rounded-full disabled:opacity-40 disabled:cursor-not-allowed hover:bg-taxi-light"
                   >
                     {t('form.review')} <ChevronRight size={14} />
@@ -881,6 +974,9 @@ export function BookingPage() {
                     { label: t('form.passengers'), value: String(passengers) },
                     ...(luggage > 0
                       ? [{ label: t('form.luggage'), value: String(luggage) }]
+                      : []),
+                    ...(childSummary
+                      ? [{ label: t('form.children'), value: childSummary }]
                       : []),
                     ...(flight.trim()
                       ? [{ label: t('form.flightNumber'), value: flight.trim().toUpperCase() }]

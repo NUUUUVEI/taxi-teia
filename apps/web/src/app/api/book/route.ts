@@ -1,6 +1,6 @@
 import { createHash } from 'crypto'
 import { NextRequest, NextResponse } from 'next/server'
-import { MAX_LUGGAGE, MAX_PASSENGERS } from '@/lib/types'
+import { MAX_CHILD_AGE, MAX_LUGGAGE, MAX_PASSENGERS } from '@/lib/types'
 import { getSupabaseAdmin } from '@/lib/server/supabaseAdmin'
 import { checkAvailability } from '@/lib/server/availability'
 
@@ -23,6 +23,13 @@ function clamp(value: unknown, min: number, max: number, fallback: number) {
   const parsed = Number(value)
   if (!Number.isFinite(parsed)) return fallback
   return Math.min(max, Math.max(min, Math.round(parsed)))
+}
+
+/** Whole ages within range, at most one per passenger; null if none or invalid. */
+function childAges(value: unknown, passengers: number): number[] | null {
+  if (!Array.isArray(value) || value.length === 0 || value.length > passengers) return null
+  const ages = value.map(Number)
+  return ages.every((a) => Number.isInteger(a) && a >= 0 && a <= MAX_CHILD_AGE) ? ages : null
 }
 
 function clientIp(req: NextRequest) {
@@ -121,6 +128,8 @@ export async function POST(req: NextRequest) {
     ? body.flight_number.trim().slice(0, 12)
     : null
 
+  const passengers = clamp(body.passengers, 1, MAX_PASSENGERS, 1)
+
   const { error: insertError } = await supabase.from('bookings').insert({
     client_name,
     client_phone,
@@ -135,8 +144,9 @@ export async function POST(req: NextRequest) {
     estimated_minutes,
     notes,
     flight_number,
-    passengers: clamp(body.passengers, 1, MAX_PASSENGERS, 1),
+    passengers,
     luggage: clamp(body.luggage, 0, MAX_LUGGAGE, 0),
+    child_ages: childAges(body.child_ages, passengers),
     status: 'pending',
   })
 

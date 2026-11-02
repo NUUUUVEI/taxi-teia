@@ -165,7 +165,16 @@
       "hourDown": "Una hora menys",
       "minuteUp": "Cinc minuts més",
       "minuteDown": "Cinc minuts menys",
-      "noTimesLeft": "Avui ja no queden hores disponibles. Tria un altre dia."
+      "noTimesLeft": "Avui ja no queden hores disponibles. Tria un altre dia.",
+      "childrenQuestion": "Viatgen nens?",
+      "childrenHint": "Així porto la cadireta adequada per a cada nen.",
+      "yes": "Sí",
+      "no": "No",
+      "childrenCount": "Quants nens?",
+      "childAge": "Edat del nen {n}",
+      "childAgePlaceholder": "Tria l'edat",
+      "childAgeValue": "{age, plural, =0 {Menys d'1 any} =12 {12 anys o més} one {# any} other {# anys}}",
+      "children": "Nens"
     },
     "feasibility": {
       "checking": "Comprovant si aquesta hora encaixa amb altres viatges...",

@@ -46,6 +46,15 @@ export type Booking = {
   flight_number?: string | null
   passengers?: number | null
   luggage?: number | null
+  /** One age in years per child (0 = under one); null when no children. */
+  child_ages?: number[] | null
+}
+
+/** "2 anys, menys d'1 any": what child seats to bring. */
+export function childAgesLabel(ages: number[]) {
+  return ages
+    .map((a) => (a === 0 ? "menys d'1 any" : a >= 12 ? '12 anys o més' : a === 1 ? '1 any' : `${a} anys`))
+    .join(', ')
 }
 
 /** Fields the driver may change on a booking. */

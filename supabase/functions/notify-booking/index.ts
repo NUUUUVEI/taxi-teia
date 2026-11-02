@@ -1,6 +1,6 @@
 import { serve } from 'https://deno.land/std@0.168.0/http/server.ts'
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2'
-import { clientEmail, emailForUpdate, esc, formatDate, formatShort, type Booking } from './emails.ts'
+import { childAges, clientEmail, emailForUpdate, esc, formatDate, formatShort, type Booking } from './emails.ts'
 
 const RESEND_API_KEY = Deno.env.get('RESEND_API_KEY') ?? ''
 const SUPABASE_URL = Deno.env.get('SUPABASE_URL') ?? ''
@@ -71,12 +71,14 @@ async function notifyDriverOfNewBooking(b: Booking) {
   const pax = b.passengers ?? 1
   const bags = b.luggage ?? 0
   const paxLine = `${pax} pax${bags > 0 ? ` · ${bags} maletes` : ''}`
+  const kids = b.child_ages?.length ? childAges(b.child_ages) : ''
 
   await sendPushToDriver(
     `Nova reserva — ${b.client_name}`,
     [
       `${formatShort(b.start_time, 'ca')} · ${b.pickup_address}`,
       paxLine,
+      kids ? `Nens (cadireta): ${kids}` : '',
       b.flight_number ? `Vol ${b.flight_number}` : '',
     ]
       .filter(Boolean)
@@ -104,6 +106,7 @@ async function notifyDriverOfNewBooking(b: Booking) {
         <tr><td style="padding:8px 0;color:#4A5869">Destí</td><td style="color:#14212F">${esc(b.dropoff_address)}</td></tr>
         <tr><td style="padding:8px 0;color:#4A5869">Passatgers</td><td style="color:#14212F">${esc(pax)}</td></tr>
         <tr><td style="padding:8px 0;color:#4A5869">Maletes</td><td style="color:#14212F">${esc(bags)}</td></tr>
+        ${kids ? `<tr><td style="padding:8px 0;color:#4A5869">Nens</td><td style="color:#164580"><strong>${esc(kids)}</strong> · cal cadireta</td></tr>` : ''}
         ${b.flight_number ? `<tr><td style="padding:8px 0;color:#4A5869">Vol</td><td style="color:#164580"><strong>${esc(b.flight_number)}</strong></td></tr>` : ''}
         <tr><td style="padding:8px 0;color:#4A5869">Temps estimat</td><td style="color:#14212F">${esc(b.estimated_minutes)} min</td></tr>
         ${b.notes ? `<tr><td style="padding:8px 0;color:#4A5869">Notes</td><td style="color:#14212F">${esc(b.notes)}</td></tr>` : ''}

@@ -165,7 +165,16 @@
       "hourDown": "One hour earlier",
       "minuteUp": "Five minutes later",
       "minuteDown": "Five minutes earlier",
-      "noTimesLeft": "There are no times left today. Pick another day."
+      "noTimesLeft": "There are no times left today. Pick another day.",
+      "childrenQuestion": "Are children travelling?",
+      "childrenHint": "So I can bring the right child seat for each one.",
+      "yes": "Yes",
+      "no": "No",
+      "childrenCount": "How many children?",
+      "childAge": "Age of child {n}",
+      "childAgePlaceholder": "Choose age",
+      "childAgeValue": "{age, plural, =0 {Under 1} =12 {12 or older} one {# year} other {# years}}",
+      "children": "Children"
     },
     "feasibility": {
       "checking": "Checking if this time works with other trips...",

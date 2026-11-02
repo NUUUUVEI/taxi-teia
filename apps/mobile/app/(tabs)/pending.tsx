@@ -5,7 +5,7 @@ import {
 } from 'react-native'
 import { format, addMinutes, parseISO, isValid } from 'date-fns'
 import { supabase } from '../../src/lib/supabase'
-import type { Booking, BookingUpdate } from '../../src/lib/types'
+import { childAgesLabel, type Booking, type BookingUpdate } from '../../src/lib/types'
 import { colors } from '../../src/lib/theme'
 import { router } from 'expo-router'
 import { Ionicons } from '@expo/vector-icons'
@@ -148,6 +148,7 @@ export default function PendingScreen() {
             ~{b.estimated_minutes} min · acaba a les {format(end, 'HH:mm')} ·{' '}
             {b.passengers ?? 1} pax
             {(b.luggage ?? 0) > 0 ? ` · ${b.luggage} maletes` : ''}
+            {b.child_ages?.length ? ` · nens: ${childAgesLabel(b.child_ages)}` : ''}
           </Text>
 
           {b.flight_number ? (

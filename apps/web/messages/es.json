@@ -165,7 +165,16 @@
       "hourDown": "Una hora menos",
       "minuteUp": "Cinco minutos más",
       "minuteDown": "Cinco minutos menos",
-      "noTimesLeft": "Hoy ya no quedan horas disponibles. Elige otro día."
+      "noTimesLeft": "Hoy ya no quedan horas disponibles. Elige otro día.",
+      "childrenQuestion": "¿Viajan niños?",
+      "childrenHint": "Así llevo la sillita adecuada para cada niño.",
+      "yes": "Sí",
+      "no": "No",
+      "childrenCount": "¿Cuántos niños?",
+      "childAge": "Edad del niño {n}",
+      "childAgePlaceholder": "Elige la edad",
+      "childAgeValue": "{age, plural, =0 {Menos de 1 año} =12 {12 años o más} one {# año} other {# años}}",
+      "children": "Niños"
     },
     "feasibility": {
       "checking": "Comprobando si esta hora encaja con otros viajes...",

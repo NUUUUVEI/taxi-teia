@@ -3,7 +3,7 @@ import * as Print from 'expo-print'
 import * as Sharing from 'expo-sharing'
 import { addMinutes, endOfDay, format, startOfDay } from 'date-fns'
 import { supabase } from './supabase'
-import { STATUS_LABEL, type Booking, type BookingStatus } from './types'
+import { STATUS_LABEL, childAgesLabel, type Booking, type BookingStatus } from './types'
 
 export async function fetchTrips(from: Date, to: Date, includePending: boolean) {
   const statuses: BookingStatus[] = includePending ? ['confirmed', 'pending'] : ['confirmed']
@@ -62,6 +62,7 @@ function tripDescription(b: Booking) {
     `Origen: ${b.pickup_address}`,
     `Destí: ${b.dropoff_address}`,
     `Passatgers: ${b.passengers ?? 1}${b.luggage ? ` · Maletes: ${b.luggage}` : ''}`,
+    b.child_ages?.length ? `Nens (cadireta): ${childAgesLabel(b.child_ages)}` : '',
     b.flight_number ? `Vol: ${b.flight_number}` : '',
     b.notes ? `Notes: ${b.notes}` : '',
     b.status === 'pending' ? 'PENDENT de confirmar' : '',
@@ -123,6 +124,7 @@ export function buildPdfHtml(trips: Booking[], from: Date, to: Date) {
             <div>${esc(b.pickup_address)} → ${esc(b.dropoff_address)}</div>
             <div class="meta">
               ${esc(b.passengers ?? 1)} pax${b.luggage ? ` · ${esc(b.luggage)} ${b.luggage === 1 ? 'maleta' : 'maletes'}` : ''}
+              ${b.child_ages?.length ? ` · Nens: ${esc(childAgesLabel(b.child_ages))}` : ''}
               · ~${esc(b.estimated_minutes)} min
               ${b.flight_number ? ` · Vol <strong>${esc(b.flight_number)}</strong>` : ''}
             </div>
