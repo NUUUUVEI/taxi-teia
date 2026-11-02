@@ -20,11 +20,16 @@ interface BookingPayload {
   old_record?: Booking
 }
 
+// Failed sends for the current request, returned in the response so they show
+// up in net._http_response (the trigger's only record of the call).
+let emailErrors: string[] = []
+
 async function sendEmail(intendedTo: string, subject: string, html: string) {
   const to = EMAIL_OVERRIDE_TO || intendedTo
   if (EMAIL_OVERRIDE_TO) subject = `[TEST → ${intendedTo}] ${subject}`
   if (!RESEND_API_KEY) {
     console.warn('RESEND_API_KEY not set, email skipped:', to, subject)
+    emailErrors.push(`RESEND_API_KEY not set (${to})`)
     return
   }
   const res = await fetch('https://api.resend.com/emails', {
@@ -35,7 +40,11 @@ async function sendEmail(intendedTo: string, subject: string, html: string) {
     },
     body: JSON.stringify({ from: FROM_EMAIL, to, subject, html }),
   })
-  if (!res.ok) console.error('Resend error', res.status, await res.text())
+  if (!res.ok) {
+    const detail = await res.text()
+    console.error('Resend error', res.status, detail)
+    emailErrors.push(`Resend ${res.status} (${to}): ${detail.slice(0, 300)}`)
+  }
 }
 
 async function sendPushToDriver(title: string, body: string, bookingId: string) {
@@ -149,6 +158,7 @@ serve(async (req) => {
     })
   }
 
+  emailErrors = []
   const payload: BookingPayload = await req.json()
   const b = payload.record
 
@@ -168,5 +178,9 @@ serve(async (req) => {
     }
   }
 
-  return new Response(JSON.stringify({ ok: true }), { headers: { 'Content-Type': 'application/json' } })
+  const ok = emailErrors.length === 0
+  return new Response(JSON.stringify(ok ? { ok } : { ok, emailErrors }), {
+    status: ok ? 200 : 502,
+    headers: { 'Content-Type': 'application/json' },
+  })
 })
