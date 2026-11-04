@@ -1,5 +1,6 @@
 'use client'
 
+import Image from 'next/image'
 import Link from 'next/link'
 import { useTranslations, useLocale } from 'next-intl'
 import { MessageCircle, Phone } from 'lucide-react'
@@ -11,7 +12,21 @@ export function Hero() {
   const locale = useLocale()
 
   return (
-    <section className="lg:min-h-[100svh] flex items-center px-6 pt-28 pb-16">
+    <section className="relative isolate overflow-hidden lg:min-h-[100svh] flex items-center px-6 pt-28 pb-16">
+      {/* Teià's bell tower and hillside behind everything, washed with paper
+          on the text side so the heading stays readable. */}
+      <Image
+        src="/images/teia.jpg"
+        alt=""
+        fill
+        priority
+        sizes="100vw"
+        className="-z-20 object-cover object-[30%_center]"
+      />
+      <div
+        className="absolute inset-0 -z-10 bg-paper/80 lg:bg-transparent lg:bg-gradient-to-r lg:from-paper lg:via-paper/80 lg:to-paper/20"
+        aria-hidden="true"
+      />
       <div className="max-w-6xl mx-auto w-full grid grid-cols-1 lg:grid-cols-[1.15fr_1fr] gap-14 lg:gap-20 items-center">
         <div>
           <h1 className="font-heading font-bold text-6xl sm:text-7xl lg:text-8xl leading-[0.95] tracking-tight">
